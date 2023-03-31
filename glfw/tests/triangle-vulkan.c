@@ -35,7 +35,6 @@
 #include <string.h>
 #include <stdbool.h>
 #include <assert.h>
-#include <signal.h>
 
 #ifdef _WIN32
 #include <windows.h>
