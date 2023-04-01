@@ -30,8 +30,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define GLAD_GL_IMPLEMENTATION
-#include <glad/gl.h>
+#include <glad/glad.h>
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 

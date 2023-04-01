@@ -1,5 +1,5 @@
 
-link_libraries(glfw)
+link_libraries(glfw glad)
 
 include_directories("${GLFW_SOURCE_DIR}/deps")
 
@@ -12,22 +12,20 @@ if (MSVC OR CMAKE_C_SIMULATE_ID STREQUAL "MSVC")
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()
 
-set(GLAD_GL "${GLFW_SOURCE_DIR}/deps/glad/gl.h")
 set(GLAD_VULKAN "${GLFW_SOURCE_DIR}/deps/glad/vulkan.h")
 set(GETOPT "${GLFW_SOURCE_DIR}/deps/getopt.h"
            "${GLFW_SOURCE_DIR}/deps/getopt.c")
 set(TINYCTHREAD "${GLFW_SOURCE_DIR}/deps/tinycthread.h"
                 "${GLFW_SOURCE_DIR}/deps/tinycthread.c")
 
-add_executable(allocator allocator.c ${GLAD_GL})
-add_executable(clipboard clipboard.c ${GETOPT} ${GLAD_GL})
-add_executable(events events.c ${GETOPT} ${GLAD_GL})
-add_executable(msaa msaa.c ${GETOPT} ${GLAD_GL})
-add_executable(glfwinfo glfwinfo.c ${GETOPT} ${GLAD_GL} ${GLAD_VULKAN})
-add_executable(iconify iconify.c ${GETOPT} ${GLAD_GL})
-add_executable(monitors monitors.c ${GETOPT} ${GLAD_GL})
-add_executable(reopen reopen.c ${GLAD_GL})
-add_executable(cursor cursor.c ${GLAD_GL})
+add_executable(allocator allocator.c)
+add_executable(clipboard clipboard.c ${GETOPT})
+add_executable(events events.c ${GETOPT})
+add_executable(glfwinfo glfwinfo.c ${GETOPT} ${GLAD_VULKAN})
+add_executable(iconify iconify.c ${GETOPT})
+add_executable(monitors monitors.c ${GETOPT})
+add_executable(reopen reopen.c)
+add_executable(cursor cursor.c)
 
 add_executable(empty WIN32 MACOSX_BUNDLE empty.c ${TINYCTHREAD} ${GLAD_GL})
 add_executable(gamma WIN32 MACOSX_BUNDLE gamma.c ${GLAD_GL})
@@ -49,7 +47,7 @@ endif()
 
 set(GUI_ONLY_BINARIES empty gamma icon inputlag joysticks tearing threads
     timeout triangle-vulkan window)
-set(CONSOLE_BINARIES allocator clipboard events msaa glfwinfo iconify monitors
+set(CONSOLE_BINARIES allocator clipboard events glfwinfo iconify monitors
     reopen cursor)
 
 set_target_properties(${GUI_ONLY_BINARIES} ${CONSOLE_BINARIES} PROPERTIES

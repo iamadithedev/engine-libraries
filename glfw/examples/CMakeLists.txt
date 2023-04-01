@@ -1,5 +1,4 @@
-
-link_libraries(glfw)
+link_libraries(glfw glad)
 
 include_directories("${GLFW_SOURCE_DIR}/deps")
 
@@ -18,20 +17,18 @@ elseif (APPLE)
     set(ICON glfw.icns)
 endif()
 
-set(GLAD_GL "${GLFW_SOURCE_DIR}/deps/glad/gl.h")
 set(GETOPT "${GLFW_SOURCE_DIR}/deps/getopt.h"
            "${GLFW_SOURCE_DIR}/deps/getopt.c")
 set(TINYCTHREAD "${GLFW_SOURCE_DIR}/deps/tinycthread.h"
                 "${GLFW_SOURCE_DIR}/deps/tinycthread.c")
 
-add_executable(boing WIN32 MACOSX_BUNDLE boing.c ${ICON} ${GLAD_GL})
-add_executable(gears WIN32 MACOSX_BUNDLE gears.c ${ICON} ${GLAD_GL})
-add_executable(heightmap WIN32 MACOSX_BUNDLE heightmap.c ${ICON} ${GLAD_GL})
-add_executable(offscreen offscreen.c ${ICON} ${GLAD_GL})
+add_executable(boing WIN32 MACOSX_BUNDLE boing.c ${ICON})
+add_executable(gears WIN32 MACOSX_BUNDLE gears.c ${ICON})
+add_executable(heightmap WIN32 MACOSX_BUNDLE heightmap.c ${ICON})
 add_executable(particles WIN32 MACOSX_BUNDLE particles.c ${ICON} ${TINYCTHREAD} ${GETOPT} ${GLAD_GL})
 add_executable(sharing WIN32 MACOSX_BUNDLE sharing.c ${ICON} ${GLAD_GL})
 add_executable(splitview WIN32 MACOSX_BUNDLE splitview.c ${ICON} ${GLAD_GL})
-add_executable(triangle-opengl WIN32 MACOSX_BUNDLE triangle-opengl.c ${ICON} ${GLAD_GL})
+add_executable(triangle-opengl WIN32 MACOSX_BUNDLE triangle-opengl.c ${ICON})
 add_executable(wave WIN32 MACOSX_BUNDLE wave.c ${ICON} ${GLAD_GL})
 add_executable(windows WIN32 MACOSX_BUNDLE windows.c ${ICON} ${GLAD_GL})
 
@@ -42,7 +39,6 @@ endif()
 
 set(GUI_ONLY_BINARIES boing gears heightmap particles sharing splitview
     triangle-opengl wave windows)
-set(CONSOLE_BINARIES offscreen)
 
 set_target_properties(${GUI_ONLY_BINARIES} ${CONSOLE_BINARIES} PROPERTIES
                       C_STANDARD 99
