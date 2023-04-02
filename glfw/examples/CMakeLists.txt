@@ -28,7 +28,6 @@ add_executable(heightmap WIN32 MACOSX_BUNDLE heightmap.c ${ICON})
 add_executable(particles WIN32 MACOSX_BUNDLE particles.c ${ICON} ${TINYCTHREAD} ${GETOPT} ${GLAD_GL})
 add_executable(sharing WIN32 MACOSX_BUNDLE sharing.c ${ICON} ${GLAD_GL})
 add_executable(splitview WIN32 MACOSX_BUNDLE splitview.c ${ICON} ${GLAD_GL})
-add_executable(triangle-opengl WIN32 MACOSX_BUNDLE triangle-opengl.c ${ICON})
 add_executable(wave WIN32 MACOSX_BUNDLE wave.c ${ICON} ${GLAD_GL})
 add_executable(windows WIN32 MACOSX_BUNDLE windows.c ${ICON} ${GLAD_GL})
 
@@ -37,8 +36,7 @@ if (RT_LIBRARY)
     target_link_libraries(particles "${RT_LIBRARY}")
 endif()
 
-set(GUI_ONLY_BINARIES boing gears heightmap particles sharing splitview
-    triangle-opengl wave windows)
+set(GUI_ONLY_BINARIES boing gears heightmap particles sharing splitview wave windows)
 
 set_target_properties(${GUI_ONLY_BINARIES} ${CONSOLE_BINARIES} PROPERTIES
                       C_STANDARD 99
@@ -60,7 +58,6 @@ if (APPLE)
     set_target_properties(heightmap PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Heightmap")
     set_target_properties(particles PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Particles")
     set_target_properties(sharing PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Sharing")
-    set_target_properties(triangle-opengl PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "OpenGL Triangle")
     set_target_properties(splitview PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "SplitView")
     set_target_properties(wave PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Wave")
     set_target_properties(windows PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Windows")
