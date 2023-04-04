@@ -406,19 +406,6 @@ GLFWbool _glfwConnectWayland(int platformID, _GLFWplatform* platform)
         _glfwGetKeyScancodeWayland,
         _glfwSetClipboardStringWayland,
         _glfwGetClipboardStringWayland,
-#if defined(GLFW_BUILD_LINUX_JOYSTICK)
-        _glfwInitJoysticksLinux,
-        _glfwTerminateJoysticksLinux,
-        _glfwPollJoystickLinux,
-        _glfwGetMappingNameLinux,
-        _glfwUpdateGamepadGUIDLinux,
-#else
-        _glfwInitJoysticksNull,
-        _glfwTerminateJoysticksNull,
-        _glfwPollJoystickNull,
-        _glfwGetMappingNameNull,
-        _glfwUpdateGamepadGUIDNull,
-#endif
         _glfwFreeMonitorWayland,
         _glfwGetMonitorPosWayland,
         _glfwGetMonitorContentScaleWayland,

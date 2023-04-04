@@ -491,45 +491,6 @@ static void monitor_callback(GLFWmonitor* monitor, int event)
     }
 }
 
-static void joystick_callback(int jid, int event)
-{
-    if (event == GLFW_CONNECTED)
-    {
-        int axisCount, buttonCount, hatCount;
-
-        glfwGetJoystickAxes(jid, &axisCount);
-        glfwGetJoystickButtons(jid, &buttonCount);
-        glfwGetJoystickHats(jid, &hatCount);
-
-        printf("%08x at %0.3f: Joystick %i (%s) was connected with %i axes, %i buttons, and %i hats\n",
-               counter++, glfwGetTime(),
-               jid,
-               glfwGetJoystickName(jid),
-               axisCount,
-               buttonCount,
-               hatCount);
-
-        if (glfwJoystickIsGamepad(jid))
-        {
-            printf("  Joystick %i (%s) has a gamepad mapping (%s)\n",
-                   jid,
-                   glfwGetJoystickGUID(jid),
-                   glfwGetGamepadName(jid));
-        }
-        else
-        {
-            printf("  Joystick %i (%s) has no gamepad mapping\n",
-                   jid,
-                   glfwGetJoystickGUID(jid));
-        }
-    }
-    else
-    {
-        printf("%08x at %0.3f: Joystick %i was disconnected\n",
-               counter++, glfwGetTime(), jid);
-    }
-}
-
 int main(int argc, char** argv)
 {
     Slot* slots;
@@ -544,7 +505,6 @@ int main(int argc, char** argv)
     printf("Library initialized\n");
 
     glfwSetMonitorCallback(monitor_callback);
-    glfwSetJoystickCallback(joystick_callback);
 
     while ((ch = getopt(argc, argv, "hfn:")) != -1)
     {

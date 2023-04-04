@@ -1184,19 +1184,6 @@ GLFWbool _glfwConnectX11(int platformID, _GLFWplatform* platform)
         _glfwGetKeyScancodeX11,
         _glfwSetClipboardStringX11,
         _glfwGetClipboardStringX11,
-#if defined(GLFW_BUILD_LINUX_JOYSTICK)
-        _glfwInitJoysticksLinux,
-        _glfwTerminateJoysticksLinux,
-        _glfwPollJoystickLinux,
-        _glfwGetMappingNameLinux,
-        _glfwUpdateGamepadGUIDLinux,
-#else
-        _glfwInitJoysticksNull,
-        _glfwTerminateJoysticksNull,
-        _glfwPollJoystickNull,
-        _glfwGetMappingNameNull,
-        _glfwUpdateGamepadGUIDNull,
-#endif
         _glfwFreeMonitorX11,
         _glfwGetMonitorPosX11,
         _glfwGetMonitorContentScaleX11,
