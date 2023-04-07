@@ -3,7 +3,7 @@ add_library(glfw ${GLFW_LIBRARY_TYPE}
                  "${GLFW_SOURCE_DIR}/include/GLFW/glfw3.h"
                  "${GLFW_SOURCE_DIR}/include/GLFW/glfw3native.h"
                  internal.h platform.h context.c init.c input.c monitor.c platform.c vulkan.c window.c
-                 egl_context.c osmesa_context.c null_platform.h
+                 osmesa_context.c null_platform.h
                  null_init.c null_monitor.c null_window.c)
 
 # The time, thread and module code is shared between all backends on a given OS,
@@ -235,7 +235,7 @@ if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
                                 window.c null_init.c null_monitor.c
                                 null_window.c win32_init.c win32_module.c
                                 win32_monitor.c win32_time.c win32_thread.c win32_window.c
-                                wgl_context.c egl_context.c osmesa_context.c PROPERTIES
+                                wgl_context.c osmesa_context.c PROPERTIES
                                 COMPILE_FLAGS -Wdeclaration-after-statement)
 endif()
 

@@ -531,9 +531,6 @@ GLFWbool _glfwCreateContextWGL(_GLFWwindow* window,
     PIXELFORMATDESCRIPTOR pfd;
     HGLRC share = NULL;
 
-    if (ctxconfig->share)
-        share = ctxconfig->share->context.wgl.handle;
-
     window->context.wgl.dc = GetDC(window->win32.handle);
     if (!window->context.wgl.dc)
     {

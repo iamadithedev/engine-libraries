@@ -214,9 +214,6 @@ GLFWbool _glfwCreateContextOSMesa(_GLFWwindow* window,
         return GLFW_FALSE;
     }
 
-    if (ctxconfig->share)
-        share = ctxconfig->share->context.osmesa.handle;
-
     if (OSMesaCreateContextAttribs)
     {
         int index = 0, attribs[40];
