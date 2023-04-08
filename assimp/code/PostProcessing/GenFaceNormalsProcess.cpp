@@ -50,7 +50,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/postprocess.h>
 #include <assimp/qnan.h>
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 
 using namespace Assimp;
 
@@ -66,7 +65,6 @@ bool GenFaceNormalsProcess::IsActive(unsigned int pFlags) const {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void GenFaceNormalsProcess::Execute(aiScene *pScene) {
-    ASSIMP_LOG_DEBUG("GenFaceNormalsProcess begin");
 
     if (pScene->mFlags & AI_SCENE_FLAGS_NON_VERBOSE_FORMAT) {
         throw DeadlyImportError("Post-processing order mismatch: expecting pseudo-indexed (\"verbose\") vertices here");
@@ -77,13 +75,6 @@ void GenFaceNormalsProcess::Execute(aiScene *pScene) {
         if (this->GenMeshFaceNormals(pScene->mMeshes[a])) {
             bHas = true;
         }
-    }
-    if (bHas) {
-        ASSIMP_LOG_INFO("GenFaceNormalsProcess finished. "
-                        "Face normals have been calculated");
-    } else {
-        ASSIMP_LOG_DEBUG("GenFaceNormalsProcess finished. "
-                         "Normals are already there");
     }
 }
 
@@ -102,7 +93,6 @@ bool GenFaceNormalsProcess::GenMeshFaceNormals(aiMesh *pMesh) {
     // triangles or higher-order polygons the normal vectors
     // are undefined.
     if (!(pMesh->mPrimitiveTypes & (aiPrimitiveType_TRIANGLE | aiPrimitiveType_POLYGON))) {
-        ASSIMP_LOG_INFO("Normal vectors are undefined for line and point meshes");
         return false;
     }
 
