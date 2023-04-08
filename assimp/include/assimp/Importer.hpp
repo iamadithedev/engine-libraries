@@ -67,7 +67,6 @@ namespace Assimp {
 class Importer;
 class IOStream;
 class IOSystem;
-class ProgressHandler;
 
 // =======================================================================
 // Plugin development
@@ -346,37 +345,6 @@ public:
      * @return true by default
      */
     bool IsDefaultIOHandler() const;
-
-    // -------------------------------------------------------------------
-    /** Supplies a custom progress handler to the importer. This
-     *  interface exposes an #Update() callback, which is called
-     *  more or less periodically (please don't sue us if it
-     *  isn't as periodically as you'd like it to have ...).
-     *  This can be used to implement progress bars and loading
-     *  timeouts.
-     *  @param pHandler Progress callback interface. Pass nullptr to
-     *    disable progress reporting.
-     *  @note Progress handlers can be used to abort the loading
-     *    at almost any time.*/
-    void SetProgressHandler(ProgressHandler *pHandler);
-
-    // -------------------------------------------------------------------
-    /** Retrieves the progress handler that is currently set.
-     * You can use #IsDefaultProgressHandler() to check whether the returned
-     * interface is the default handler provided by ASSIMP. The default
-     * handler is active as long the application doesn't supply its own
-     * custom handler via #SetProgressHandler().
-     * @return A valid ProgressHandler interface, never nullptr.
-     */
-    ProgressHandler *GetProgressHandler() const;
-
-    // -------------------------------------------------------------------
-    /** Checks whether a default progress handler is active
-     * A default handler is active as long the application doesn't
-     * supply its own custom progress handler via #SetProgressHandler().
-     * @return true by default
-     */
-    bool IsDefaultProgressHandler() const;
 
     // -------------------------------------------------------------------
     /** @brief Check whether a given set of post-processing flags
