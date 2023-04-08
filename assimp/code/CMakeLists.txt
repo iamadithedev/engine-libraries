@@ -45,11 +45,6 @@
 cmake_minimum_required( VERSION 3.10 )
 SET( HEADER_PATH ../include/assimp )
 
-if(NOT ANDROID AND ASSIMP_ANDROID_JNIIOSYSTEM)
-    message(WARNING "Requesting Android JNI I/O-System in non-Android toolchain. Resetting ASSIMP_ANDROID_JNIIOSYSTEM to OFF.")
-    set(ASSIMP_ANDROID_JNIIOSYSTEM OFF)
-endif()
-
 SET( COMPILER_HEADERS
   ${HEADER_PATH}/Compiler/pushpack1.h
   ${HEADER_PATH}/Compiler/poppack1.h
@@ -380,13 +375,6 @@ ADD_ASSIMP_IMPORTER( LWO
 ADD_ASSIMP_IMPORTER( LWS
   AssetLib/LWS/LWSLoader.cpp
   AssetLib/LWS/LWSLoader.h
-)
-
-ADD_ASSIMP_IMPORTER( MDC
-  AssetLib/MDC/MDCFileData.h
-  AssetLib/MDC/MDCLoader.cpp
-  AssetLib/MDC/MDCLoader.h
-  AssetLib/MDC/MDCNormalTable.h
 )
 
 SET( MaterialSystem_SRCS
@@ -1197,12 +1185,6 @@ ELSE()
   endif()
 ENDIF()
 
-if(ASSIMP_ANDROID_JNIIOSYSTEM)
-  set(ASSIMP_ANDROID_JNIIOSYSTEM_PATH port/AndroidJNI)
-  add_subdirectory(../${ASSIMP_ANDROID_JNIIOSYSTEM_PATH}/ ../${ASSIMP_ANDROID_JNIIOSYSTEM_PATH}/)
-  target_link_libraries(assimp android_jniiosystem)
-endif()
-
 IF (ASSIMP_BUILD_NONFREE_C4D_IMPORTER)
   TARGET_LINK_LIBRARIES(assimp optimized ${C4D_RELEASE_LIBRARIES})
   TARGET_LINK_LIBRARIES(assimp debug ${C4D_DEBUG_LIBRARIES})
@@ -1309,12 +1291,6 @@ INSTALL( TARGETS assimp
 INSTALL( FILES ${PUBLIC_HEADERS} DESTINATION ${ASSIMP_INCLUDE_INSTALL_DIR}/assimp COMPONENT assimp-dev)
 INSTALL( FILES ${COMPILER_HEADERS} DESTINATION ${ASSIMP_INCLUDE_INSTALL_DIR}/assimp/Compiler COMPONENT assimp-dev)
 
-if (ASSIMP_ANDROID_JNIIOSYSTEM)
-  INSTALL(FILES ${HEADER_PATH}/${ASSIMP_ANDROID_JNIIOSYSTEM_PATH}/AndroidJNIIOSystem.h
-    DESTINATION ${ASSIMP_INCLUDE_INSTALL_DIR}
-    COMPONENT assimp-dev)
-ENDIF()
-
 if(MSVC AND ASSIMP_INSTALL_PDB)
   # When only the static library is built, these properties must
   # be set to ensure the static lib .pdb is staged for installation.
@@ -1346,15 +1322,3 @@ if(MSVC AND ASSIMP_INSTALL_PDB)
     )
   ENDIF()
 ENDIF ()
-
-if (ASSIMP_COVERALLS)
-    include(Coveralls)
-
-    set(COVERAGE_SRCS ${assimp_src} ${TEST_SRCS} )
-
-    # Create the coveralls target.
-    coveralls_setup(
-        "${COVERAGE_SRCS}" # The source files.
-        ON                 # If we should upload.
-        "${PROJECT_SOURCE_DIR}/cmake-modules/") # (Optional) Alternate project cmake module path.
-ENDIF()

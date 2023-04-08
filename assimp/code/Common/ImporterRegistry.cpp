@@ -70,9 +70,6 @@ corresponding preprocessor flag to selectively disable formats.
 #ifndef ASSIMP_BUILD_NO_SMD_IMPORTER
 #include "AssetLib/SMD/SMDLoader.h"
 #endif
-#ifndef ASSIMP_BUILD_NO_MDC_IMPORTER
-#include "AssetLib/MDC/MDCLoader.h"
-#endif
 #ifndef ASSIMP_BUILD_NO_STL_IMPORTER
 #include "AssetLib/STL/STLLoader.h"
 #endif
@@ -209,9 +206,6 @@ void GetImporterInstanceList(std::vector<BaseImporter *> &out) {
 #endif
 #if (!defined ASSIMP_BUILD_NO_SMD_IMPORTER)
     out.push_back(new SMDImporter());
-#endif
-#if (!defined ASSIMP_BUILD_NO_MDC_IMPORTER)
-    out.push_back(new MDCImporter());
 #endif
 #if (!defined ASSIMP_BUILD_NO_STL_IMPORTER)
     out.push_back(new STLImporter());

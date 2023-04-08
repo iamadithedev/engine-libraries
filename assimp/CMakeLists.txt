@@ -40,9 +40,6 @@ SET(CMAKE_POLICY_DEFAULT_CMP0092 NEW)
 
 CMAKE_MINIMUM_REQUIRED( VERSION 3.10 )
 
-# Disabled importers: m3d for 5.1
-ADD_DEFINITIONS( -DASSIMP_BUILD_NO_M3D_IMPORTER)
-ADD_DEFINITIONS( -DASSIMP_BUILD_NO_M3D_EXPORTER)
 # Toggles the use of the hunter package manager
 option(ASSIMP_HUNTER_ENABLED "Enable Hunter package manager support" OFF)
 
@@ -76,10 +73,6 @@ OPTION( ASSIMP_OPT_BUILD_PACKAGES
   "Set to ON to generate CPack configuration files and packaging targets"
   OFF
 )
-OPTION( ASSIMP_ANDROID_JNIIOSYSTEM
-  "Android JNI IOSystem support is active"
-  OFF
-)
 OPTION( ASSIMP_NO_EXPORT
   "Disable Assimp's export functionality."
   OFF
@@ -90,10 +83,6 @@ OPTION( ASSIMP_BUILD_ASSIMP_TOOLS
 )
 OPTION ( ASSIMP_BUILD_SAMPLES
   "If the official samples are built as well (needs Glut)."
-  OFF
-)
-OPTION ( ASSIMP_COVERALLS
-  "Enable this to measure test coverage."
   OFF
 )
 OPTION( ASSIMP_INSTALL
@@ -110,10 +99,6 @@ OPTION ( ASSIMP_ASAN
 )
 OPTION ( ASSIMP_UBSAN
   "Enable Undefined Behavior sanitizer."
-  OFF
-)
-OPTION ( ASSIMP_BUILD_DOCS
-  "Build documentation using Doxygen."
   OFF
 )
 OPTION( ASSIMP_INJECT_DEBUG_POSTFIX
@@ -327,13 +312,6 @@ IF ( IOS AND NOT ASSIMP_HUNTER_ENABLED)
   ENDIF()
 ENDIF()
 
-IF (ASSIMP_COVERALLS)
-  MESSAGE(STATUS "Coveralls enabled")
-  INCLUDE(Coveralls)
-  SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
-  SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -fprofile-arcs -ftest-coverage")
-ENDIF()
-
 IF (ASSIMP_ASAN)
   MESSAGE(STATUS "AddressSanitizer enabled")
   SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address")
@@ -460,10 +438,6 @@ install(
     DESTINATION "${CONFIG_INSTALL_DIR}"
     COMPONENT ${LIBASSIMP-DEV_COMPONENT}
 )
-
-IF( ASSIMP_BUILD_DOCS )
-  ADD_SUBDIRECTORY(doc)
-ENDIF()
 
 # Search for external dependencies, and build them from source if not found
 # Search for zlib
