@@ -66,7 +66,7 @@ void FixInfacingNormalsProcess::Execute( aiScene* pScene) {
 
     bool bHas( false );
     for (unsigned int a = 0; a < pScene->mNumMeshes; ++a) {
-        if (ProcessMesh(pScene->mMeshes[a], a)) {
+        if (ProcessMesh(pScene->mMeshes[a])) {
             bHas = true;
         }
     }
