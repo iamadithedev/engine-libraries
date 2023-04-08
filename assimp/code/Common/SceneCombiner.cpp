@@ -53,7 +53,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   */
 // ----------------------------------------------------------------------------
 #include "ScenePrivate.h"
-#include "time.h"
 #include <assimp/Hash.h>
 #include <assimp/SceneCombiner.h>
 #include <assimp/StringUtils.h>
@@ -62,7 +61,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/metadata.h>
 #include <assimp/scene.h>
 #include <stdio.h>
-#include <assimp/DefaultLogger.hpp>
 
 namespace Assimp {
 
@@ -79,7 +77,6 @@ inline void PrefixString(aiString &string, const char *prefix, unsigned int len)
         return;
 
     if (len + string.length >= MAXLEN - 1) {
-        ASSIMP_LOG_VERBOSE_DEBUG("Can't add an unique prefix because the string is too long");
         ai_assert(false);
         return;
     }
@@ -625,10 +622,6 @@ void SceneCombiner::MergeScenes(aiScene **_dest, aiScene *master, std::vector<At
                     }
                 }
             }
-            if (!(*it).resolved) {
-                ASSIMP_LOG_ERROR("SceneCombiner: Failed to resolve attachment ", (*it).node->mName.data,
-                        " ", (*it).attachToNode->mName.data);
-            }
         }
     }
 
@@ -736,7 +729,6 @@ void SceneCombiner::MergeBones(aiMesh *out, std::vector<aiMesh *>::const_iterato
             // NOTE: different offset matrices for bones with equal names
             // are - at the moment - not handled correctly.
             if (wmit != boneIt->pSrcBones.begin() && pc->mOffsetMatrix != wmit->first->mOffsetMatrix) {
-                ASSIMP_LOG_WARN("Bones with equal names but different offset matrices can't be joined at the moment");
                 continue;
             }
             pc->mOffsetMatrix = wmit->first->mOffsetMatrix;
@@ -807,8 +799,7 @@ void SceneCombiner::MergeMeshes(aiMesh **_out, unsigned int /*flags*/,
             for (std::vector<aiMesh *>::const_iterator it = begin; it != end; ++it) {
                 if ((*it)->mVertices) {
                     ::memcpy(pv2, (*it)->mVertices, (*it)->mNumVertices * sizeof(aiVector3D));
-                } else
-                    ASSIMP_LOG_WARN("JoinMeshes: Positions expected but input mesh contains no positions");
+                }
                 pv2 += (*it)->mNumVertices;
             }
         }
@@ -819,8 +810,6 @@ void SceneCombiner::MergeMeshes(aiMesh **_out, unsigned int /*flags*/,
             for (std::vector<aiMesh *>::const_iterator it = begin; it != end; ++it) {
                 if ((*it)->mNormals) {
                     ::memcpy(pv2, (*it)->mNormals, (*it)->mNumVertices * sizeof(aiVector3D));
-                } else {
-                    ASSIMP_LOG_WARN("JoinMeshes: Normals expected but input mesh contains no normals");
                 }
                 pv2 += (*it)->mNumVertices;
             }
@@ -835,8 +824,6 @@ void SceneCombiner::MergeMeshes(aiMesh **_out, unsigned int /*flags*/,
                 if ((*it)->mTangents) {
                     ::memcpy(pv2, (*it)->mTangents, (*it)->mNumVertices * sizeof(aiVector3D));
                     ::memcpy(pv2b, (*it)->mBitangents, (*it)->mNumVertices * sizeof(aiVector3D));
-                } else {
-                    ASSIMP_LOG_WARN("JoinMeshes: Tangents expected but input mesh contains no tangents");
                 }
                 pv2 += (*it)->mNumVertices;
                 pv2b += (*it)->mNumVertices;
@@ -851,8 +838,6 @@ void SceneCombiner::MergeMeshes(aiMesh **_out, unsigned int /*flags*/,
             for (std::vector<aiMesh *>::const_iterator it = begin; it != end; ++it) {
                 if ((*it)->mTextureCoords[n]) {
                     ::memcpy(pv2, (*it)->mTextureCoords[n], (*it)->mNumVertices * sizeof(aiVector3D));
-                } else {
-                    ASSIMP_LOG_WARN("JoinMeshes: UVs expected but input mesh contains no UVs");
                 }
                 pv2 += (*it)->mNumVertices;
             }
@@ -865,8 +850,6 @@ void SceneCombiner::MergeMeshes(aiMesh **_out, unsigned int /*flags*/,
             for (std::vector<aiMesh *>::const_iterator it = begin; it != end; ++it) {
                 if ((*it)->mColors[n]) {
                     ::memcpy(pVec2, (*it)->mColors[n], (*it)->mNumVertices * sizeof(aiColor4D));
-                } else {
-                    ASSIMP_LOG_WARN("JoinMeshes: VCs expected but input mesh contains no VCs");
                 }
                 pVec2 += (*it)->mNumVertices;
             }
