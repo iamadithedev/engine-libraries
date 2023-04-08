@@ -64,7 +64,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Common/PolyTools.h"
 
 #include <memory>
-#include <cstdint>
 
 //#define AI_BUILD_TRIANGULATE_COLOR_FACE_WINDING
 //#define AI_BUILD_TRIANGULATE_DEBUG_POLYS
@@ -167,8 +166,6 @@ bool TriangulateProcess::IsActive( unsigned int pFlags) const
 // Executes the post processing step on the given imported data.
 void TriangulateProcess::Execute( aiScene* pScene)
 {
-    ASSIMP_LOG_DEBUG("TriangulateProcess begin");
-
     bool bHas = false;
     for( unsigned int a = 0; a < pScene->mNumMeshes; a++)
     {
@@ -177,11 +174,6 @@ void TriangulateProcess::Execute( aiScene* pScene)
                 bHas = true;
             }
         }
-    }
-    if ( bHas ) {
-        ASSIMP_LOG_INFO( "TriangulateProcess finished. All polygons have been triangulated." );
-    } else {
-        ASSIMP_LOG_DEBUG( "TriangulateProcess finished. There was nothing to be done." );
     }
 }
 
@@ -470,7 +462,6 @@ bool TriangulateProcess::TriangulateMesh( aiMesh* pMesh)
                     // if the angle is 0 or 180
                     if (std::abs(mul - 1.f) < ai_epsilon || std::abs(mul + 1.f) < ai_epsilon) {
                         // skip this ear
-                        ASSIMP_LOG_WARN("Skip a ear, due to its angle is near 0 or 180.");
                         continue;
                     }
 
@@ -501,10 +492,6 @@ bool TriangulateProcess::TriangulateMesh( aiMesh* pMesh)
                     // Due to the 'two ear theorem', every simple polygon with more than three points must
                     // have 2 'ears'. Here's definitely something wrong ... but we don't give up yet.
                     //
-
-                    // Instead we're continuing with the standard tri-fanning algorithm which we'd
-                    // use if we had only convex polygons. That's life.
-                    ASSIMP_LOG_ERROR("Failed to triangulate polygon (no ear found). Probably not a simple polygon?");
 
 #ifdef AI_BUILD_TRIANGULATE_DEBUG_POLYS
                     fprintf(fout,"critical error here, no ear found! ");
