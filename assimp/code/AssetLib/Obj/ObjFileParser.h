@@ -63,7 +63,6 @@ struct Point2;
 
 class ObjFileImporter;
 class IOSystem;
-class ProgressHandler;
 
 /// \class  ObjFileParser
 /// \brief  Parser for a obj waveform file
@@ -77,7 +76,7 @@ public:
     /// @brief  The default constructor.
     ObjFileParser();
     /// @brief  Constructor with data array.
-    ObjFileParser(IOStreamBuffer<char> &streamBuffer, const std::string &modelName, IOSystem *io, ProgressHandler *progress, const std::string &originalObjFileName);
+    ObjFileParser(IOStreamBuffer<char> &streamBuffer, const std::string &modelName, IOSystem *io, const std::string &originalObjFileName);
     /// @brief  Destructor
     ~ObjFileParser();
     /// @brief  If you want to load in-core data.
@@ -151,8 +150,6 @@ private:
     char m_buffer[Buffersize];
     /// Pointer to IO system instance.
     IOSystem *m_pIO;
-    //! Pointer to progress handler
-    ProgressHandler *m_progress;
     /// Path to the current model, name of the obj file where the buffer comes from
     const std::string m_originalObjFileName;
 };

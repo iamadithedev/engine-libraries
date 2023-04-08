@@ -47,7 +47,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/BaseImporter.h>
 #include <assimp/DefaultIOSystem.h>
 #include <assimp/ParsingUtils.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/Importer.hpp>
 #include <cstdlib>
 #include <memory>
@@ -65,13 +64,12 @@ ObjFileParser::ObjFileParser() :
         m_uiLine(0),
         m_buffer(),
         m_pIO(nullptr),
-        m_progress(nullptr),
         m_originalObjFileName() {
     std::fill_n(m_buffer, Buffersize, '\0');
 }
 
 ObjFileParser::ObjFileParser(IOStreamBuffer<char> &streamBuffer, const std::string &modelName,
-        IOSystem *io, ProgressHandler *progress,
+        IOSystem *io,
         const std::string &originalObjFileName) :
         m_DataIt(),
         m_DataItEnd(),
@@ -79,7 +77,6 @@ ObjFileParser::ObjFileParser(IOStreamBuffer<char> &streamBuffer, const std::stri
         m_uiLine(0),
         m_buffer(),
         m_pIO(io),
-        m_progress(progress),
         m_originalObjFileName(originalObjFileName) {
     std::fill_n(m_buffer, Buffersize, '\0');
 
@@ -111,9 +108,6 @@ ObjFile::Model *ObjFileParser::GetModel() const {
 void ObjFileParser::parseFile(IOStreamBuffer<char> &streamBuffer) {
     // only update every 100KB or it'll be too slow
     //const unsigned int updateProgressEveryBytes = 100 * 1024;
-    const unsigned int bytesToProcess = static_cast<unsigned int>(streamBuffer.size());
-    const unsigned int progressTotal = bytesToProcess;
-    unsigned int processed = 0;
     size_t lastFilePos(0);
 
     bool insideCstype = false;
@@ -125,9 +119,7 @@ void ObjFileParser::parseFile(IOStreamBuffer<char> &streamBuffer) {
         // Handle progress reporting
         const size_t filePos(streamBuffer.getFilePos());
         if (lastFilePos < filePos) {
-            processed = static_cast<unsigned int>(filePos);
             lastFilePos = filePos;
-            m_progress->UpdateFileRead(processed, progressTotal);
         }
 
         // handle cstype section end (http://paulbourke.net/dataformats/obj/)
@@ -449,7 +441,6 @@ void ObjFileParser::getFace(aiPrimitiveType type) {
 
         if (*m_DataIt == '/') {
             if (type == aiPrimitiveType_POINT) {
-                ASSIMP_LOG_ERROR("Obj: Separator unexpected in point statement");
             }
             iPos++;
         } else if (IsSpaceOrNewLine(*m_DataIt)) {
@@ -505,7 +496,6 @@ void ObjFileParser::getFace(aiPrimitiveType type) {
     }
 
     if (face->m_vertices.empty()) {
-        ASSIMP_LOG_ERROR("Obj: Ignoring empty face");
         // skip line and clean up
         m_DataIt = skipLine<DataArrayIt>(m_DataIt, m_DataItEnd, m_uiLine);
         delete face;
@@ -575,7 +565,6 @@ void ObjFileParser::getMaterialDesc() {
             // This may be the case if the material library is missing. We don't want to lose all
             // materials if that happens, so create a new named material instead of discarding it
             // completely.
-            ASSIMP_LOG_ERROR("OBJ: failed to locate material ", strName, ", creating new material");
             m_pModel->mCurrentMaterial = new ObjFile::Material();
             m_pModel->mCurrentMaterial->MaterialName.Set(strName);
             m_pModel->mMaterialLib.push_back(strName);
@@ -622,7 +611,6 @@ void ObjFileParser::getMaterialLib() {
 
     // Check if directive is valid.
     if (0 == strMatName.length()) {
-        ASSIMP_LOG_WARN("OBJ: no name for material library specified.");
         return;
     }
 
@@ -639,12 +627,10 @@ void ObjFileParser::getMaterialLib() {
 
     IOStream *pFile = m_pIO->Open(absName);
     if (nullptr == pFile) {
-        ASSIMP_LOG_ERROR("OBJ: Unable to locate material file ", strMatName);
         std::string strMatFallbackName = m_originalObjFileName.substr(0, m_originalObjFileName.length() - 3) + "mtl";
-        ASSIMP_LOG_INFO("OBJ: Opening fallback material file ", strMatFallbackName);
+
         pFile = m_pIO->Open(strMatFallbackName);
         if (!pFile) {
-            ASSIMP_LOG_ERROR("OBJ: Unable to locate fallback material file ", strMatFallbackName);
             m_DataIt = skipLine<DataArrayIt>(m_DataIt, m_DataItEnd, m_uiLine);
             return;
         }
@@ -679,7 +665,7 @@ void ObjFileParser::getNewMaterial() {
     std::map<std::string, ObjFile::Material *>::iterator it = m_pModel->mMaterialMap.find(strMat);
     if (it == m_pModel->mMaterialMap.end()) {
         // Show a warning, if material was not found
-        ASSIMP_LOG_WARN("OBJ: Unsupported material requested: ", strMat);
+
         m_pModel->mCurrentMaterial = m_pModel->mDefaultMaterial;
     } else {
         // Set new material
@@ -818,8 +804,6 @@ void ObjFileParser::createMesh(const std::string &meshName) {
     unsigned int meshId = static_cast<unsigned int>(m_pModel->mMeshes.size() - 1);
     if (nullptr != m_pModel->mCurrentObject) {
         m_pModel->mCurrentObject->m_Meshes.push_back(meshId);
-    } else {
-        ASSIMP_LOG_ERROR("OBJ: No object detected to attach a new mesh instance.");
     }
 }
 
@@ -848,7 +832,6 @@ bool ObjFileParser::needsNewMesh(const std::string &materialName) {
 //  Shows an error in parsing process.
 void ObjFileParser::reportErrorTokenInFace() {
     m_DataIt = skipLine<DataArrayIt>(m_DataIt, m_DataItEnd, m_uiLine);
-    ASSIMP_LOG_ERROR("OBJ: Not supported token in face description detected");
 }
 
 // -------------------------------------------------------------------
