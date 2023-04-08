@@ -103,7 +103,6 @@ void UpdateMeshReferences(aiNode *node, const std::vector<unsigned int> &meshMap
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void FindInvalidDataProcess::Execute(aiScene *pScene) {
-    ASSIMP_LOG_DEBUG("FindInvalidDataProcess begin");
 
     bool out = false;
     std::vector<unsigned int> meshMapping(pScene->mNumMeshes);
@@ -146,10 +145,6 @@ void FindInvalidDataProcess::Execute(aiScene *pScene) {
             UpdateMeshReferences(pScene->mRootNode, meshMapping);
             pScene->mNumMeshes = real;
         }
-
-        ASSIMP_LOG_INFO("FindInvalidDataProcess finished. Found issues ...");
-    } else {
-        ASSIMP_LOG_DEBUG("FindInvalidDataProcess finished. Everything seems to be OK.");
     }
 }
 
@@ -194,7 +189,6 @@ inline bool ProcessArray(T *&in, unsigned int num, const char *name,
         const std::vector<bool> &dirtyMask, bool mayBeIdentical = false, bool mayBeZero = true) {
     const char *err = ValidateArrayContents(in, num, dirtyMask, mayBeIdentical, mayBeZero);
     if (err) {
-        ASSIMP_LOG_ERROR("FindInvalidDataProcess fails on mesh ", name, ": ", err);
         delete[] in;
         in = nullptr;
         return true;
@@ -303,9 +297,6 @@ void FindInvalidDataProcess::ProcessAnimationChannel(aiNodeAnim *anim) {
         anim->mScalingKeys[0] = v;
         i = 1;
     }
-    if (1 == i) {
-        ASSIMP_LOG_WARN("Simplified dummy tracks with just one key");
-    }
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -326,8 +317,6 @@ int FindInvalidDataProcess::ProcessMesh(aiMesh *pMesh) {
 
     // Process vertex positions
     if (pMesh->mVertices && ProcessArray(pMesh->mVertices, pMesh->mNumVertices, "positions", dirtyMask)) {
-        ASSIMP_LOG_ERROR("Deleting mesh: Unable to continue without vertex positions");
-
         return 2;
     }
 

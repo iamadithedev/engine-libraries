@@ -48,10 +48,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // internal headers
 #include "FixNormalsStep.h"
 #include <assimp/StringUtils.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <stdio.h>
 
 
 using namespace Assimp;
@@ -65,7 +63,6 @@ bool FixInfacingNormalsProcess::IsActive( unsigned int pFlags) const {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void FixInfacingNormalsProcess::Execute( aiScene* pScene) {
-    ASSIMP_LOG_DEBUG("FixInfacingNormalsProcess begin");
 
     bool bHas( false );
     for (unsigned int a = 0; a < pScene->mNumMeshes; ++a) {
@@ -73,17 +70,11 @@ void FixInfacingNormalsProcess::Execute( aiScene* pScene) {
             bHas = true;
         }
     }
-
-    if (bHas) {
-        ASSIMP_LOG_DEBUG("FixInfacingNormalsProcess finished. Found issues.");
-    } else {
-        ASSIMP_LOG_DEBUG("FixInfacingNormalsProcess finished. No changes to the scene.");
-    }
 }
 
 // ------------------------------------------------------------------------------------------------
 // Apply the step to the mesh
-bool FixInfacingNormalsProcess::ProcessMesh( aiMesh* pcMesh, unsigned int index)
+bool FixInfacingNormalsProcess::ProcessMesh( aiMesh* pcMesh)
 {
     ai_assert(nullptr != pcMesh);
 
@@ -146,9 +137,6 @@ bool FixInfacingNormalsProcess::ProcessMesh( aiMesh* pcMesh, unsigned int index)
 
     // now compare the volumes of the bounding boxes
     if (std::fabs(fDelta0_x * fDelta0_y * fDelta0_z) < std::fabs(fDelta1_x * fDelta1_yz)) {
-        if (!DefaultLogger::isNullLogger()) {
-            ASSIMP_LOG_INFO("Mesh ", index, ": Normals are facing inwards (or the mesh is planar)", index);
-        }
 
         // Invert normals
         for (unsigned int i = 0; i < pcMesh->mNumVertices;++i)
