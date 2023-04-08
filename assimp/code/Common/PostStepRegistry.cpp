@@ -83,12 +83,6 @@ corresponding preprocessor flag to selectively disable steps.
 #ifndef ASSIMP_BUILD_NO_LIMITBONEWEIGHTS_PROCESS
 #   include "PostProcessing/LimitBoneWeightsProcess.h"
 #endif
-#ifndef ASSIMP_BUILD_NO_VALIDATEDS_PROCESS
-#   include "PostProcessing/ValidateDataStructure.h"
-#endif
-#ifndef ASSIMP_BUILD_NO_IMPROVECACHELOCALITY_PROCESS
-#   include "PostProcessing/ImproveCacheLocality.h"
-#endif
 #ifndef ASSIMP_BUILD_NO_FIXINFACINGNORMALS_PROCESS
 #   include "PostProcessing/FixNormalsStep.h"
 #endif
@@ -253,9 +247,6 @@ void GetPostProcessingStepInstanceList(std::vector< BaseProcess* >& out)
 #endif
 #if (!defined ASSIMP_BUILD_NO_LIMITBONEWEIGHTS_PROCESS)
     out.push_back( new LimitBoneWeightsProcess());
-#endif
-#if (!defined ASSIMP_BUILD_NO_IMPROVECACHELOCALITY_PROCESS)
-    out.push_back( new ImproveCacheLocalityProcess());
 #endif
 #if (!defined ASSIMP_BUILD_NO_GENBOUNDINGBOXES_PROCESS)
     out.push_back(new GenBoundingBoxesProcess);
