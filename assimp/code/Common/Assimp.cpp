@@ -48,9 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/cimport.h>
 #include <assimp/importerdesc.h>
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/Importer.hpp>
-#include <assimp/LogStream.hpp>
 
 #include "CApi/CInterfaceIOWrapper.h"
 #include "Importer.h"
@@ -77,34 +75,14 @@ typedef BatchLoader::PropertyMap PropertyMap;
 #endif
 #endif
 
-/** Stores the LogStream objects for all active C log streams */
-struct mpred {
-    bool operator()(const aiLogStream &s0, const aiLogStream &s1) const {
-        return s0.callback < s1.callback && s0.user < s1.user;
-    }
-};
-
 #if defined(__has_warning)
 #if __has_warning("-Wordered-compare-function-pointers")
 #pragma GCC diagnostic pop
 #endif
 #endif
-typedef std::map<aiLogStream, Assimp::LogStream *, mpred> LogStreamMap;
-
-/** Stores the LogStream objects allocated by #aiGetPredefinedLogStream */
-typedef std::list<Assimp::LogStream *> PredefLogStreamMap;
-
-/** Local storage of all active log streams */
-static LogStreamMap gActiveLogStreams;
-
-/** Local storage of LogStreams allocated by #aiGetPredefinedLogStream */
-static PredefLogStreamMap gPredefinedStreams;
 
 /** Error message of the last failed import process */
 static std::string gLastErrorString;
-
-/** Verbose logging active or not? */
-static aiBool gVerboseLogging = false;
 
 /** will return all registered importers. */
 void GetImporterInstanceList(std::vector<BaseImporter *> &out);
@@ -119,46 +97,7 @@ static std::mutex gLogStreamMutex;
 #endif
 
 // ------------------------------------------------------------------------------------------------
-// Custom LogStream implementation for the C-API
-class LogToCallbackRedirector : public LogStream {
-public:
-    explicit LogToCallbackRedirector(const aiLogStream &s) :
-            stream(s) {
-        ai_assert(nullptr != s.callback);
-    }
-
-    ~LogToCallbackRedirector() {
-#ifndef ASSIMP_BUILD_SINGLETHREADED
-        std::lock_guard<std::mutex> lock(gLogStreamMutex);
-#endif
-        // (HACK) Check whether the 'stream.user' pointer points to a
-        // custom LogStream allocated by #aiGetPredefinedLogStream.
-        // In this case, we need to delete it, too. Of course, this
-        // might cause strange problems, but the chance is quite low.
-
-        PredefLogStreamMap::iterator it = std::find(gPredefinedStreams.begin(),
-                gPredefinedStreams.end(), (Assimp::LogStream *)stream.user);
-
-        if (it != gPredefinedStreams.end()) {
-            delete *it;
-            gPredefinedStreams.erase(it);
-        }
-    }
-
-    /** @copydoc LogStream::write */
-    void write(const char *message) {
-        stream.callback(message, stream.user);
-    }
-
-private:
-    aiLogStream stream;
-};
-
-// ------------------------------------------------------------------------------------------------
 void ReportSceneNotFoundError() {
-    ASSIMP_LOG_ERROR("Unable to find the Assimp::Importer for this aiScene. "
-                     "The C-API does not accept scenes produced by the C++ API and vice versa");
-
     ai_assert(false);
 }
 
@@ -349,99 +288,6 @@ ASSIMP_API const aiScene *aiApplyCustomizedPostProcessing(const aiScene *scene,
 void CallbackToLogRedirector(const char *msg, char *dt) {
     ai_assert(nullptr != msg);
     ai_assert(nullptr != dt);
-    LogStream *s = (LogStream *)dt;
-
-    s->write(msg);
-}
-
-// ------------------------------------------------------------------------------------------------
-ASSIMP_API aiLogStream aiGetPredefinedLogStream(aiDefaultLogStream pStream, const char *file) {
-    aiLogStream sout;
-
-    ASSIMP_BEGIN_EXCEPTION_REGION();
-    LogStream *stream = LogStream::createDefaultStream(pStream, file);
-    if (!stream) {
-        sout.callback = nullptr;
-        sout.user = nullptr;
-    } else {
-        sout.callback = &CallbackToLogRedirector;
-        sout.user = (char *)stream;
-    }
-    gPredefinedStreams.push_back(stream);
-    ASSIMP_END_EXCEPTION_REGION(aiLogStream);
-    return sout;
-}
-
-// ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiAttachLogStream(const aiLogStream *stream) {
-    ASSIMP_BEGIN_EXCEPTION_REGION();
-
-#ifndef ASSIMP_BUILD_SINGLETHREADED
-    std::lock_guard<std::mutex> lock(gLogStreamMutex);
-#endif
-
-    LogStream *lg = new LogToCallbackRedirector(*stream);
-    gActiveLogStreams[*stream] = lg;
-
-    if (DefaultLogger::isNullLogger()) {
-        DefaultLogger::create(nullptr, (gVerboseLogging == AI_TRUE ? Logger::VERBOSE : Logger::NORMAL));
-    }
-    DefaultLogger::get()->attachStream(lg);
-    ASSIMP_END_EXCEPTION_REGION(void);
-}
-
-// ------------------------------------------------------------------------------------------------
-ASSIMP_API aiReturn aiDetachLogStream(const aiLogStream *stream) {
-    ASSIMP_BEGIN_EXCEPTION_REGION();
-
-#ifndef ASSIMP_BUILD_SINGLETHREADED
-    std::lock_guard<std::mutex> lock(gLogStreamMutex);
-#endif
-    // find the log-stream associated with this data
-    LogStreamMap::iterator it = gActiveLogStreams.find(*stream);
-    // it should be there... else the user is playing fools with us
-    if (it == gActiveLogStreams.end()) {
-        return AI_FAILURE;
-    }
-    DefaultLogger::get()->detachStream(it->second);
-    delete it->second;
-
-    gActiveLogStreams.erase(it);
-
-    if (gActiveLogStreams.empty()) {
-        DefaultLogger::kill();
-    }
-    ASSIMP_END_EXCEPTION_REGION(aiReturn);
-    return AI_SUCCESS;
-}
-
-// ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiDetachAllLogStreams(void) {
-    ASSIMP_BEGIN_EXCEPTION_REGION();
-#ifndef ASSIMP_BUILD_SINGLETHREADED
-    std::lock_guard<std::mutex> lock(gLogStreamMutex);
-#endif
-    Logger *logger(DefaultLogger::get());
-    if (nullptr == logger) {
-        return;
-    }
-
-    for (LogStreamMap::iterator it = gActiveLogStreams.begin(); it != gActiveLogStreams.end(); ++it) {
-        logger->detachStream(it->second);
-        delete it->second;
-    }
-    gActiveLogStreams.clear();
-    DefaultLogger::kill();
-
-    ASSIMP_END_EXCEPTION_REGION(void);
-}
-
-// ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiEnableVerboseLogging(aiBool d) {
-    if (!DefaultLogger::isNullLogger()) {
-        DefaultLogger::get()->setLogSeverity((d == AI_TRUE ? Logger::VERBOSE : Logger::NORMAL));
-    }
-    gVerboseLogging = d;
 }
 
 // ------------------------------------------------------------------------------------------------
