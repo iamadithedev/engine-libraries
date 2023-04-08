@@ -52,7 +52,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ConvertToLHProcess.h"
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 
 using namespace Assimp;
 
@@ -90,7 +89,6 @@ bool MakeLeftHandedProcess::IsActive(unsigned int pFlags) const {
 void MakeLeftHandedProcess::Execute(aiScene *pScene) {
     // Check for an existent root node to proceed
     ai_assert(pScene->mRootNode != nullptr);
-    ASSIMP_LOG_DEBUG("MakeLeftHandedProcess begin");
 
     // recursively convert all the nodes
     ProcessNode(pScene->mRootNode, aiMatrix4x4());
@@ -113,7 +111,6 @@ void MakeLeftHandedProcess::Execute(aiScene *pScene) {
             ProcessAnimation(nodeAnim);
         }
     }
-    ASSIMP_LOG_DEBUG("MakeLeftHandedProcess finished");
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -142,7 +139,6 @@ void MakeLeftHandedProcess::ProcessNode(aiNode *pNode, const aiMatrix4x4 &pParen
 // Converts a single mesh to left handed coordinates.
 void MakeLeftHandedProcess::ProcessMesh(aiMesh *pMesh) {
     if (nullptr == pMesh) {
-        ASSIMP_LOG_ERROR("Nullptr to mesh found.");
         return;
     }
     // mirror positions, normals and stuff along the Z axis
@@ -193,7 +189,6 @@ void MakeLeftHandedProcess::ProcessMesh(aiMesh *pMesh) {
 // Converts a single material to left handed coordinates.
 void MakeLeftHandedProcess::ProcessMaterial(aiMaterial *_mat) {
     if (nullptr == _mat) {
-        ASSIMP_LOG_ERROR("Nullptr to aiMaterial found.");
         return;
     }
 
@@ -252,13 +247,11 @@ bool FlipUVsProcess::IsActive(unsigned int pFlags) const {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void FlipUVsProcess::Execute(aiScene *pScene) {
-    ASSIMP_LOG_DEBUG("FlipUVsProcess begin");
     for (unsigned int i = 0; i < pScene->mNumMeshes; ++i)
         ProcessMesh(pScene->mMeshes[i]);
 
     for (unsigned int i = 0; i < pScene->mNumMaterials; ++i)
         ProcessMaterial(pScene->mMaterials[i]);
-    ASSIMP_LOG_DEBUG("FlipUVsProcess finished");
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -268,7 +261,6 @@ void FlipUVsProcess::ProcessMaterial(aiMaterial *_mat) {
     for (unsigned int a = 0; a < mat->mNumProperties; ++a) {
         aiMaterialProperty *prop = mat->mProperties[a];
         if (!prop) {
-            ASSIMP_LOG_VERBOSE_DEBUG("Property is null");
             continue;
         }
 
@@ -306,10 +298,8 @@ bool FlipWindingOrderProcess::IsActive(unsigned int pFlags) const {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void FlipWindingOrderProcess::Execute(aiScene *pScene) {
-    ASSIMP_LOG_DEBUG("FlipWindingOrderProcess begin");
     for (unsigned int i = 0; i < pScene->mNumMeshes; ++i)
         ProcessMesh(pScene->mMeshes[i]);
-    ASSIMP_LOG_DEBUG("FlipWindingOrderProcess finished");
 }
 
 // ------------------------------------------------------------------------------------------------
