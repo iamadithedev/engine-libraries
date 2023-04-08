@@ -46,7 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // internal headers of the post-processing framework
 #include "ProcessHelper.h"
 #include "DeboneProcess.h"
-#include <stdio.h>
 
 using namespace Assimp;
 
@@ -71,7 +70,6 @@ void DeboneProcess::SetupProperties(const Importer* pImp) {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void DeboneProcess::Execute( aiScene* pScene) {
-    ASSIMP_LOG_DEBUG("DeboneProcess begin");
 
     if(!pScene->mNumMeshes) {
         return;
@@ -110,7 +108,7 @@ void DeboneProcess::Execute( aiScene* pScene) {
 
             // mesh was split
             if(!newMeshes.empty())  {
-                unsigned int out = 0, in = srcMesh->mNumBones;
+                unsigned int out = 0;
 
                 // store new meshes and indices of the new meshes
                 for(unsigned int b=0;b<newMeshes.size();b++)    {
@@ -123,10 +121,6 @@ void DeboneProcess::Execute( aiScene* pScene) {
                     meshes.push_back(newMeshes[b].first);
 
                     out+=newMeshes[b].first->mNumBones;
-                }
-
-                if(!DefaultLogger::isNullLogger()) {
-                    ASSIMP_LOG_INFO("Removed %u bones. Input bones:", in - out, ". Output bones: ", out);
                 }
 
                 // and destroy the source mesh. It should be completely contained inside the new submeshes
@@ -147,8 +141,6 @@ void DeboneProcess::Execute( aiScene* pScene) {
         // recurse through all nodes and translate the node's mesh indices to fit the new mesh array
         UpdateNode( pScene->mRootNode);
     }
-
-    ASSIMP_LOG_DEBUG("DeboneProcess end");
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -180,9 +172,11 @@ bool DeboneProcess::ConsiderMesh(const aiMesh* pMesh) {
             if (w >= mThreshold)   {
                 if (vertexBones[vid] != cUnowned) {
                     //double entry
-                    if(vertexBones[vid]==i)  {
-                        ASSIMP_LOG_WARN("Encountered double entry in bone weights");
-                    } else  {
+                    if(vertexBones[vid]==i)
+                    {
+                    }
+                    else
+                    {
                         //TODO: track attraction in order to break tie
                         vertexBones[vid] = cCoowned;
                     }
@@ -255,7 +249,6 @@ void DeboneProcess::SplitMesh( const aiMesh* pMesh, std::vector< std::pair< aiMe
                 if(vertexBones[vid]!=cUnowned)  {
                     if(vertexBones[vid]==i) //double entry
                     {
-                        ASSIMP_LOG_WARN("Encountered double entry in bone weights");
                     }
                     else //TODO: track attraction in order to break tie
                     {
