@@ -50,10 +50,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXTokenizer.h"
 #include "FBXUtil.h"
 #include <assimp/defs.h>
-#include <stdint.h>
 #include <assimp/Exceptional.h>
 #include <assimp/ByteSwapper.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/StringUtils.h>
 
 namespace Assimp {
@@ -434,7 +432,6 @@ bool ReadScope(TokenList& output_tokens, const char* input, const char*& cursor,
 void TokenizeBinary(TokenList& output_tokens, const char* input, size_t length)
 {
 	ai_assert(input);
-	ASSIMP_LOG_DEBUG("Tokenizing binary FBX file");
 
     if(length < 0x1b) {
         TokenizeError("file is too short",0);
@@ -459,7 +456,7 @@ void TokenizeBinary(TokenList& output_tokens, const char* input, size_t length)
 	/*Result ignored*/ ReadByte(input, cursor, input + length);
 	/*Result ignored*/ ReadByte(input, cursor, input + length);
 	const uint32_t version = ReadWord(input, cursor, input + length);
-	ASSIMP_LOG_DEBUG("FBX version: ", version);
+
 	const bool is64bits = version >= 7500;
     const char *end = input + length;
     try
