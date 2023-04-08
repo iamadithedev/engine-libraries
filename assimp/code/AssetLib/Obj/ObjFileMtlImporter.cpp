@@ -48,7 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/fast_atof.h>
 #include <assimp/material.h>
 #include <stdlib.h>
-#include <assimp/DefaultLogger.hpp>
 
 namespace Assimp {
 
@@ -434,7 +433,6 @@ void ObjFileMtlImporter::getTexture() {
         out = & m_pModel->mCurrentMaterial->textureRMA;
         clampIndex = ObjFile::Material::TextureRMAType;
     } else {
-        ASSIMP_LOG_ERROR("OBJ/MTL: Encountered unknown texture type");
         return;
     }
 

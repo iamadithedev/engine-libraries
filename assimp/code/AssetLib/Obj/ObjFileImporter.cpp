@@ -49,7 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/ai_assert.h>
 #include <assimp/importerdesc.h>
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/ObjMaterial.h>
 #include <memory>
@@ -138,7 +137,7 @@ void ObjFileImporter::InternReadFile(const std::string &file, aiScene *pScene, I
     }
 
     // parse the file into a temporary representation
-    ObjFileParser parser(streamedBuffer, modelName, pIOHandler, m_progress, file);
+    ObjFileParser parser(streamedBuffer, modelName, pIOHandler, file);
 
     // And create the proper return structures out of it
     CreateDataFromImport(parser.GetModel(), pScene);
@@ -568,7 +567,6 @@ void ObjFileImporter::createMaterials(const ObjFile::Model *pModel, aiScene *pSc
     const unsigned int numMaterials = (unsigned int)pModel->mMaterialLib.size();
     pScene->mNumMaterials = 0;
     if (pModel->mMaterialLib.empty()) {
-        ASSIMP_LOG_DEBUG("OBJ: no materials specified");
         return;
     }
 
@@ -600,7 +598,6 @@ void ObjFileImporter::createMaterials(const ObjFile::Model *pModel, aiScene *pSc
             break;
         default:
             sm = aiShadingMode_Gouraud;
-            ASSIMP_LOG_ERROR("OBJ: unexpected illumination model (0-2 recognized)");
         }
 
         mat->AddProperty<int>(&sm, 1, AI_MATKEY_SHADING_MODEL);
