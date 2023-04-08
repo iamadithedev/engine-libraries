@@ -640,24 +640,9 @@ const aiScene* Importer::ApplyPostProcessing(unsigned int pFlags) {
     // In debug builds: run basic flag validation
     ai_assert(_ValidateFlags(pFlags));
 
-#ifdef ASSIMP_BUILD_DEBUG
-    if (pimpl->bExtraVerbose)
-    {
-#ifdef ASSIMP_BUILD_NO_VALIDATEDS_PROCESS
-        ASSIMP_LOG_ERROR("Verbose Import is not available due to build settings");
-#endif  // no validation
-        pFlags |= aiProcess_ValidateDataStructure;
-    }
-#else
-    if (pimpl->bExtraVerbose) {
-        ASSIMP_LOG_WARN("Not a debug build, ignoring extra verbose setting");
-    }
-#endif // ! DEBUG
-
-    std::unique_ptr<Profiler> profiler(GetPropertyInteger(AI_CONFIG_GLOB_MEASURE_TIME, 0) ? new Profiler() : nullptr);
     for( unsigned int a = 0; a < pimpl->mPostProcessingSteps.size(); a++)   {
         BaseProcess* process = pimpl->mPostProcessingSteps[a];
-        pimpl->mProgressHandler->UpdatePostProcess(static_cast<int>(a), static_cast<int>(pimpl->mPostProcessingSteps.size()) );
+
         if( process->IsActive( pFlags)) {
             process->ExecuteOnScene ( this );
         }
@@ -665,8 +650,6 @@ const aiScene* Importer::ApplyPostProcessing(unsigned int pFlags) {
             break;
         }
     }
-    pimpl->mProgressHandler->UpdatePostProcess( static_cast<int>(pimpl->mPostProcessingSteps.size()),
-        static_cast<int>(pimpl->mPostProcessingSteps.size()) );
 
     // update private scene flags
     if( pimpl->mScene ) {
@@ -675,7 +658,6 @@ const aiScene* Importer::ApplyPostProcessing(unsigned int pFlags) {
 
     // clear any data allocated by post-process steps
     pimpl->mPPShared->Clean();
-    ASSIMP_LOG_INFO("Leaving post processing pipeline");
 
     ASSIMP_END_EXCEPTION_REGION(const aiScene*);
 
@@ -698,60 +680,10 @@ const aiScene* Importer::ApplyCustomizedPostProcessing( BaseProcess *rootProcess
         return pimpl->mScene;
     }
 
-    // In debug builds: run basic flag validation
-    ASSIMP_LOG_INFO( "Entering customized post processing pipeline" );
-
-#ifndef ASSIMP_BUILD_NO_VALIDATEDS_PROCESS
-    // The ValidateDS process plays an exceptional role. It isn't contained in the global
-    // list of post-processing steps, so we need to call it manually.
-    if ( requestValidation )
-    {
-        ValidateDSProcess ds;
-        ds.ExecuteOnScene( this );
-        if ( !pimpl->mScene ) {
-            return nullptr;
-        }
-    }
-#endif // no validation
-#ifdef ASSIMP_BUILD_DEBUG
-    if ( pimpl->bExtraVerbose )
-    {
-#ifdef ASSIMP_BUILD_NO_VALIDATEDS_PROCESS
-        ASSIMP_LOG_ERROR( "Verbose Import is not available due to build settings" );
-#endif  // no validation
-    }
-#else
-    if ( pimpl->bExtraVerbose ) {
-        ASSIMP_LOG_WARN( "Not a debug build, ignoring extra verbose setting" );
-    }
-#endif // ! DEBUG
-
-    std::unique_ptr<Profiler> profiler(GetPropertyInteger(AI_CONFIG_GLOB_MEASURE_TIME, 0) ? new Profiler() : nullptr);
-
-    if ( profiler ) {
-        profiler->BeginRegion( "postprocess" );
-    }
-
     rootProcess->ExecuteOnScene( this );
-
-    if ( profiler ) {
-        profiler->EndRegion( "postprocess" );
-    }
-
-    // If the extra verbose mode is active, execute the ValidateDataStructureStep again - after each step
-    if ( pimpl->bExtraVerbose || requestValidation  ) {
-        ASSIMP_LOG_DEBUG( "Verbose Import: revalidating data structures" );
-
-        ValidateDSProcess ds;
-        ds.ExecuteOnScene( this );
-        if ( !pimpl->mScene ) {
-            ASSIMP_LOG_ERROR( "Verbose Import: failed to revalidate data structures" );
-        }
-    }
 
     // clear any data allocated by post-process steps
     pimpl->mPPShared->Clean();
-    ASSIMP_LOG_INFO( "Leaving customized post processing pipeline" );
 
     ASSIMP_END_EXCEPTION_REGION( const aiScene* );
 
