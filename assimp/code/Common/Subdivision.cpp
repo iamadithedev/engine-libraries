@@ -48,8 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "PostProcessing/ProcessHelper.h"
 
-#include <stdio.h>
-
 #include <unordered_map>
 
 using namespace Assimp;
@@ -174,7 +172,6 @@ void CatmullClarkSubdivider::Subdivide(
         aiMesh *i = smesh[s];
         // FIX - mPrimitiveTypes might not yet be initialized
         if (i->mPrimitiveTypes && (i->mPrimitiveTypes & (aiPrimitiveType_LINE | aiPrimitiveType_POINT)) == i->mPrimitiveTypes) {
-            ASSIMP_LOG_VERBOSE_DEBUG("Catmull-Clark Subdivider: Skipping pure line/point mesh");
 
             if (discard_input) {
                 out[s] = i;
@@ -196,7 +193,6 @@ void CatmullClarkSubdivider::Subdivide(
     ai_assert(inmeshes.size() == outmeshes.size());
     ai_assert(inmeshes.size() == maptbl.size());
     if (inmeshes.empty()) {
-        ASSIMP_LOG_WARN("Catmull-Clark Subdivider: Pure point/line scene, I can't do anything");
         return;
     }
     InternSubdivide(&inmeshes.front(), inmeshes.size(), &outmeshes.front(), num);
@@ -334,14 +330,6 @@ void CatmullClarkSubdivider::InternSubdivide(
                 }
                 (*it).second.edge_point *= 1.f / ((*it).second.ref + 2.f);
             }
-
-            if (bad_cnt) {
-                // Report the number of bad edges. bad edges are referenced by less than two
-                // faces in the mesh. They occur at outer model boundaries in non-closed
-                // shapes.
-                ASSIMP_LOG_VERBOSE_DEBUG("Catmull-Clark Subdivider: got ", bad_cnt, " bad edges touching only one face (totally ",
-                        static_cast<unsigned int>(edges.size()), " edges). ");
-            }
         }
 
         // ---------------------------------------------------------------------
@@ -399,9 +387,6 @@ void CatmullClarkSubdivider::InternSubdivide(
                                 }
                             }
                             ai_assert(haveit);
-                            if (!haveit) {
-                                ASSIMP_LOG_VERBOSE_DEBUG("Catmull-Clark Subdivider: Index not used");
-                            }
                             break;
                         }
                     }
@@ -555,9 +540,6 @@ void CatmullClarkSubdivider::InternSubdivide(
 
                                 // this invariant *must* hold if the vertex-to-face adjacency table is valid
                                 ai_assert(haveit);
-                                if (!haveit) {
-                                    ASSIMP_LOG_WARN("OBJ: no name for material library specified.");
-                                }
                             }
 
                             const float div = static_cast<float>(cnt), divsq = 1.f / (div * div);
