@@ -40,10 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ArmaturePopulate.h"
 
 #include <assimp/BaseImporter.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <iostream>
 
 namespace Assimp {
 
@@ -72,13 +70,9 @@ void ArmaturePopulate::Execute(aiScene *out) {
 
     BuildBoneStack(out->mRootNode, out->mRootNode, out, bones, bone_stack, nodes);
 
-    ASSIMP_LOG_DEBUG("Bone stack size: ", bone_stack.size());
-
     for (std::pair<aiBone *, aiNode *> kvp : bone_stack) {
         aiBone *bone = kvp.first;
         aiNode *bone_node = kvp.second;
-        ASSIMP_LOG_VERBOSE_DEBUG("active node lookup: ", bone->mName.C_Str());
-        // lcl transform grab - done in generate_nodes :)
 
         // bone->mOffsetMatrix = bone_node->mTransformation;
         aiNode *armature = GetArmatureRoot(bone_node, bones);
@@ -176,17 +170,13 @@ void ArmaturePopulate::BuildBoneStack(aiNode *,
         if (node == nullptr) {
             node_stack.clear();
             BuildNodeList(root_node, node_stack);
-            ASSIMP_LOG_VERBOSE_DEBUG("Resetting bone stack: nullptr element ", bone->mName.C_Str());
 
             node = GetNodeFromStack(bone->mName, node_stack);
 
             if (nullptr == node) {
-                ASSIMP_LOG_ERROR("serious import issue node for bone was not detected");
                 continue;
             }
         }
-
-        ASSIMP_LOG_VERBOSE_DEBUG("Successfully added bone[", bone->mName.C_Str(), "] to stack and bone node is: ", node->mName.C_Str());
 
         bone_stack.insert(std::pair<aiBone *, aiNode *>(bone, node));
     }
@@ -200,14 +190,11 @@ aiNode *ArmaturePopulate::GetArmatureRoot(aiNode *bone_node,
                                           std::vector<aiBone *> &bone_list) {
     while (nullptr != bone_node) {
         if (!IsBoneNode(bone_node->mName, bone_list)) {
-            ASSIMP_LOG_VERBOSE_DEBUG("GetArmatureRoot() Found valid armature: ", bone_node->mName.C_Str());
             return bone_node;
         }
 
         bone_node = bone_node->mParent;
     }
-
-    ASSIMP_LOG_ERROR("GetArmatureRoot() can't find armature!");
 
     return nullptr;
 }
@@ -244,15 +231,12 @@ aiNode *ArmaturePopulate::GetNodeFromStack(const aiString &node_name,
     }
 
     if (found != nullptr) {
-        ASSIMP_LOG_INFO("Removed node from stack: ", found->mName.C_Str());
+
         // now pop the element from the node list
         nodes.erase(iter);
 
         return found;
     }
-
-    // unique names can cause this problem
-    ASSIMP_LOG_ERROR("[Serious] GetNodeFromStack() can't find node from stack!");
 
     return nullptr;
 }
