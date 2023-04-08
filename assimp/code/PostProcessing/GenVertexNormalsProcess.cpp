@@ -80,7 +80,6 @@ void GenVertexNormalsProcess::SetupProperties(const Importer *pImp) {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void GenVertexNormalsProcess::Execute(aiScene *pScene) {
-    ASSIMP_LOG_DEBUG("GenVertexNormalsProcess begin");
 
     if (pScene->mFlags & AI_SCENE_FLAGS_NON_VERBOSE_FORMAT) {
         throw DeadlyImportError("Post-processing order mismatch: expecting pseudo-indexed (\"verbose\") vertices here");
@@ -90,14 +89,6 @@ void GenVertexNormalsProcess::Execute(aiScene *pScene) {
     for (unsigned int a = 0; a < pScene->mNumMeshes; ++a) {
         if (GenMeshVertexNormals(pScene->mMeshes[a], a))
             bHas = true;
-    }
-
-    if (bHas) {
-        ASSIMP_LOG_INFO("GenVertexNormalsProcess finished. "
-                        "Vertex normals have been calculated");
-    } else {
-        ASSIMP_LOG_DEBUG("GenVertexNormalsProcess finished. "
-                         "Normals are already there");
     }
 }
 
@@ -115,7 +106,6 @@ bool GenVertexNormalsProcess::GenMeshVertexNormals(aiMesh *pMesh, unsigned int m
     // triangles or higher-order polygons the normal vectors
     // are undefined.
     if (!(pMesh->mPrimitiveTypes & (aiPrimitiveType_TRIANGLE | aiPrimitiveType_POLYGON))) {
-        ASSIMP_LOG_INFO("Normal vectors are undefined for line and point meshes");
         return false;
     }
 

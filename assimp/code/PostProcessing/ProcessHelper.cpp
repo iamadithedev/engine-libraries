@@ -59,7 +59,6 @@ void ConvertListToStrings(const std::string &in, std::list<std::string> &out) {
             while (*s != '\'') {
                 ++s;
                 if (*s == '\0') {
-                    ASSIMP_LOG_ERROR("ConvertListToString: String list is ill-formatted");
                     return;
                 }
             }

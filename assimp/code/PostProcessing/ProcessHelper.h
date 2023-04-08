@@ -48,7 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/mesh.h>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 
 #include "Common/BaseProcess.h"
 #include <assimp/ParsingUtils.h>
@@ -342,7 +341,6 @@ class ComputeSpatialSortProcess : public BaseProcess {
 
     void Execute(aiScene *pScene) {
         typedef std::pair<SpatialSort, ai_real> _Type;
-        ASSIMP_LOG_DEBUG("Generate spatially-sorted vertex cache");
 
         std::vector<_Type> *p = new std::vector<_Type>(pScene->mNumMeshes);
         std::vector<_Type>::iterator it = p->begin();
