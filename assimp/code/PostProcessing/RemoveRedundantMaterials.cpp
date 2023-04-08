@@ -81,8 +81,6 @@ void RemoveRedundantMatsProcess::SetupProperties(const Importer* pImp)
 // Executes the post processing step on the given imported data.
 void RemoveRedundantMatsProcess::Execute( aiScene* pScene)
 {
-    ASSIMP_LOG_DEBUG("RemoveRedundantMatsProcess begin");
-
     unsigned int redundantRemoved = 0, unreferencedRemoved = 0;
     if (pScene->mNumMaterials)
     {
@@ -116,7 +114,6 @@ void RemoveRedundantMatsProcess::Execute( aiScene* pScene)
 
                         // Keep this material even if no mesh references it
                         abReferenced[i] = true;
-                        ASSIMP_LOG_VERBOSE_DEBUG( "Found positive match in exclusion list: \'", name.data, "\'");
                     }
                 }
             }
@@ -204,14 +201,5 @@ void RemoveRedundantMatsProcess::Execute( aiScene* pScene)
         // delete temporary storage
         delete[] aiHashes;
         delete[] aiMappingTable;
-    }
-    if (redundantRemoved == 0 && unreferencedRemoved == 0)
-    {
-        ASSIMP_LOG_DEBUG("RemoveRedundantMatsProcess finished ");
-    }
-    else
-    {
-        ASSIMP_LOG_INFO("RemoveRedundantMatsProcess finished. Removed ", redundantRemoved, " redundant and ",
-            unreferencedRemoved, " unused materials.");
     }
 }
