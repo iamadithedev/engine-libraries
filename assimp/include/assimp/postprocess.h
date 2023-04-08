@@ -248,21 +248,6 @@ enum aiPostProcessSteps
     aiProcess_LimitBoneWeights = 0x200,
 
     // -------------------------------------------------------------------------
-    /** <hr>Reorders triangles for better vertex cache locality.
-     *
-     * The step tries to improve the ACMR (average post-transform vertex cache
-     * miss ratio) for all meshes. The implementation runs in O(n) and is
-     * roughly based on the 'tipsify' algorithm (see <a href="
-     * http://www.cs.princeton.edu/gfx/pubs/Sander_2007_%3ETR/tipsy.pdf">this
-     * paper</a>).
-     *
-     * If you intend to render huge models in hardware, this step might
-     * be of interest to you. The <tt>#AI_CONFIG_PP_ICL_PTCACHE_SIZE</tt>
-     * importer property can be used to fine-tune the cache optimization.
-     */
-    aiProcess_ImproveCacheLocality = 0x800,
-
-    // -------------------------------------------------------------------------
     /** <hr>Searches for redundant/unreferenced materials and removes them.
      *
      * This is especially useful in combination with the
