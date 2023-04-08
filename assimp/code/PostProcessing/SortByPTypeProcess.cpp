@@ -112,11 +112,8 @@ void UpdateNodes(const std::vector<unsigned int> &replaceMeshIndex, aiNode *node
 // Executes the post processing step on the given imported data.
 void SortByPTypeProcess::Execute(aiScene *pScene) {
     if (0 == pScene->mNumMeshes) {
-        ASSIMP_LOG_DEBUG("SortByPTypeProcess skipped, there are no meshes");
         return;
     }
-
-    ASSIMP_LOG_DEBUG("SortByPTypeProcess begin");
 
     unsigned int aiNumMeshesPerPType[4] = { 0, 0, 0, 0 };
 
@@ -419,15 +416,4 @@ void SortByPTypeProcess::Execute(aiScene *pScene) {
         pScene->mMeshes = new aiMesh *[pScene->mNumMeshes];
     }
     ::memcpy(pScene->mMeshes, &outMeshes[0], pScene->mNumMeshes * sizeof(void *));
-
-    if (!DefaultLogger::isNullLogger()) {
-        char buffer[1024];
-        ::ai_snprintf(buffer, 1024, "Points: %u%s, Lines: %u%s, Triangles: %u%s, Polygons: %u%s (Meshes, X = removed)",
-                aiNumMeshesPerPType[0], ((mConfigRemoveMeshes & aiPrimitiveType_POINT) ? "X" : ""),
-                aiNumMeshesPerPType[1], ((mConfigRemoveMeshes & aiPrimitiveType_LINE) ? "X" : ""),
-                aiNumMeshesPerPType[2], ((mConfigRemoveMeshes & aiPrimitiveType_TRIANGLE) ? "X" : ""),
-                aiNumMeshesPerPType[3], ((mConfigRemoveMeshes & aiPrimitiveType_POLYGON) ? "X" : ""));
-        ASSIMP_LOG_INFO(buffer);
-        ASSIMP_LOG_DEBUG("SortByPTypeProcess finished");
-    }
 }

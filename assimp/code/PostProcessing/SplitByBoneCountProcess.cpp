@@ -46,7 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // internal headers of the post-processing framework
 #include "SplitByBoneCountProcess.h"
 #include <assimp/postprocess.h>
-#include <assimp/DefaultLogger.hpp>
 
 #include <limits>
 #include <assimp/TinyFormatter.h>
@@ -77,7 +76,6 @@ void SplitByBoneCountProcess::SetupProperties(const Importer* pImp) {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void SplitByBoneCountProcess::Execute( aiScene* pScene) {
-    ASSIMP_LOG_DEBUG("SplitByBoneCountProcess begin");
 
     // early out
     bool isNecessary = false;
@@ -88,7 +86,6 @@ void SplitByBoneCountProcess::Execute( aiScene* pScene) {
         }
 
     if( !isNecessary ) {
-        ASSIMP_LOG_DEBUG("SplitByBoneCountProcess early-out: no meshes with more than ", mMaxBoneCount, " bones." );
         return;
     }
 
@@ -130,8 +127,6 @@ void SplitByBoneCountProcess::Execute( aiScene* pScene) {
 
     // recurse through all nodes and translate the node's mesh indices to fit the new mesh array
     UpdateNode( pScene->mRootNode);
-
-    ASSIMP_LOG_DEBUG( "SplitByBoneCountProcess end: split ", mSubMeshIndices.size(), " meshes into ", meshes.size(), " submeshes." );
 }
 
 // ------------------------------------------------------------------------------------------------

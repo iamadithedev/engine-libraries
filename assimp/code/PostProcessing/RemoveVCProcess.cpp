@@ -47,7 +47,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "RemoveVCProcess.h"
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 
 using namespace Assimp;
 
@@ -134,7 +133,7 @@ bool UpdateNodeGraph(aiNode* node,std::list<aiNode*>& childsOfParent,bool root)
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void RemoveVCProcess::Execute(aiScene *pScene) {
-    ASSIMP_LOG_DEBUG("RemoveVCProcess begin");
+
     bool bHas = false; //,bMasked = false;
 
     mScene = pScene;
@@ -202,17 +201,10 @@ void RemoveVCProcess::Execute(aiScene *pScene) {
     // now check whether the result is still a full scene
     if (!pScene->mNumMeshes || !pScene->mNumMaterials) {
         pScene->mFlags |= AI_SCENE_FLAGS_INCOMPLETE;
-        ASSIMP_LOG_DEBUG("Setting AI_SCENE_FLAGS_INCOMPLETE flag");
 
         // If we have no meshes anymore we should also clear another flag ...
         if (!pScene->mNumMeshes)
             pScene->mFlags &= ~AI_SCENE_FLAGS_NON_VERBOSE_FORMAT;
-    }
-
-    if (bHas) {
-        ASSIMP_LOG_INFO("RemoveVCProcess finished. Data structure cleanup has been done.");
-    } else {
-        ASSIMP_LOG_DEBUG("RemoveVCProcess finished. Nothing to be done ...");
     }
 }
 
@@ -220,9 +212,6 @@ void RemoveVCProcess::Execute(aiScene *pScene) {
 // Setup configuration properties for the step
 void RemoveVCProcess::SetupProperties(const Importer *pImp) {
     configDeleteFlags = pImp->GetPropertyInteger(AI_CONFIG_PP_RVC_FLAGS, 0x0);
-    if (!configDeleteFlags) {
-        ASSIMP_LOG_WARN("RemoveVCProcess: AI_CONFIG_PP_RVC_FLAGS is zero.");
-    }
 }
 
 // ------------------------------------------------------------------------------------------------
