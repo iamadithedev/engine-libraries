@@ -45,8 +45,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/ParsingUtils.h>
 #include "ProcessHelper.h"
 
-#include <fstream>
-
 using namespace Assimp;
 
 bool EmbedTexturesProcess::IsActive(unsigned int pFlags) const {
@@ -87,8 +85,6 @@ void EmbedTexturesProcess::Execute(aiScene* pScene) {
             }
         }
     }
-
-    ASSIMP_LOG_INFO("EmbedTexturesProcess finished. Embedded ", embeddedTexturesCount, " textures." );
 }
 
 bool EmbedTexturesProcess::addTexture(aiScene *pScene, const std::string &path) const {
@@ -97,7 +93,7 @@ bool EmbedTexturesProcess::addTexture(aiScene *pScene, const std::string &path) 
 
     // Test path directly
     if (!mIOHandler->Exists(imagePath)) {
-        ASSIMP_LOG_WARN("EmbedTexturesProcess: Cannot find image: ", imagePath, ". Will try to find it in root folder.");
+
 
         // Test path in root path
         imagePath = mRootPath + path;
@@ -105,14 +101,12 @@ bool EmbedTexturesProcess::addTexture(aiScene *pScene, const std::string &path) 
             // Test path basename in root path
             imagePath = mRootPath + path.substr(path.find_last_of("\\/") + 1u);
             if (!mIOHandler->Exists(imagePath)) {
-                ASSIMP_LOG_ERROR("EmbedTexturesProcess: Unable to embed texture: ", path, ".");
                 return false;
             }
         }
     }
     IOStream* pFile = mIOHandler->Open(imagePath);
     if (pFile == nullptr) {
-        ASSIMP_LOG_ERROR("EmbedTexturesProcess: Unable to embed texture: ", path, ".");
         return false;
     }
     imageSize = pFile->FileSize();
