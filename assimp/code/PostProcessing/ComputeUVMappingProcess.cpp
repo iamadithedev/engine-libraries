@@ -85,7 +85,6 @@ inline unsigned int FindEmptyUVChannel (aiMesh* mesh)
     for (unsigned int m = 0; m < AI_MAX_NUMBER_OF_TEXTURECOORDS;++m)
         if (!mesh->mTextureCoords[m])return m;
 
-    ASSIMP_LOG_ERROR("Unable to compute UV coordinates, no free UV slot found");
     return UINT_MAX;
 }
 
@@ -368,17 +367,8 @@ void ComputeUVMappingProcess::ComputePlaneMapping(aiMesh* mesh,const aiVector3D&
 }
 
 // ------------------------------------------------------------------------------------------------
-void ComputeUVMappingProcess::ComputeBoxMapping( aiMesh*, aiVector3D* )
-{
-    ASSIMP_LOG_ERROR("Mapping type currently not implemented");
-}
-
-// ------------------------------------------------------------------------------------------------
 void ComputeUVMappingProcess::Execute( aiScene* pScene)
 {
-    ASSIMP_LOG_DEBUG("GenUVCoordsProcess begin");
-    char buffer[1024];
-
     if (pScene->mFlags & AI_SCENE_FLAGS_NON_VERBOSE_FORMAT)
         throw DeadlyImportError("Post-processing order mismatch: expecting pseudo-indexed (\"verbose\") vertices here");
 
@@ -398,15 +388,6 @@ void ComputeUVMappingProcess::Execute( aiScene* pScene)
                 aiTextureMapping& mapping = *((aiTextureMapping*)prop->mData);
                 if (aiTextureMapping_UV != mapping)
                 {
-                    if (!DefaultLogger::isNullLogger())
-                    {
-                        ai_snprintf(buffer, 1024, "Found non-UV mapped texture (%s,%u). Mapping type: %s",
-                            aiTextureTypeToString((aiTextureType)prop->mSemantic),prop->mIndex,
-                            MappingTypeToString(mapping));
-
-                        ASSIMP_LOG_INFO(buffer);
-                    }
-
                     if (aiTextureMapping_OTHER == mapping)
                         continue;
 
@@ -469,12 +450,6 @@ void ComputeUVMappingProcess::Execute( aiScene* pScene)
                             default:
                                 ai_assert(false);
                             }
-                            if (m && idx != outIdx)
-                            {
-                                ASSIMP_LOG_WARN("UV index mismatch. Not all meshes assigned to "
-                                    "this material have equal numbers of UV channels. The UV index stored in  "
-                                    "the material structure does therefore not apply for all meshes. ");
-                            }
                             idx = outIdx;
                         }
                         info.uv = idx;
@@ -488,5 +463,4 @@ void ComputeUVMappingProcess::Execute( aiScene* pScene)
             }
         }
     }
-    ASSIMP_LOG_DEBUG("GenUVCoordsProcess finished");
 }
