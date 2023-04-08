@@ -365,7 +365,6 @@ void PretransformVertices::BuildWCSMeshes(std::vector<aiMesh *> &out, aiMesh **i
 			}
 			if (node->mMeshes[i] < numIn) {
 				// Worst case. Need to operate on a full copy of the mesh
-				ASSIMP_LOG_INFO("PretransformVertices: Copying mesh due to mismatching transforms");
 				aiMesh *ntz;
 
 				const unsigned int tmp = mesh->mNumBones; //
@@ -412,15 +411,10 @@ void PretransformVertices::BuildMeshRefCountArray(const aiNode *nd, unsigned int
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void PretransformVertices::Execute(aiScene *pScene) {
-	ASSIMP_LOG_DEBUG("PretransformVerticesProcess begin");
 
 	// Return immediately if we have no meshes
 	if (!pScene->mNumMeshes)
 		return;
-
-	const unsigned int iOldMeshes = pScene->mNumMeshes;
-	const unsigned int iOldAnimationChannels = pScene->mNumAnimations;
-	const unsigned int iOldNodes = CountNodes(pScene->mRootNode);
 
 	if (configTransform) {
 		pScene->mRootNode->mTransformation = configTransformation * pScene->mRootNode->mTransformation;
@@ -668,15 +662,5 @@ void PretransformVertices::Execute(aiScene *pScene) {
 				m->mVertices[i] = (m->mVertices[i] - d) / div;
 			}
 		}
-	}
-
-	// print statistics
-	if (!DefaultLogger::isNullLogger()) {
-		ASSIMP_LOG_DEBUG("PretransformVerticesProcess finished");
-
-		ASSIMP_LOG_INFO("Removed ", iOldNodes, " nodes and ", iOldAnimationChannels, " animation channels (",
-				CountNodes(pScene->mRootNode), " output nodes)");
-		ASSIMP_LOG_INFO("Kept ", pScene->mNumLights, " lights and ", pScene->mNumCameras, " cameras.");
-		ASSIMP_LOG_INFO("Moved ", iOldMeshes, " meshes to WCS (number of output meshes: ", pScene->mNumMeshes, ")");
 	}
 }

@@ -101,11 +101,9 @@ void OptimizeMeshesProcess::Execute( aiScene* pScene)
 {
     const unsigned int num_old = pScene->mNumMeshes;
     if (num_old <= 1) {
-        ASSIMP_LOG_DEBUG("Skipping OptimizeMeshesProcess");
         return;
     }
 
-    ASSIMP_LOG_DEBUG("OptimizeMeshesProcess begin");
     mScene = pScene;
 
     // need to clear persistent members from previous runs
@@ -143,12 +141,6 @@ void OptimizeMeshesProcess::Execute( aiScene* pScene)
 
     mScene->mNumMeshes = static_cast<unsigned int>(output.size());
     std::copy(output.begin(),output.end(),mScene->mMeshes);
-
-    if (output.size() != num_old) {
-        ASSIMP_LOG_DEBUG("OptimizeMeshesProcess finished. Input meshes: ", num_old, ", Output meshes: ", pScene->mNumMeshes);
-    } else {
-        ASSIMP_LOG_DEBUG( "OptimizeMeshesProcess finished" );
-    }
 }
 
 // ------------------------------------------------------------------------------------------------
