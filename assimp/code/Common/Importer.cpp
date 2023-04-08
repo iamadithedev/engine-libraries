@@ -389,14 +389,6 @@ bool Importer::ValidateFlags(unsigned int pFlags) const {
         return false;
     }
 
-    // ValidateDS does not anymore occur in the pp list, it plays an awesome extra role ...
-#ifdef ASSIMP_BUILD_NO_VALIDATEDS_PROCESS
-    if (pFlags & aiProcess_ValidateDataStructure) {
-        return false;
-    }
-#endif
-    pFlags &= ~aiProcess_ValidateDataStructure;
-
     // Now iterate through all bits which are set in the flags and check whether we find at least
     // one pp plugin which handles it.
     for (unsigned int mask = 1; mask < (1u << (sizeof(unsigned int)*8-1));mask <<= 1) {
@@ -668,37 +660,11 @@ const aiScene* Importer::ApplyPostProcessing(unsigned int pFlags) {
         BaseProcess* process = pimpl->mPostProcessingSteps[a];
         pimpl->mProgressHandler->UpdatePostProcess(static_cast<int>(a), static_cast<int>(pimpl->mPostProcessingSteps.size()) );
         if( process->IsActive( pFlags)) {
-            if (profiler) {
-                profiler->BeginRegion("postprocess");
-            }
-
             process->ExecuteOnScene ( this );
-
-            if (profiler) {
-                profiler->EndRegion("postprocess");
-            }
         }
         if( !pimpl->mScene) {
             break;
         }
-#ifdef ASSIMP_BUILD_DEBUG
-
-#ifdef ASSIMP_BUILD_NO_VALIDATEDS_PROCESS
-        continue;
-#endif  // no validation
-
-        // If the extra verbose mode is active, execute the ValidateDataStructureStep again - after each step
-        if (pimpl->bExtraVerbose)   {
-            ASSIMP_LOG_DEBUG("Verbose Import: re-validating data structures");
-
-            ValidateDSProcess ds;
-            ds.ExecuteOnScene (this);
-            if( !pimpl->mScene) {
-                ASSIMP_LOG_ERROR("Verbose Import: failed to re-validate data structures");
-                break;
-            }
-        }
-#endif // ! DEBUG
     }
     pimpl->mProgressHandler->UpdatePostProcess( static_cast<int>(pimpl->mPostProcessingSteps.size()),
         static_cast<int>(pimpl->mPostProcessingSteps.size()) );
