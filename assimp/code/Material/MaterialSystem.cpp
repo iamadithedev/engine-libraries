@@ -50,7 +50,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/fast_atof.h>
 #include <assimp/material.h>
 #include <assimp/types.h>
-#include <assimp/DefaultLogger.hpp>
 
 using namespace Assimp;
 
@@ -160,8 +159,6 @@ aiReturn aiGetMaterialFloatArray(const aiMaterial *pMat,
                 break;
             }
             if (!IsSpace(*cur)) {
-                ASSIMP_LOG_ERROR("Material property", pKey,
-                                 " is a string; failed to parse a float array out of it.");
                 return AI_FAILURE;
             }
         }
@@ -238,8 +235,6 @@ aiReturn aiGetMaterialIntegerArray(const aiMaterial *pMat,
                 break;
             }
             if (!IsSpace(*cur)) {
-                ASSIMP_LOG_ERROR("Material property", pKey,
-                                 " is a string; failed to parse an integer array out of it.");
                 return AI_FAILURE;
             }
         }
@@ -305,8 +300,6 @@ aiReturn aiGetMaterialString(const aiMaterial *pMat,
         ai_assert(!prop->mData[prop->mDataLength - 1]);
         memcpy(pOut->data, prop->mData + 4, pOut->length + 1);
     } else {
-        // TODO - implement lexical cast as well
-        ASSIMP_LOG_ERROR("Material property", pKey, " was found, but is no string");
         return AI_FAILURE;
     }
     return AI_SUCCESS;
