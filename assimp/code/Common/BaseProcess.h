@@ -245,9 +245,6 @@ public:
 protected:
     /** See the doc of #SharedPostProcessInfo for more details */
     SharedPostProcessInfo *shared;
-
-    /** Currently active progress handler */
-    ProgressHandler *progress;
 };
 
 } // end of namespace Assimp
