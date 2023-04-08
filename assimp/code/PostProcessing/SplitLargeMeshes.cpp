@@ -68,7 +68,6 @@ void SplitLargeMeshesProcess_Triangle::Execute( aiScene* pScene) {
         return;
     }
 
-    ASSIMP_LOG_DEBUG("SplitLargeMeshesProcess_Triangle begin");
     std::vector<std::pair<aiMesh*, unsigned int> > avList;
 
     for( unsigned int a = 0; a < pScene->mNumMeshes; ++a) {
@@ -87,9 +86,6 @@ void SplitLargeMeshesProcess_Triangle::Execute( aiScene* pScene) {
 
         // now we need to update all nodes
         this->UpdateNode(pScene->mRootNode,avList);
-        ASSIMP_LOG_INFO("SplitLargeMeshesProcess_Triangle finished. Meshes have been split");
-    } else {
-        ASSIMP_LOG_DEBUG("SplitLargeMeshesProcess_Triangle finished. There was nothing to do");
     }
 }
 
@@ -137,7 +133,6 @@ void SplitLargeMeshesProcess_Triangle::SplitMesh(
         aiMesh* pMesh,
         std::vector<std::pair<aiMesh*, unsigned int> >& avList) {
     if (pMesh->mNumFaces > SplitLargeMeshesProcess_Triangle::LIMIT) {
-        ASSIMP_LOG_INFO("Mesh exceeds the triangle limit. It will be split ...");
 
         // we need to split this mesh into sub meshes
         // determine the size of a submesh
@@ -339,8 +334,6 @@ void SplitLargeMeshesProcess_Vertex::Execute( aiScene* pScene) {
         return;
     }
 
-    ASSIMP_LOG_DEBUG("SplitLargeMeshesProcess_Vertex begin");
-
     std::vector<std::pair<aiMesh*, unsigned int> > avList;
 
     //Check for point cloud first,
@@ -367,9 +360,6 @@ void SplitLargeMeshesProcess_Vertex::Execute( aiScene* pScene) {
 
         // now we need to update all nodes
         SplitLargeMeshesProcess_Triangle::UpdateNode(pScene->mRootNode,avList);
-        ASSIMP_LOG_INFO("SplitLargeMeshesProcess_Vertex finished. Meshes have been split");
-    } else {
-        ASSIMP_LOG_DEBUG("SplitLargeMeshesProcess_Vertex finished. There was nothing to do");
     }
 }
 
