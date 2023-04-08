@@ -45,23 +45,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef ASSIMP_BUILD_NO_FBX_IMPORTER
 
-//#ifdef ASSIMP_BUILD_NO_OWN_ZLIB
 #include "Common/Compression.h"
-//#   include <zlib.h>
-//#else
-//#   include "../contrib/zlib/zlib.h"
-//#endif
 
 #include "FBXTokenizer.h"
 #include "FBXParser.h"
 #include "FBXUtil.h"
 
-#include <assimp/ParsingUtils.h>
 #include <assimp/fast_atof.h>
 #include <assimp/ByteSwapper.h>
-#include <assimp/DefaultLogger.hpp>
-
-#include <iostream>
 
 using namespace Assimp;
 using namespace Assimp::FBX;
@@ -216,7 +207,6 @@ Parser::Parser (const TokenList& tokens, bool is_binary)
 , cursor(tokens.begin())
 , is_binary(is_binary)
 {
-    ASSIMP_LOG_DEBUG("Parsing FBX tokens");
     root.reset(new Scope(*this,true));
 }
 

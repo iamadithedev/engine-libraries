@@ -46,7 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define INCLUDED_AI_FBX_IMPORTER_H
 
 #include <assimp/BaseImporter.h>
-#include <assimp/LogAux.h>
 
 #include "FBXImportSettings.h"
 
@@ -67,7 +66,7 @@ typedef class basic_formatter<char, std::char_traits<char>, std::allocator<char>
 ///
 /// See http://en.wikipedia.org/wiki/FBX
 // -------------------------------------------------------------------------------------------
-class FBXImporter : public BaseImporter, public LogFunctions<FBXImporter> {
+class FBXImporter : public BaseImporter {
 public:
     /// @brief The class constructor.
     FBXImporter();
