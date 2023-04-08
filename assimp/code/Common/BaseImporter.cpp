@@ -581,9 +581,6 @@ void BatchLoader::LoadAll() {
     for (LoadReqIt it = m_data->requests.begin(); it != m_data->requests.end(); ++it) {
         // force validation in debug builds
         unsigned int pp = (*it).flags;
-        if (m_data->validate) {
-            pp |= aiProcess_ValidateDataStructure;
-        }
 
         // setup config properties if necessary
         ImporterPimpl *pimpl = m_data->pImporter->Pimpl();

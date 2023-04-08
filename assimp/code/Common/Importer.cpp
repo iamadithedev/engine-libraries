@@ -589,7 +589,7 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
             pre.ProcessScene();
 
             // Ensure that the validation process won't be called twice
-            ApplyPostProcessing(pFlags & (~aiProcess_ValidateDataStructure));
+            ApplyPostProcessing(pFlags);
         }
         // if failed, extract the error string
         else if( !pimpl->mScene) {
@@ -639,7 +639,6 @@ const aiScene* Importer::ApplyPostProcessing(unsigned int pFlags) {
 
     // In debug builds: run basic flag validation
     ai_assert(_ValidateFlags(pFlags));
-    ASSIMP_LOG_INFO("Entering post processing pipeline");
 
 #ifdef ASSIMP_BUILD_DEBUG
     if (pimpl->bExtraVerbose)
