@@ -45,7 +45,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "MakeVerboseFormat.h"
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
+#include <vector>
 
 using namespace Assimp;
 
@@ -53,17 +53,11 @@ using namespace Assimp;
 // Executes the post processing step on the given imported data.
 void MakeVerboseFormatProcess::Execute(aiScene *pScene) {
     ai_assert(nullptr != pScene);
-    ASSIMP_LOG_DEBUG("MakeVerboseFormatProcess begin");
 
     bool bHas = false;
     for (unsigned int a = 0; a < pScene->mNumMeshes; a++) {
         if (MakeVerboseFormat(pScene->mMeshes[a]))
             bHas = true;
-    }
-    if (bHas) {
-        ASSIMP_LOG_INFO("MakeVerboseFormatProcess finished. There was much work to do ...");
-    } else {
-        ASSIMP_LOG_DEBUG("MakeVerboseFormatProcess. There was nothing to do.");
     }
 
     pScene->mFlags &= ~AI_SCENE_FLAGS_NON_VERBOSE_FORMAT;
