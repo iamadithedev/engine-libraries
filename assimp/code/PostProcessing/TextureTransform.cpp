@@ -46,7 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/scene.h>
 
 #include "TextureTransform.h"
@@ -94,7 +93,6 @@ void TextureTransformStep::PreProcessUVTransform(STransformVecInfo& info) {
         rounded = static_cast<int>((info.mRotation / static_cast<float>(AI_MATH_TWO_PI)));
         if (rounded) {
             out -= rounded * static_cast<float>(AI_MATH_PI);
-            ASSIMP_LOG_INFO("Texture coordinate rotation ", info.mRotation, " can be simplified to ", out);
         }
 
         // Next step - convert negative rotation angles to positives
@@ -135,7 +133,6 @@ void TextureTransformStep::PreProcessUVTransform(STransformVecInfo& info) {
             out = 1.f;
         }
         if (szTemp[0])      {
-            ASSIMP_LOG_INFO(szTemp);
             info.mTranslation.x = out;
         }
     }
@@ -169,7 +166,6 @@ void TextureTransformStep::PreProcessUVTransform(STransformVecInfo& info) {
             out = 1.f;
         }
         if (szTemp[0])  {
-            ASSIMP_LOG_INFO(szTemp);
             info.mTranslation.y = out;
         }
     }
@@ -203,8 +199,6 @@ inline static const char* MappingModeToChar(aiTextureMapMode map) {
 
 // ------------------------------------------------------------------------------------------------
 void TextureTransformStep::Execute( aiScene* pScene) {
-    ASSIMP_LOG_DEBUG("TransformUVCoordsProcess begin");
-
 
     /*  We build a per-mesh list of texture transformations we'll need
      *  to apply. To achieve this, we iterate through all materials,
@@ -313,7 +307,6 @@ void TextureTransformStep::Execute( aiScene* pScene) {
                     }
 
                     if (mesh->mNumUVComponents[info.uvIndex] >= 3){
-                        ASSIMP_LOG_WARN("UV transformations on 3D mapping channels are not supported");
                         continue;
                     }
 
@@ -338,7 +331,6 @@ void TextureTransformStep::Execute( aiScene* pScene) {
         }
     }
 
-    char buffer[1024]; // should be sufficiently large
     unsigned int outChannels = 0, inChannels = 0, transformedChannels = 0;
 
     // Now process all meshes. Important: we don't remove unreferenced UV channels.
@@ -398,7 +390,6 @@ void TextureTransformStep::Execute( aiScene* pScene) {
                     ++it2;
 
                 if ((*it2).lockedPos != AI_TT_UV_IDX_LOCK_NONE) {
-                    ASSIMP_LOG_ERROR("Channel mismatch, can't compute all transformations properly [design bug]");
                     continue;
                 }
 
@@ -429,11 +420,6 @@ void TextureTransformStep::Execute( aiScene* pScene) {
         // it shouldn't be too worse if we remove them.
         unsigned int size = (unsigned int)trafo.size();
         if (size > AI_MAX_NUMBER_OF_TEXTURECOORDS) {
-
-            if (!DefaultLogger::isNullLogger()) {
-                ASSIMP_LOG_ERROR(static_cast<unsigned int>(trafo.size()), " UV channels required but just ",
-                    AI_MAX_NUMBER_OF_TEXTURECOORDS, " available");
-            }
             size = AI_MAX_NUMBER_OF_TEXTURECOORDS;
         }
 
@@ -454,21 +440,6 @@ void TextureTransformStep::Execute( aiScene* pScene) {
             }
 
             outChannels++;
-
-            // Write to the log
-            if (!DefaultLogger::isNullLogger()) {
-                ::ai_snprintf(buffer,1024,"Mesh %u, channel %u: t(%.3f,%.3f), s(%.3f,%.3f), r(%.3f), %s%s",
-                    q,n,
-                    (*it).mTranslation.x,
-                    (*it).mTranslation.y,
-                    (*it).mScaling.x,
-                    (*it).mScaling.y,
-                    AI_RAD_TO_DEG( (*it).mRotation),
-                    MappingModeToChar ((*it).mapU),
-                    MappingModeToChar ((*it).mapV));
-
-                ASSIMP_LOG_INFO(buffer);
-            }
 
             // Check whether we need a new buffer here
             if (mesh->mTextureCoords[n])    {
@@ -533,16 +504,6 @@ void TextureTransformStep::Execute( aiScene* pScene) {
 
             // Update all UV indices
             UpdateUVIndex((*it).updateList,n);
-        }
-    }
-
-    // Print some detailed statistics into the log
-    if (!DefaultLogger::isNullLogger()) {
-
-        if (transformedChannels)    {
-            ASSIMP_LOG_INFO("TransformUVCoordsProcess end: ", outChannels, " output channels (in: ", inChannels, ", modified: ", transformedChannels,")");
-        } else {
-            ASSIMP_LOG_DEBUG("TransformUVCoordsProcess finished");
         }
     }
 }
