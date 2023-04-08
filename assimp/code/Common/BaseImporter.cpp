@@ -64,7 +64,7 @@ using namespace Assimp;
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
 BaseImporter::BaseImporter() AI_NO_EXCEPT
-        : m_progress() {
+{
     // empty
 }
 
@@ -81,20 +81,11 @@ void BaseImporter::UpdateImporterScale(Importer *pImp) {
 
     // Set active scaling
     pImp->SetPropertyFloat(AI_CONFIG_APP_SCALE_KEY, static_cast<float>(activeScale));
-
-    ASSIMP_LOG_DEBUG("UpdateImporterScale scale set: ", activeScale);
 }
 
 // ------------------------------------------------------------------------------------------------
 // Imports the given file and returns the imported data.
 aiScene *BaseImporter::ReadFile(Importer *pImp, const std::string &pFile, IOSystem *pIOHandler) {
-
-    m_progress = pImp->GetProgressHandler();
-    if (nullptr == m_progress) {
-        return nullptr;
-    }
-
-    ai_assert(m_progress);
 
     // Gather configuration properties for this run
     SetupProperties(pImp);
@@ -116,7 +107,6 @@ aiScene *BaseImporter::ReadFile(Importer *pImp, const std::string &pFile, IOSyst
     } catch( const std::exception &err ) {
         // extract error description
         m_ErrorText = err.what();
-        ASSIMP_LOG_ERROR(err.what());
         m_Exception = std::current_exception();
         return nullptr;
     }
@@ -214,7 +204,6 @@ void BaseImporter::GetExtensionList(std::set<std::string> &extensions) {
             // We got a match, either we don't care where it is, or it happens to
             // be in the beginning of the file / line
             if (!tokensSol || r == buffer || r[-1] == '\r' || r[-1] == '\n') {
-                ASSIMP_LOG_DEBUG("Found positive match for header keyword: ", tokens[i]);
                 return true;
             }
         }
@@ -347,7 +336,6 @@ void BaseImporter::ConvertToUTF8(std::vector<char> &data) {
 
     // UTF 8 with BOM
     if ((uint8_t)data[0] == 0xEF && (uint8_t)data[1] == 0xBB && (uint8_t)data[2] == 0xBF) {
-        ASSIMP_LOG_DEBUG("Found UTF-8 BOM ...");
 
         std::copy(data.begin() + 3, data.end(), data.begin());
         data.resize(data.size() - 3);
@@ -365,7 +353,6 @@ void BaseImporter::ConvertToUTF8(std::vector<char> &data) {
 
     // UTF 32 LE with BOM
     if (*((uint32_t *)&data.front()) == 0x0000FFFE) {
-        ASSIMP_LOG_DEBUG("Found UTF-32 BOM ...");
 
         std::vector<char> output;
         int *ptr = (int *)&data[0];
@@ -388,7 +375,6 @@ void BaseImporter::ConvertToUTF8(std::vector<char> &data) {
 
     // UTF 16 LE with BOM
     if (*((uint16_t *)&data.front()) == 0xFEFF) {
-        ASSIMP_LOG_DEBUG("Found UTF-16 BOM ...");
 
         std::vector<unsigned char> output;
         utf8::utf16to8(data.begin(), data.end(), back_inserter(output));
@@ -413,14 +399,11 @@ void BaseImporter::ConvertUTF8toISO8859_1(std::string &data) {
             } else {
                 std::stringstream stream;
                 stream << "UTF8 code " << std::hex << data[i] << data[i + 1] << " can not be converted into ISA-8859-1.";
-                ASSIMP_LOG_ERROR(stream.str());
 
                 data[j++] = data[i++];
                 data[j] = data[i];
             }
         } else {
-            ASSIMP_LOG_ERROR("UTF8 code but only one character remaining");
-
             data[j] = data[i];
         }
 
@@ -609,14 +592,8 @@ void BatchLoader::LoadAll() {
         pimpl->mStringProperties = (*it).map.strings;
         pimpl->mMatrixProperties = (*it).map.matrices;
 
-        if (!DefaultLogger::isNullLogger()) {
-            ASSIMP_LOG_INFO("%%% BEGIN EXTERNAL FILE %%%");
-            ASSIMP_LOG_INFO("File: ", (*it).file);
-        }
         m_data->pImporter->ReadFile((*it).file, pp);
         (*it).scene = m_data->pImporter->GetOrphanedScene();
         (*it).loaded = true;
-
-        ASSIMP_LOG_INFO("%%% END EXTERNAL FILE %%%");
     }
 }
