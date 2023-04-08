@@ -84,17 +84,9 @@ void CalcTangentsProcess::SetupProperties(const Importer *pImp) {
 void CalcTangentsProcess::Execute(aiScene *pScene) {
     ai_assert(nullptr != pScene);
 
-    ASSIMP_LOG_DEBUG("CalcTangentsProcess begin");
-
     bool bHas = false;
     for (unsigned int a = 0; a < pScene->mNumMeshes; a++) {
         if (ProcessMesh(pScene->mMeshes[a], a)) bHas = true;
-    }
-
-    if (bHas) {
-        ASSIMP_LOG_INFO("CalcTangentsProcess finished. Tangents have been calculated");
-    } else {
-        ASSIMP_LOG_DEBUG("CalcTangentsProcess finished");
     }
 }
 
@@ -113,17 +105,14 @@ bool CalcTangentsProcess::ProcessMesh(aiMesh *pMesh, unsigned int meshIndex) {
     // triangles or higher-order polygons the normal vectors
     // are undefined.
     if (!(pMesh->mPrimitiveTypes & (aiPrimitiveType_TRIANGLE | aiPrimitiveType_POLYGON))) {
-        ASSIMP_LOG_INFO("Tangents are undefined for line and point meshes");
         return false;
     }
 
     // what we can check, though, is if the mesh has normals and texture coordinates. That's a requirement
     if (pMesh->mNormals == nullptr) {
-        ASSIMP_LOG_ERROR("Failed to compute tangents; need normals");
         return false;
     }
     if (configSourceUV >= AI_MAX_NUMBER_OF_TEXTURECOORDS || !pMesh->mTextureCoords[configSourceUV]) {
-        ASSIMP_LOG_ERROR("Failed to compute tangents; need UV data in channel", configSourceUV);
         return false;
     }
 
