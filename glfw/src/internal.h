@@ -897,12 +897,6 @@ void _glfwSplitBPP(int bpp, int* red, int* green, int* blue);
 
 void _glfwCenterCursorInContentArea(_GLFWwindow* window);
 
-GLFWbool _glfwInitOSMesa(void);
-void _glfwTerminateOSMesa(void);
-GLFWbool _glfwCreateContextOSMesa(_GLFWwindow* window,
-                                  const _GLFWctxconfig* ctxconfig,
-                                  const _GLFWfbconfig* fbconfig);
-
 GLFWbool _glfwInitVulkan(int mode);
 void _glfwTerminateVulkan(void);
 const char* _glfwGetVulkanResultString(VkResult result);

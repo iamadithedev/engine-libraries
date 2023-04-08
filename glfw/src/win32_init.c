@@ -695,7 +695,6 @@ void _glfwTerminateWin32(void)
     _glfw_free(_glfw.win32.rawInput);
 
     _glfwTerminateWGL();
-    _glfwTerminateOSMesa();
 
     freeLibraries();
 }

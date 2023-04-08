@@ -2,7 +2,7 @@
 add_library(glfw ${GLFW_LIBRARY_TYPE}
                  "${GLFW_SOURCE_DIR}/include/GLFW/glfw3.h"
                  "${GLFW_SOURCE_DIR}/include/GLFW/glfw3native.h"
-                 internal.h platform.h context.c init.c input.c monitor.c platform.c vulkan.c window.c osmesa_context.c)
+                 internal.h platform.h context.c init.c input.c monitor.c platform.c vulkan.c window.c)
 
 # The time, thread and module code is shared between all backends on a given OS,
 # including the null backend, which still needs those bits to be functional
