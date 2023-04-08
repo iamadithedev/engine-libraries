@@ -293,9 +293,6 @@ void MeshGeometry::ReadLayerElement(const Scope& layerElement)
             return;
         }
     }
-
-    FBXImporter::LogError("failed to resolve vertex layer element: ",
-        type, ", index: ", typedIndex);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -311,8 +308,6 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
 
     if (type == "LayerElementUV") {
         if(index >= AI_MAX_NUMBER_OF_TEXTURECOORDS) {
-            FBXImporter::LogError("ignoring UV layer, maximum number of UV channels exceeded: ",
-                index, " (limit is ", AI_MAX_NUMBER_OF_TEXTURECOORDS, ")" );
             return;
         }
 
@@ -348,7 +343,6 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
         // that with one test file).
         const size_t count_neg = std::count_if(temp_materials.begin(),temp_materials.end(),[](int n) { return n < 0; });
         if(count_neg == temp_materials.size()) {
-            FBXImporter::LogWarn("ignoring dummy material layer (all entries -1)");
             return;
         }
 
@@ -356,7 +350,6 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
     }
     else if (type == "LayerElementNormal") {
         if (m_normals.size() > 0) {
-            FBXImporter::LogError("ignoring additional normal layer");
             return;
         }
 
@@ -367,7 +360,6 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
     }
     else if (type == "LayerElementTangent") {
         if (m_tangents.size() > 0) {
-            FBXImporter::LogError("ignoring additional tangent layer");
             return;
         }
 
@@ -378,7 +370,6 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
     }
     else if (type == "LayerElementBinormal") {
         if (m_binormals.size() > 0) {
-            FBXImporter::LogError("ignoring additional binormal layer");
             return;
         }
 
@@ -389,8 +380,6 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
     }
     else if (type == "LayerElementColor") {
         if(index >= AI_MAX_NUMBER_OF_COLOR_SETS) {
-            FBXImporter::LogError("ignoring vertex color layer, maximum number of color sets exceeded: ",
-                index, " (limit is ", AI_MAX_NUMBER_OF_COLOR_SETS, ")" );
             return;
         }
 
