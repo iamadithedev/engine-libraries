@@ -43,7 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assimp/MemoryIOWrapper.h>
 #include <assimp/StringUtils.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/Base64.hpp>
 
 // clang-format off

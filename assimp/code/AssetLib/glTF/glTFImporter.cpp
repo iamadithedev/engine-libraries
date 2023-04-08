@@ -54,7 +54,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/commonMetaData.h>
 #include <assimp/importerdesc.h>
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/Importer.hpp>
 
 #include <memory>
@@ -305,7 +304,6 @@ void glTFImporter::ImportMeshes(glTF::Asset &r) {
                 case PrimitiveMode_LINES: {
                     nFaces = count / 2;
                     if (nFaces * 2 != count) {
-                        ASSIMP_LOG_WARN("The number of vertices was not compatible with the LINES mode. Some vertices were dropped.");
                         count = nFaces * 2;
                     }
                     faces = new aiFace[nFaces];
@@ -332,7 +330,6 @@ void glTFImporter::ImportMeshes(glTF::Asset &r) {
                 case PrimitiveMode_TRIANGLES: {
                     nFaces = count / 3;
                     if (nFaces * 3 != count) {
-                        ASSIMP_LOG_WARN("The number of vertices was not compatible with the TRIANGLES mode. Some vertices were dropped.");
                         count = nFaces * 3;
                     }
                     faces = new aiFace[nFaces];
@@ -377,7 +374,6 @@ void glTFImporter::ImportMeshes(glTF::Asset &r) {
                 case PrimitiveMode_LINES: {
                     nFaces = count / 2;
                     if (nFaces * 2 != count) {
-                        ASSIMP_LOG_WARN("The number of vertices was not compatible with the LINES mode. Some vertices were dropped.");
                         count = nFaces * 2;
                     }
                     faces = new aiFace[nFaces];
@@ -404,7 +400,6 @@ void glTFImporter::ImportMeshes(glTF::Asset &r) {
                 case PrimitiveMode_TRIANGLES: {
                     nFaces = count / 3;
                     if (nFaces * 3 != count) {
-                        ASSIMP_LOG_WARN("The number of vertices was not compatible with the TRIANGLES mode. Some vertices were dropped.");
                         count = nFaces * 3;
                     }
                     faces = new aiFace[nFaces];
@@ -439,7 +434,6 @@ void glTFImporter::ImportMeshes(glTF::Asset &r) {
                 const bool validRes = CheckValidFacesIndices(faces, nFaces, aim->mNumVertices);
                 if (!validRes) {
                     ai_assert(validRes);
-                    ASSIMP_LOG_WARN("Invalid number of faces detected.");
                 }
             }
 

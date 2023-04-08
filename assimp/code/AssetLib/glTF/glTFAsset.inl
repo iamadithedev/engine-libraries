@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <iomanip>
 
 // Header files, Assimp
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/Base64.hpp>
 
 #ifdef ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC
@@ -731,8 +730,6 @@ inline void Mesh::Read(Value &pJSON_Object, Asset &pAsset_Root) {
             Value *comp_data = FindObject(it_memb->value, "compressedData");
 
             if (comp_data == nullptr) throw DeadlyImportError("GLTF: \"Open3DGC-compression\" must has \"compressedData\".");
-
-            ASSIMP_LOG_INFO("GLTF: Decompressing Open3DGC data.");
 
 /************** Read data from JSON-document **************/
 #define MESH_READ_COMPRESSEDDATA_MEMBER(pFieldName, pOut)                                   \
