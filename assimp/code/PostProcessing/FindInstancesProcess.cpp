@@ -48,7 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "FindInstancesProcess.h"
 #include <memory>
-#include <stdio.h>
 
 using namespace Assimp;
 
@@ -114,7 +113,6 @@ void UpdateMeshIndices(aiNode* node, unsigned int* lookup)
 // Executes the post processing step on the given imported data.
 void FindInstancesProcess::Execute( aiScene* pScene)
 {
-    ASSIMP_LOG_DEBUG("FindInstancesProcess begin");
     if (pScene->mNumMeshes) {
 
         // use a pseudo hash for all meshes in the scene to quickly find
@@ -260,13 +258,7 @@ void FindInstancesProcess::Execute( aiScene* pScene)
             // And update the node graph with our nice lookup table
             UpdateMeshIndices(pScene->mRootNode,remapping.get());
 
-            // write to log
-            if (!DefaultLogger::isNullLogger()) {
-                ASSIMP_LOG_INFO( "FindInstancesProcess finished. Found ", (pScene->mNumMeshes - numMeshesOut), " instances" );
-            }
             pScene->mNumMeshes = numMeshesOut;
-        } else {
-            ASSIMP_LOG_DEBUG("FindInstancesProcess finished. No instanced meshes found");
         }
     }
 }
