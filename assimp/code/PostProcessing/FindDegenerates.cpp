@@ -81,7 +81,7 @@ void FindDegeneratesProcess::SetupProperties(const Importer* pImp) {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void FindDegeneratesProcess::Execute( aiScene* pScene) {
-    ASSIMP_LOG_DEBUG("FindDegeneratesProcess begin");
+
     if ( nullptr == pScene) {
         return;
     }
@@ -108,8 +108,6 @@ void FindDegeneratesProcess::Execute( aiScene* pScene) {
     if (meshMap.size() < originalNumMeshes) {
         updateSceneGraph(pScene->mRootNode, meshMap);
     }
-
-    ASSIMP_LOG_DEBUG("FindDegeneratesProcess finished");
 }
 
 static void updateSceneGraph(aiNode* pNode, const std::unordered_map<unsigned int, unsigned int>& meshMap) {
@@ -249,13 +247,9 @@ evil_jump_outside:
         if (!mesh->mNumFaces) {
             //The whole mesh consists of degenerated faces
             //signal upward, that this mesh should be deleted.
-            ASSIMP_LOG_VERBOSE_DEBUG("FindDegeneratesProcess removed a mesh full of degenerated primitives");
             return true;
         }
     }
 
-    if (deg && !DefaultLogger::isNullLogger()) {
-        ASSIMP_LOG_WARN( "Found ", deg, " degenerated primitives");
-    }
     return false;
 }
