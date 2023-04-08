@@ -47,7 +47,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_FILESYSTEMFILTER_H_INC
 
 #include <assimp/IOSystem.hpp>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/fast_atof.h>
 #include <assimp/ParsingUtils.h>
 
@@ -88,8 +87,6 @@ public:
         } else if ((s = *(mBase.end()-1)) != '\\' && s != '/') {
             mBase += getOsSeparator();
         }
-
-        DefaultLogger::get()->info("Import root directory is \'", mBase, "\'");
     }
 
     /** Destructor. */

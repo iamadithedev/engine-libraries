@@ -84,10 +84,6 @@ public:
     IOSystem* mIOHandler;
     bool mIsDefaultHandler;
 
-    /** Progress handler for feedback. */
-    ProgressHandler* mProgressHandler;
-    bool mIsDefaultProgressHandler;
-
     /** Format-specific importer worker objects - one for each format we can read.*/
     std::vector< BaseImporter* > mImporter;
 
@@ -134,8 +130,6 @@ inline
 ImporterPimpl::ImporterPimpl() AI_NO_EXCEPT :
         mIOHandler( nullptr ),
         mIsDefaultHandler( false ),
-        mProgressHandler( nullptr ),
-        mIsDefaultProgressHandler( false ),
         mImporter(),
         mPostProcessingSteps(),
         mScene( nullptr ),

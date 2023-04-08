@@ -64,7 +64,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // ------------------------------------------------------------------------------------------------
 #include "Common/Importer.h"
 #include "Common/BaseProcess.h"
-#include "Common/DefaultProgressHandler.h"
 #include "PostProcessing/ProcessHelper.h"
 #include "Common/ScenePreprocessor.h"
 #include "Common/ScenePrivate.h"
@@ -72,10 +71,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/BaseImporter.h>
 #include <assimp/GenericProperty.h>
 #include <assimp/MemoryIOWrapper.h>
-#include <assimp/Profiler.h>
 #include <assimp/TinyFormatter.h>
 #include <assimp/Exceptional.h>
-#include <assimp/Profiler.h>
 #include <assimp/commonMetaData.h>
 
 #include <exception>
@@ -86,11 +83,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/DefaultIOStream.h>
 #include <assimp/DefaultIOSystem.h>
 
-#ifndef ASSIMP_BUILD_NO_VALIDATEDS_PROCESS
-#   include "PostProcessing/ValidateDataStructure.h"
-#endif
-
-using namespace Assimp::Profiling;
 using namespace Assimp::Formatter;
 
 namespace Assimp {
@@ -156,9 +148,6 @@ Importer::Importer()
     pimpl->mIsDefaultHandler = true;
     pimpl->bExtraVerbose     = false; // disable extra verbose mode by default
 
-    pimpl->mProgressHandler = new DefaultProgressHandler();
-    pimpl->mIsDefaultProgressHandler = true;
-
     GetImporterInstanceList(pimpl->mImporter);
     GetPostProcessingStepInstanceList(pimpl->mPostProcessingSteps);
 
@@ -185,7 +174,6 @@ Importer::~Importer() {
 
     // Delete the assigned IO and progress handler
     delete pimpl->mIOHandler;
-    delete pimpl->mProgressHandler;
 
     // Kill imported scene. Destructor's should do that recursively
     delete pimpl->mScene;
@@ -205,7 +193,6 @@ aiReturn Importer::RegisterPPStep(BaseProcess* pImp) {
     ASSIMP_BEGIN_EXCEPTION_REGION();
 
         pimpl->mPostProcessingSteps.push_back(pImp);
-        ASSIMP_LOG_INFO("Registering custom post-processing step");
 
     ASSIMP_END_EXCEPTION_REGION(aiReturn);
     return AI_SUCCESS;
@@ -229,18 +216,11 @@ aiReturn Importer::RegisterLoader(BaseImporter* pImp) {
     pImp->GetExtensionList(st);
 
     for(std::set<std::string>::const_iterator it = st.begin(); it != st.end(); ++it) {
-
-#ifdef ASSIMP_BUILD_DEBUG
-        if (IsExtensionSupported(*it)) {
-            ASSIMP_LOG_WARN("The file extension ", *it, " is already in use");
-        }
-#endif
         baked += *it;
     }
 
     // add the loader
     pimpl->mImporter.push_back(pImp);
-    ASSIMP_LOG_INFO("Registering custom importer for these file extensions: ", baked);
     ASSIMP_END_EXCEPTION_REGION(aiReturn);
 
     return AI_SUCCESS;
@@ -260,10 +240,8 @@ aiReturn Importer::UnregisterLoader(BaseImporter* pImp) {
 
     if (it != pimpl->mImporter.end())   {
         pimpl->mImporter.erase(it);
-        ASSIMP_LOG_INFO("Unregistering custom importer: ");
         return AI_SUCCESS;
     }
-    ASSIMP_LOG_WARN("Unable to remove custom importer: I can't find you ...");
     ASSIMP_END_EXCEPTION_REGION(aiReturn);
 
     return AI_FAILURE;
@@ -283,10 +261,9 @@ aiReturn Importer::UnregisterPPStep(BaseProcess* pImp) {
 
     if (it != pimpl->mPostProcessingSteps.end())    {
         pimpl->mPostProcessingSteps.erase(it);
-        ASSIMP_LOG_INFO("Unregistering custom post-processing step");
         return AI_SUCCESS;
     }
-    ASSIMP_LOG_WARN("Unable to remove custom post-processing step: I can't find you ..");
+
     ASSIMP_END_EXCEPTION_REGION(aiReturn);
 
     return AI_FAILURE;
@@ -328,50 +305,12 @@ bool Importer::IsDefaultIOHandler() const {
 }
 
 // ------------------------------------------------------------------------------------------------
-// Supplies a custom progress handler to get regular callbacks during importing
-void Importer::SetProgressHandler(ProgressHandler* pHandler) {
-    ai_assert(nullptr != pimpl);
-
-    ASSIMP_BEGIN_EXCEPTION_REGION();
-
-    // If the new handler is zero, allocate a default implementation.
-    if (!pHandler) {
-        // Release pointer in the possession of the caller
-        pimpl->mProgressHandler = new DefaultProgressHandler();
-        pimpl->mIsDefaultProgressHandler = true;
-    } else if (pimpl->mProgressHandler != pHandler) { // Otherwise register the custom handler
-        delete pimpl->mProgressHandler;
-        pimpl->mProgressHandler = pHandler;
-        pimpl->mIsDefaultProgressHandler = false;
-    }
-    ASSIMP_END_EXCEPTION_REGION(void);
-}
-
-// ------------------------------------------------------------------------------------------------
-// Get the currently set progress handler
-ProgressHandler* Importer::GetProgressHandler() const {
-    ai_assert(nullptr != pimpl);
-
-    return pimpl->mProgressHandler;
-}
-
-// ------------------------------------------------------------------------------------------------
-// Check whether a custom progress handler is currently set
-bool Importer::IsDefaultProgressHandler() const {
-    ai_assert(nullptr != pimpl);
-
-    return pimpl->mIsDefaultProgressHandler;
-}
-
-// ------------------------------------------------------------------------------------------------
 // Validate post process step flags
 bool _ValidateFlags(unsigned int pFlags) {
     if (pFlags & aiProcess_GenSmoothNormals && pFlags & aiProcess_GenNormals)   {
-        ASSIMP_LOG_ERROR("#aiProcess_GenSmoothNormals and #aiProcess_GenNormals are incompatible");
         return false;
     }
     if (pFlags & aiProcess_OptimizeGraph && pFlags & aiProcess_PreTransformVertices)    {
-        ASSIMP_LOG_ERROR("#aiProcess_OptimizeGraph and #aiProcess_PreTransformVertices are incompatible");
         return false;
     }
     return true;
@@ -523,66 +462,6 @@ const aiScene* Importer::ReadFileFromMemory(const void* pBuffer, size_t pLength,
 }
 
 // ------------------------------------------------------------------------------------------------
-void WriteLogOpening(const std::string& file) {
-
-    ASSIMP_LOG_INFO("Load ", file);
-
-    // print a full version dump. This is nice because we don't
-    // need to ask the authors of incoming bug reports for
-    // the library version they're using - a log dump is
-    // sufficient.
-    const unsigned int flags = aiGetCompileFlags();
-    std::stringstream stream;
-    stream << "Assimp " << aiGetVersionMajor() << "." << aiGetVersionMinor() << "." << aiGetVersionRevision() << " "
-#if defined(ASSIMP_BUILD_ARCHITECTURE)
-           << ASSIMP_BUILD_ARCHITECTURE
-#elif defined(_M_IX86) || defined(__x86_32__) || defined(__i386__)
-           << "x86"
-#elif defined(_M_X64) || defined(__x86_64__)
-           << "amd64"
-#elif defined(_M_IA64) || defined(__ia64__)
-           << "itanium"
-#elif defined(__ppc__) || defined(__powerpc__)
-           << "ppc32"
-#elif defined(__powerpc64__)
-           << "ppc64"
-#elif defined(__arm__)
-           << "arm"
-#else
-           << "<unknown architecture>"
-#endif
-           << " "
-#if defined(ASSIMP_BUILD_COMPILER)
-           << (ASSIMP_BUILD_COMPILER)
-#elif defined(_MSC_VER)
-           << "msvc"
-#elif defined(__GNUC__)
-           << "gcc"
-#elif defined(__clang__)
-           << "clang"
-#elif defined(__EMSCRIPTEN__)
-           << "emscripten"
-#elif defined(__MINGW32__)
-           << "MinGW-w64 32bit"
-#elif defined(__MINGW64__)
-           << "MinGW-w64 64bit"
-#else
-           << "<unknown compiler>"
-#endif
-
-#ifdef ASSIMP_BUILD_DEBUG
-           << " debug"
-#endif
-
-           << (flags & ASSIMP_CFLAGS_NOBOOST ? " noboost" : "")
-           << (flags & ASSIMP_CFLAGS_SHARED ? " shared" : "")
-           << (flags & ASSIMP_CFLAGS_SINGLETHREADED ? " singlethreaded" : "")
-           << (flags & ASSIMP_CFLAGS_DOUBLE_SUPPORT ? " double : " : "single : ");
-
-    ASSIMP_LOG_DEBUG(stream.str());
-}
-
-// ------------------------------------------------------------------------------------------------
 // Reads the given file and returns its contents if successful.
 const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
     ai_assert(nullptr != pimpl);
@@ -596,8 +475,6 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
     // ImportErrorException's are throw by ourselves and caught elsewhere.
     //-----------------------------------------------------------------------
 
-    WriteLogOpening(pFile);
-
 #ifdef ASSIMP_CATCH_GLOBAL_EXCEPTIONS
     try
 #endif // ! ASSIMP_CATCH_GLOBAL_EXCEPTIONS
@@ -605,8 +482,6 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
         // Check whether this Importer instance has already loaded
         // a scene. In this case we need to delete the old one
         if (pimpl->mScene)  {
-
-            ASSIMP_LOG_DEBUG("(Deleting previous scene)");
             FreeScene();
         }
 
@@ -614,13 +489,7 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
         if( !pimpl->mIOHandler->Exists( pFile)) {
 
             pimpl->mErrorString = "Unable to open file \"" + pFile + "\".";
-            ASSIMP_LOG_ERROR(pimpl->mErrorString);
             return nullptr;
-        }
-
-        std::unique_ptr<Profiler> profiler(GetPropertyInteger(AI_CONFIG_GLOB_MEASURE_TIME, 0) ? new Profiler() : nullptr);
-        if (profiler) {
-            profiler->BeginRegion("total");
         }
 
         // Find an worker class which can handle the file extension.
@@ -669,7 +538,6 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
             for (std::vector<ImporterAndIndex>::const_iterator it = possibleImporters.begin(); it < possibleImporters.end(); ++it) {
                 BaseImporter & importer = *it->importer;
 
-                ASSIMP_LOG_INFO("Found a possible importer: " + std::string(importer.GetInfo()->mName) + "; trying signature-based detection");
                 if (importer.CanRead( pFile, pimpl->mIOHandler, true)) {
                     imp = &importer;
                     SetPropertyInteger("importerIndex", it->index);
@@ -682,7 +550,6 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
 
         if (!imp)   {
             // not so bad yet ... try format auto detection.
-            ASSIMP_LOG_INFO("File extension not known, trying signature-based detection");
             for( unsigned int a = 0; a < pimpl->mImporter.size(); a++)  {
                 if( pimpl->mImporter[a]->CanRead( pFile, pimpl->mIOHandler, true)) {
                     imp = pimpl->mImporter[a];
@@ -693,7 +560,6 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
             // Put a proper error message if no suitable importer was found
             if( !imp)   {
                 pimpl->mErrorString = "No suitable reader found for the file format of file \"" + pFile + "\".";
-                ASSIMP_LOG_ERROR(pimpl->mErrorString);
                 return nullptr;
             }
         }
@@ -713,19 +579,8 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
         if ( nullptr != desc ) {
             ext = desc->mName;
         }
-        ASSIMP_LOG_INFO("Found a matching importer for this file format: ", ext, "." );
-        pimpl->mProgressHandler->UpdateFileRead( 0, fileSize );
-
-        if (profiler) {
-            profiler->BeginRegion("import");
-        }
 
         pimpl->mScene = imp->ReadFile( this, pFile, pimpl->mIOHandler);
-        pimpl->mProgressHandler->UpdateFileRead( fileSize, fileSize );
-
-        if (profiler) {
-            profiler->EndRegion("import");
-        }
 
         SetPropertyString("sourceFilePath", pFile);
 
@@ -738,28 +593,8 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
                 pimpl->mScene->mMetaData->Add(AI_METADATA_SOURCE_FORMAT, aiString(ext));
             }
 
-#ifndef ASSIMP_BUILD_NO_VALIDATEDS_PROCESS
-            // The ValidateDS process is an exception. It is executed first, even before ScenePreprocessor is called.
-            if (pFlags & aiProcess_ValidateDataStructure) {
-                ValidateDSProcess ds;
-                ds.ExecuteOnScene (this);
-                if (!pimpl->mScene) {
-                    return nullptr;
-                }
-            }
-#endif // no validation
-
-            // Preprocess the scene and prepare it for post-processing
-            if (profiler) {
-                profiler->BeginRegion("preprocess");
-            }
-
             ScenePreprocessor pre(pimpl->mScene);
             pre.ProcessScene();
-
-            if (profiler) {
-                profiler->EndRegion("preprocess");
-            }
 
             // Ensure that the validation process won't be called twice
             ApplyPostProcessing(pFlags & (~aiProcess_ValidateDataStructure));
@@ -772,10 +607,6 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
 
         // clear any data allocated by post-process steps
         pimpl->mPPShared->Clean();
-
-        if (profiler) {
-            profiler->EndRegion("total");
-        }
     }
 #ifdef ASSIMP_CATCH_GLOBAL_EXCEPTIONS
     catch (std::exception &e) {
@@ -818,17 +649,6 @@ const aiScene* Importer::ApplyPostProcessing(unsigned int pFlags) {
     ai_assert(_ValidateFlags(pFlags));
     ASSIMP_LOG_INFO("Entering post processing pipeline");
 
-#ifndef ASSIMP_BUILD_NO_VALIDATEDS_PROCESS
-    // The ValidateDS process plays an exceptional role. It isn't contained in the global
-    // list of post-processing steps, so we need to call it manually.
-    if (pFlags & aiProcess_ValidateDataStructure) {
-        ValidateDSProcess ds;
-        ds.ExecuteOnScene (this);
-        if (!pimpl->mScene) {
-            return nullptr;
-        }
-    }
-#endif // no validation
 #ifdef ASSIMP_BUILD_DEBUG
     if (pimpl->bExtraVerbose)
     {
