@@ -42,7 +42,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ScenePreprocessor.h"
 #include <assimp/ai_assert.h>
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 
 using namespace Assimp;
 
@@ -85,8 +84,6 @@ void ScenePreprocessor::ProcessScene() {
         // setup the default name to make this material identifiable
         name.Set(AI_DEFAULT_MATERIAL_NAME);
         helper->AddProperty(&name, AI_MATKEY_NAME);
-
-        ASSIMP_LOG_DEBUG("ScenePreprocessor: Adding default material \'" AI_DEFAULT_MATERIAL_NAME "\'");
 
         for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
             if (nullptr == scene->mMeshes[i]) {
@@ -133,7 +130,6 @@ void ScenePreprocessor::ProcessMesh(aiMesh *mesh) {
                 }
             }
             if (p == end) {
-                ASSIMP_LOG_WARN("ScenePreprocessor: UVs are declared to be 3D but they're obviously not. Reverting to 2D.");
                 mesh->mNumUVComponents[i] = 2;
             }
         }
@@ -234,7 +230,6 @@ void ScenePreprocessor::ProcessAnimation(aiAnimation *anim) {
                     q.mTime = 0.;
                     q.mValue = rotation;
 
-                    ASSIMP_LOG_VERBOSE_DEBUG("ScenePreprocessor: Dummy rotation track has been generated");
                 } else {
                     ai_assert(channel->mRotationKeys);
                 }
@@ -253,7 +248,6 @@ void ScenePreprocessor::ProcessAnimation(aiAnimation *anim) {
                     q.mTime = 0.;
                     q.mValue = scaling;
 
-                    ASSIMP_LOG_VERBOSE_DEBUG("ScenePreprocessor: Dummy scaling track has been generated");
                 } else {
                     ai_assert(channel->mScalingKeys);
                 }
@@ -272,7 +266,6 @@ void ScenePreprocessor::ProcessAnimation(aiAnimation *anim) {
                     q.mTime = 0.;
                     q.mValue = position;
 
-                    ASSIMP_LOG_VERBOSE_DEBUG("ScenePreprocessor: Dummy position track has been generated");
                 } else {
                     ai_assert(channel->mPositionKeys);
                 }
@@ -281,7 +274,6 @@ void ScenePreprocessor::ProcessAnimation(aiAnimation *anim) {
     }
 
     if (anim->mDuration == -1.) {
-        ASSIMP_LOG_VERBOSE_DEBUG("ScenePreprocessor: Setting animation duration");
         anim->mDuration = last - std::min(first, 0.);
     }
 }
