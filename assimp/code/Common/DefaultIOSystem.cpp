@@ -46,7 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/DefaultIOSystem.h>
 #include <assimp/ai_assert.h>
 #include <stdlib.h>
-#include <assimp/DefaultLogger.hpp>
 
 #ifdef __unix__
 #    include <stdlib.h>
@@ -176,7 +175,6 @@ inline static std::string MakeAbsolutePath(const char *in) {
     else {
         // preserve the input path, maybe someone else is able to fix
         // the path before it is accessed (e.g. our file system filter)
-        ASSIMP_LOG_WARN("Invalid path: ", std::string(in));
         out = in;
     }
     return out;
