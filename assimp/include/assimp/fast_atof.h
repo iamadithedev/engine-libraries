@@ -27,7 +27,6 @@
 #include <assimp/defs.h>
 
 #include "StringComparison.h"
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/Exceptional.h>
 #include <assimp/StringUtils.h>
 
