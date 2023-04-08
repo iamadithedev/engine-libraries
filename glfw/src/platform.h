@@ -36,8 +36,6 @@
  #error "You must not define these; define zero or more _GLFW_<platform> macros instead"
 #endif
 
-#include "null_platform.h"
-
 #if defined(_GLFW_WIN32)
  #include "win32_platform.h"
 #else
@@ -85,28 +83,24 @@
         GLFW_COCOA_WINDOW_STATE \
         GLFW_WAYLAND_WINDOW_STATE \
         GLFW_X11_WINDOW_STATE \
-        GLFW_NULL_WINDOW_STATE \
 
 #define GLFW_PLATFORM_MONITOR_STATE \
         GLFW_WIN32_MONITOR_STATE \
         GLFW_COCOA_MONITOR_STATE \
         GLFW_WAYLAND_MONITOR_STATE \
         GLFW_X11_MONITOR_STATE \
-        GLFW_NULL_MONITOR_STATE \
 
 #define GLFW_PLATFORM_CURSOR_STATE \
         GLFW_WIN32_CURSOR_STATE \
         GLFW_COCOA_CURSOR_STATE \
         GLFW_WAYLAND_CURSOR_STATE \
         GLFW_X11_CURSOR_STATE \
-        GLFW_NULL_CURSOR_STATE \
 
 #define GLFW_PLATFORM_LIBRARY_WINDOW_STATE \
         GLFW_WIN32_LIBRARY_WINDOW_STATE \
         GLFW_COCOA_LIBRARY_WINDOW_STATE \
         GLFW_WAYLAND_LIBRARY_WINDOW_STATE \
         GLFW_X11_LIBRARY_WINDOW_STATE \
-        GLFW_NULL_LIBRARY_WINDOW_STATE \
 
 #define GLFW_PLATFORM_CONTEXT_STATE \
         GLFW_WGL_CONTEXT_STATE \
@@ -140,17 +134,6 @@
  #define GLFW_BUILD_COCOA_TIMER
 #else
  #define GLFW_BUILD_POSIX_TIMER
-#endif
-
-#if defined(GLFW_BUILD_WIN32_TIMER)
- #include "win32_time.h"
- #define GLFW_PLATFORM_LIBRARY_TIMER_STATE  GLFW_WIN32_LIBRARY_TIMER_STATE
-#elif defined(GLFW_BUILD_COCOA_TIMER)
- #include "cocoa_time.h"
- #define GLFW_PLATFORM_LIBRARY_TIMER_STATE  GLFW_COCOA_LIBRARY_TIMER_STATE
-#elif defined(GLFW_BUILD_POSIX_TIMER)
- #include "posix_time.h"
- #define GLFW_PLATFORM_LIBRARY_TIMER_STATE  GLFW_POSIX_LIBRARY_TIMER_STATE
 #endif
 
 #if defined(_WIN32)

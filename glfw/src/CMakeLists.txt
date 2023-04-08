@@ -2,21 +2,16 @@
 add_library(glfw ${GLFW_LIBRARY_TYPE}
                  "${GLFW_SOURCE_DIR}/include/GLFW/glfw3.h"
                  "${GLFW_SOURCE_DIR}/include/GLFW/glfw3native.h"
-                 internal.h platform.h context.c init.c input.c monitor.c platform.c vulkan.c window.c
-                 osmesa_context.c null_platform.h
-                 null_init.c null_monitor.c null_window.c)
+                 internal.h platform.h context.c init.c input.c monitor.c platform.c vulkan.c window.c osmesa_context.c)
 
 # The time, thread and module code is shared between all backends on a given OS,
 # including the null backend, which still needs those bits to be functional
 if (APPLE)
-    target_sources(glfw PRIVATE cocoa_time.h cocoa_time.c posix_thread.h
-                                posix_module.c posix_thread.c)
+    target_sources(glfw PRIVATE posix_thread.h posix_module.c posix_thread.c)
 elseif (WIN32)
-    target_sources(glfw PRIVATE win32_time.h win32_thread.h win32_module.c
-                                win32_time.c win32_thread.c)
+    target_sources(glfw PRIVATE win32_thread.h win32_module.c win32_thread.c)
 else()
-    target_sources(glfw PRIVATE posix_time.h posix_thread.h posix_module.c
-                                posix_time.c posix_thread.c)
+    target_sources(glfw PRIVATE posix_thread.h posix_module.c posix_thread.c)
 endif()
 
 if (GLFW_BUILD_COCOA)

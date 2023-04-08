@@ -731,12 +731,6 @@ struct _GLFWlibrary
     _GLFWmutex          errorLock;
 
     struct {
-        uint64_t        offset;
-        // This is defined in platform.h
-        GLFW_PLATFORM_LIBRARY_TIMER_STATE
-    } timer;
-
-    struct {
         EGLenum         platform;
         EGLDisplay      display;
         EGLint          major, minor;
@@ -825,10 +819,6 @@ extern _GLFWlibrary _glfw;
 //////////////////////////////////////////////////////////////////////////
 //////                       GLFW platform API                      //////
 //////////////////////////////////////////////////////////////////////////
-
-void _glfwPlatformInitTimer(void);
-uint64_t _glfwPlatformGetTimerValue(void);
-uint64_t _glfwPlatformGetTimerFrequency(void);
 
 GLFWbool _glfwPlatformCreateTls(_GLFWtls* tls);
 void _glfwPlatformDestroyTls(_GLFWtls* tls);
