@@ -45,15 +45,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Importer.h"
 #include <assimp/BaseImporter.h>
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 
 using namespace Assimp;
 
 // ------------------------------------------------------------------------------------------------
 // Constructor to be privately used by Importer
 BaseProcess::BaseProcess() AI_NO_EXCEPT
-        : shared(),
-          progress() {
+        : shared() {
     // empty
 }
 
@@ -73,12 +71,6 @@ void BaseProcess::ExecuteOnScene(Importer *pImp) {
         return;
     }
 
-    progress = pImp->GetProgressHandler();
-    ai_assert(nullptr != progress);
-    if (progress == nullptr) {
-        return;
-    }
-
     SetupProperties(pImp);
 
     // catch exceptions thrown inside the PostProcess-Step
@@ -88,7 +80,6 @@ void BaseProcess::ExecuteOnScene(Importer *pImp) {
 
         // extract error description
         pImp->Pimpl()->mErrorString = err.what();
-        ASSIMP_LOG_ERROR(pImp->Pimpl()->mErrorString);
 
         // and kill the partially imported data
         delete pImp->Pimpl()->mScene;
