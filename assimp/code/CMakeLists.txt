@@ -310,15 +310,6 @@ SET(ASSIMP_EXPORTER_SRCS "")
 SET(ASSIMP_EXPORTERS_ENABLED "") # list of enabled exporters
 SET(ASSIMP_EXPORTERS_DISABLED "") # disabled exporters list (used to print)
 
-ADD_ASSIMP_IMPORTER( AMF
-  AssetLib/AMF/AMFImporter.hpp
-  AssetLib/AMF/AMFImporter_Node.hpp
-  AssetLib/AMF/AMFImporter.cpp
-  AssetLib/AMF/AMFImporter_Geometry.cpp
-  AssetLib/AMF/AMFImporter_Material.cpp
-  AssetLib/AMF/AMFImporter_Postprocess.cpp
-)
-
 ADD_ASSIMP_IMPORTER( 3DS
   AssetLib/3DS/3DSConverter.cpp
   AssetLib/3DS/3DSHelper.h
@@ -326,26 +317,9 @@ ADD_ASSIMP_IMPORTER( 3DS
   AssetLib/3DS/3DSLoader.h
 )
 
-ADD_ASSIMP_IMPORTER( AC
-  AssetLib/AC/ACLoader.cpp
-  AssetLib/AC/ACLoader.h
-)
-
-ADD_ASSIMP_IMPORTER( ASE
-  AssetLib/ASE/ASELoader.cpp
-  AssetLib/ASE/ASELoader.h
-  AssetLib/ASE/ASEParser.cpp
-  AssetLib/ASE/ASEParser.h
-)
-
 ADD_ASSIMP_IMPORTER( ASSBIN
   AssetLib/Assbin/AssbinLoader.h
   AssetLib/Assbin/AssbinLoader.cpp
-)
-
-ADD_ASSIMP_IMPORTER( B3D
-  AssetLib/B3D/B3DImporter.cpp
-  AssetLib/B3D/B3DImporter.h
 )
 
 ADD_ASSIMP_IMPORTER( BVH
@@ -371,13 +345,6 @@ ADD_ASSIMP_IMPORTER( DXF
 ADD_ASSIMP_IMPORTER( CSM
   AssetLib/CSM/CSMLoader.cpp
   AssetLib/CSM/CSMLoader.h
-)
-
-ADD_ASSIMP_IMPORTER( HMP
-  AssetLib/HMP/HMPFileData.h
-  AssetLib/HMP/HMPLoader.cpp
-  AssetLib/HMP/HMPLoader.h
-  AssetLib/HMP/HalfLifeFileData.h
 )
 
 ADD_ASSIMP_IMPORTER( IRRMESH
@@ -415,58 +382,11 @@ ADD_ASSIMP_IMPORTER( LWS
   AssetLib/LWS/LWSLoader.h
 )
 
-ADD_ASSIMP_IMPORTER( M3D
-  AssetLib/M3D/M3DMaterials.h
-  AssetLib/M3D/M3DImporter.h
-  AssetLib/M3D/M3DImporter.cpp
-  AssetLib/M3D/M3DWrapper.h
-  AssetLib/M3D/M3DWrapper.cpp
-  AssetLib/M3D/m3d.h
-)
-
-ADD_ASSIMP_IMPORTER( MD2
-  AssetLib/MD2/MD2FileData.h
-  AssetLib/MD2/MD2Loader.cpp
-  AssetLib/MD2/MD2Loader.h
-  AssetLib/MD2/MD2NormalTable.h
-)
-
-ADD_ASSIMP_IMPORTER( MD3
-  AssetLib/MD3/MD3FileData.h
-  AssetLib/MD3/MD3Loader.cpp
-  AssetLib/MD3/MD3Loader.h
-)
-
-ADD_ASSIMP_IMPORTER( MD5
-  AssetLib/MD5/MD5Loader.cpp
-  AssetLib/MD5/MD5Loader.h
-  AssetLib/MD5/MD5Parser.cpp
-  AssetLib/MD5/MD5Parser.h
-)
-
 ADD_ASSIMP_IMPORTER( MDC
   AssetLib/MDC/MDCFileData.h
   AssetLib/MDC/MDCLoader.cpp
   AssetLib/MDC/MDCLoader.h
   AssetLib/MDC/MDCNormalTable.h
-)
-
-ADD_ASSIMP_IMPORTER( MDL
-  AssetLib/MDL/MDLDefaultColorMap.h
-  AssetLib/MDL/MDLFileData.h
-  AssetLib/MDL/MDLLoader.cpp
-  AssetLib/MDL/MDLLoader.h
-  AssetLib/MDL/MDLMaterialLoader.cpp
-  AssetLib/MDL/HalfLife/HalfLifeMDLBaseHeader.h
-  AssetLib/MDL/HalfLife/HL1FileData.h
-  AssetLib/MDL/HalfLife/HL1MDLLoader.cpp
-  AssetLib/MDL/HalfLife/HL1MDLLoader.h
-  AssetLib/MDL/HalfLife/HL1ImportDefinitions.h
-  AssetLib/MDL/HalfLife/HL1ImportSettings.h
-  AssetLib/MDL/HalfLife/HL1MeshTrivert.h
-  AssetLib/MDL/HalfLife/LogFunctions.h
-  AssetLib/MDL/HalfLife/UniqueNameGenerator.cpp
-  AssetLib/MDL/HalfLife/UniqueNameGenerator.h
 )
 
 SET( MaterialSystem_SRCS
@@ -646,10 +566,6 @@ if (NOT ASSIMP_NO_EXPORT)
     AssetLib/Assxml/AssxmlFileWriter.h
     AssetLib/Assxml/AssxmlFileWriter.cpp)
 
-  ADD_ASSIMP_EXPORTER(M3D
-    AssetLib/M3D/M3DExporter.h
-    AssetLib/M3D/M3DExporter.cpp)
-
   ADD_ASSIMP_EXPORTER(COLLADA
     AssetLib/Collada/ColladaExporter.h
     AssetLib/Collada/ColladaExporter.cpp)
@@ -679,10 +595,6 @@ if (NOT ASSIMP_NO_EXPORT)
     AssetLib/glTF/glTFExporter.cpp
     AssetLib/glTF2/glTF2Exporter.h
     AssetLib/glTF2/glTF2Exporter.cpp)
-
-  ADD_ASSIMP_EXPORTER( 3MF
-    AssetLib/3MF/D3MFExporter.h
-    AssetLib/3MF/D3MFExporter.cpp)
 
   ADD_ASSIMP_EXPORTER( PBRT
     Pbrt/PbrtExporter.h
@@ -805,11 +717,6 @@ ADD_ASSIMP_IMPORTER( TERRAGEN
   AssetLib/Terragen/TerragenLoader.h
 )
 
-ADD_ASSIMP_IMPORTER( 3D
-  AssetLib/Unreal/UnrealLoader.cpp
-  AssetLib/Unreal/UnrealLoader.h
-)
-
 ADD_ASSIMP_IMPORTER( X
   AssetLib/X/XFileHelper.h
   AssetLib/X/XFileImporter.cpp
@@ -854,17 +761,6 @@ ADD_ASSIMP_IMPORTER( GLTF
   AssetLib/glTF2/glTF2AssetWriter.inl
   AssetLib/glTF2/glTF2Importer.cpp
   AssetLib/glTF2/glTF2Importer.h
-)
-
-ADD_ASSIMP_IMPORTER(3MF
-  AssetLib/3MF/3MFTypes.h
-  AssetLib/3MF/XmlSerializer.h
-  AssetLib/3MF/XmlSerializer.cpp
-  AssetLib/3MF/D3MFImporter.h
-  AssetLib/3MF/D3MFImporter.cpp
-  AssetLib/3MF/D3MFOpcPackage.h
-  AssetLib/3MF/D3MFOpcPackage.cpp
-  AssetLib/3MF/3MFXmlTags.h
 )
 
 ADD_ASSIMP_IMPORTER( MMD

@@ -215,7 +215,7 @@ GLFWAPI int glfwGetInputMode(GLFWwindow* handle, int mode)
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(0);
+    _GLFW_REQUIRE_INIT_OR_RETURN(0)
 
     switch (mode)
     {
