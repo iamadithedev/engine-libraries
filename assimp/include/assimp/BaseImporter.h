@@ -52,7 +52,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "Exceptional.h"
 
 #include <assimp/types.h>
-#include <assimp/ProgressHandler.hpp>
 #include <set>
 #include <vector>
 #include <memory>
@@ -387,8 +386,6 @@ protected:
     std::string m_ErrorText;
     /// The exception, in case there was one.
     std::exception_ptr m_Exception;
-    /// Currently set progress handler.
-    ProgressHandler *m_progress;
 };
 
 } // end of namespace Assimp
