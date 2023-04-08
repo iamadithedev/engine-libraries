@@ -40,9 +40,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/SmallVector.h>
 #include <assimp/StringUtils.h>
 #include <assimp/postprocess.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/scene.h>
-#include <stdio.h>
+#include <vector>
 
 namespace Assimp {
 
@@ -67,14 +66,10 @@ bool LimitBoneWeightsProcess::IsActive( unsigned int pFlags) const {
 // Executes the post processing step on the given imported data.
 void LimitBoneWeightsProcess::Execute( aiScene* pScene) {
     ai_assert(pScene != nullptr);
-              
-    ASSIMP_LOG_DEBUG("LimitBoneWeightsProcess begin");
 
     for (unsigned int m = 0; m < pScene->mNumMeshes; ++m) {
         ProcessMesh(pScene->mMeshes[m]);
     }
-
-    ASSIMP_LOG_DEBUG("LimitBoneWeightsProcess end");
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -128,7 +123,7 @@ void LimitBoneWeightsProcess::ProcessMesh(aiMesh* pMesh) {
     if (maxVertexWeights <= mMaxWeights)
         return;
 
-    unsigned int removed = 0, old_bones = pMesh->mNumBones;
+    unsigned int removed = 0;
 
     // now cut the weight count if it exceeds the maximum
     for (WeightsPerVertex::iterator vit = vertexWeights.begin(); vit != vertexWeights.end(); ++vit) {
@@ -174,11 +169,7 @@ void LimitBoneWeightsProcess::ProcessMesh(aiMesh* pMesh) {
     // remove empty bones
 #ifdef AI_CONFIG_IMPORT_REMOVE_EMPTY_BONES 
     pMesh->mNumBones = removeEmptyBones(pMesh);
-#endif // AI_CONFIG_IMPORT_REMOVE_EMPTY_BONES 
-
-    if (!DefaultLogger::isNullLogger()) {
-        ASSIMP_LOG_INFO("Removed ", removed, " weights. Input bones: ", old_bones, ". Output bones: ", pMesh->mNumBones);
-    }
+#endif // AI_CONFIG_IMPORT_REMOVE_EMPTY_BONES
 }
 
 } // namespace Assimp

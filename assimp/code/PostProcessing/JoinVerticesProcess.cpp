@@ -64,15 +64,6 @@ bool JoinVerticesProcess::IsActive( unsigned int pFlags) const {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void JoinVerticesProcess::Execute( aiScene* pScene) {
-    ASSIMP_LOG_DEBUG("JoinVerticesProcess begin");
-
-    // get the total number of vertices BEFORE the step is executed
-    int iNumOldVertices = 0;
-    if (!DefaultLogger::isNullLogger()) {
-        for( unsigned int a = 0; a < pScene->mNumMeshes; a++)   {
-            iNumOldVertices +=  pScene->mMeshes[a]->mNumVertices;
-        }
-    }
 
     // execute the step
     int iNumVertices = 0;
@@ -81,19 +72,6 @@ void JoinVerticesProcess::Execute( aiScene* pScene) {
     }
 
     pScene->mFlags |= AI_SCENE_FLAGS_NON_VERBOSE_FORMAT;
-
-    // if logging is active, print detailed statistics
-    if (!DefaultLogger::isNullLogger()) {
-        if (iNumOldVertices == iNumVertices) {
-            ASSIMP_LOG_DEBUG("JoinVerticesProcess finished ");
-            return;
-        }
-
-        // Show statistics
-        ASSIMP_LOG_INFO("JoinVerticesProcess finished | Verts in: ", iNumOldVertices,
-            " out: ", iNumVertices, " | ~",
-            ((iNumOldVertices - iNumVertices) / (float)iNumOldVertices) * 100.f );
-    }
 }
 
 namespace {
@@ -358,20 +336,6 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex) {
         }
     }
 
-    if (!DefaultLogger::isNullLogger() && DefaultLogger::get()->getLogSeverity() == Logger::VERBOSE)    {
-        ASSIMP_LOG_VERBOSE_DEBUG(
-            "Mesh ",meshIndex,
-            " (",
-            (pMesh->mName.length ? pMesh->mName.data : "unnamed"),
-            ") | Verts in: ",pMesh->mNumVertices,
-            " out: ",
-            uniqueVertices.size(),
-            " | ~",
-            ((pMesh->mNumVertices - uniqueVertices.size()) / (float)pMesh->mNumVertices) * 100.f,
-            "%"
-        );
-    }
-
     updateXMeshVertices(pMesh, uniqueVertices);
     if (hasAnimMeshes) {
         for (unsigned int animMeshIndex = 0; animMeshIndex < pMesh->mNumAnimMeshes; animMeshIndex++) {
@@ -405,8 +369,6 @@ int JoinVerticesProcess::ProcessMesh( aiMesh* pMesh, unsigned int meshIndex) {
                     newWeights.push_back( nw );
                 }
             }
-        } else {
-            ASSIMP_LOG_ERROR( "X-Export: aiBone shall contain weights, but pointer to them is nullptr." );
         }
 
         if (newWeights.size() > 0) {
