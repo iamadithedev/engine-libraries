@@ -2820,13 +2820,11 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
         ai_assert(node);
 
         if (node->TargetProperty().empty()) {
-            FBXImporter::LogWarn("target property for animation curve not set: ", node->Name());
             continue;
         }
 
         curve_node = node;
         if (node->Curves().empty()) {
-            FBXImporter::LogWarn("no animation curves assigned to AnimationCurveNode: ", node->Name());
             continue;
         }
 
@@ -2861,7 +2859,6 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
             if (doc.Settings().optimizeEmptyAnimationCurves &&
                     IsRedundantAnimationData(target, comp, (chain[i]->second))) {
 
-                FBXImporter::LogVerboseDebug("dropping redundant animation channel for node ", target.Name());
                 continue;
             }
 
@@ -2874,7 +2871,6 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
     }
 
     if (!has_any) {
-        FBXImporter::LogWarn("ignoring node animation, did not find any transformation key frames");
         return;
     }
 
@@ -3307,7 +3303,6 @@ FBXConverter::KeyFrameListList FBXConverter::GetKeyframeList(const std::vector<c
             } else if (kv.first == "d|Z") {
                 mapto = 2;
             } else {
-                FBXImporter::LogWarn("ignoring scale animation curve, did not recognize target component");
                 continue;
             }
 
@@ -3358,7 +3353,6 @@ FBXConverter::KeyFrameListList FBXConverter::GetRotationKeyframeList(const std::
             } else if (kv.first == "d|Z") {
                 mapto = 2;
             } else {
-                FBXImporter::LogWarn("ignoring scale animation curve, did not recognize target component");
                 continue;
             }
 
