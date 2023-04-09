@@ -427,18 +427,6 @@ ELSE()
   # utf8 is header-only, so Assimp doesn't need to do anything.
 ENDIF()
 
-# polyclipping
-IF(ASSIMP_HUNTER_ENABLED)
-  hunter_add_package(polyclipping)
-  find_package(polyclipping CONFIG REQUIRED)
-ELSE()
-  SET( Clipper_SRCS
-    ../contrib/clipper/clipper.hpp
-    ../contrib/clipper/clipper.cpp
-  )
-  SOURCE_GROUP( Contrib\\Clipper FILES ${Clipper_SRCS})
-ENDIF()
-
 # poly2tri
 IF(ASSIMP_HUNTER_ENABLED)
   hunter_add_package(poly2tri)
@@ -640,7 +628,6 @@ SET( assimp_src
   # Third-party libraries
   ${unzip_compile_SRCS}
   ${Poly2Tri_SRCS}
-  ${Clipper_SRCS}
   ${openddl_parser_SRCS}
   ${open3dgc_SRCS}
   ${ziplib_SRCS}
