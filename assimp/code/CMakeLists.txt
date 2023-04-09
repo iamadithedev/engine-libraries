@@ -153,7 +153,6 @@ SET( Common_SRCS
   Common/PolyTools.h
   Common/Maybe.h
   Common/Importer.cpp
-  Common/IFF.h
   Common/SGSpatialSort.cpp
   Common/VertexTriangleAdjacency.cpp
   Common/VertexTriangleAdjacency.h
@@ -515,12 +514,9 @@ SET( assimp_src
   ${CApi_SRCS}
   ${Common_SRCS}
   ${Geometry_SRCS}
-  ${Logging_SRCS}
   ${Exporter_SRCS}
   ${PostProcessing_SRCS}
   ${MaterialSystem_SRCS}
-  ${STEPParser_SRCS}
-#  ${Step_SRCS} check if we need a different approach
 
   # Model Support
   ${ASSIMP_LOADER_SRCS}
@@ -536,11 +532,6 @@ SET( assimp_src
   ${PUBLIC_HEADERS}
   ${COMPILER_HEADERS}
 )
-
-IF (ASSIMP_BUILD_NONFREE_C4D_IMPORTER)
-  SET( assimp_src ${assimp_src} ${C4D_SRCS})
-  INCLUDE_DIRECTORIES(${C4D_INCLUDES})
-ENDIF ()
 
 ADD_LIBRARY( assimp ${assimp_src} )
 ADD_LIBRARY(assimp::assimp ALIAS assimp)
@@ -652,12 +643,6 @@ ELSE()
   TARGET_LINK_LIBRARIES(assimp ${ZLIB_LIBRARIES} ${OPENDDL_PARSER_LIBRARIES})
 ENDIF()
 
-IF (ASSIMP_BUILD_NONFREE_C4D_IMPORTER)
-  TARGET_LINK_LIBRARIES(assimp optimized ${C4D_RELEASE_LIBRARIES})
-  TARGET_LINK_LIBRARIES(assimp debug ${C4D_DEBUG_LIBRARIES})
-  TARGET_LINK_LIBRARIES(assimp ${C4D_EXTRA_LIBRARIES})
-ENDIF ()
-
 if( MSVC )
   # in order to prevent DLL hell, each of the DLLs have to be suffixed with the major version and msvc prefix
   # CMake 3.12 added a variable for this
@@ -688,16 +673,6 @@ if( MSVC )
     endif()
   endif()
   set(LIBRARY_SUFFIX "${ASSIMP_LIBRARY_SUFFIX}-${MSVC_PREFIX}-mt" CACHE STRING "the suffix for the assimp windows library")
-endif()
-
-if (MINGW)
-  set(LIBRARY_SUFFIX "-${ASSIMP_SOVERSION}" CACHE STRING "the suffix for the assimp MinGW shared library")
-  SET_TARGET_PROPERTIES( assimp PROPERTIES
-    ARCHIVE_OUTPUT_NAME assimp
-  )
-  if (NOT BUILD_SHARED_LIBS)
-    TARGET_LINK_LIBRARIES ( assimp -static-libgcc -static-libstdc++ -Wl,-Bstatic -lstdc++ -lwinpthread ) # winpthread is for libminizip.
-  endif ()
 endif()
 
 if (${CMAKE_SYSTEM_NAME} MATCHES "WindowsStore")
@@ -740,17 +715,6 @@ IF(NOT ASSIMP_HUNTER_ENABLED)
     INCLUDE_DIRECTORIES("../")
   endif ()
 ENDIF()
-
-INSTALL( TARGETS assimp
-  EXPORT "${TARGETS_EXPORT_NAME}"
-  LIBRARY DESTINATION ${ASSIMP_LIB_INSTALL_DIR} COMPONENT ${LIBASSIMP_COMPONENT}
-  ARCHIVE DESTINATION ${ASSIMP_LIB_INSTALL_DIR} COMPONENT ${LIBASSIMP-DEV_COMPONENT}
-  RUNTIME DESTINATION ${ASSIMP_BIN_INSTALL_DIR} COMPONENT ${LIBASSIMP_COMPONENT}
-  FRAMEWORK DESTINATION ${ASSIMP_LIB_INSTALL_DIR} COMPONENT ${LIBASSIMP_COMPONENT}
-  INCLUDES DESTINATION ${ASSIMP_INCLUDE_INSTALL_DIR}
-)
-INSTALL( FILES ${PUBLIC_HEADERS} DESTINATION ${ASSIMP_INCLUDE_INSTALL_DIR}/assimp COMPONENT assimp-dev)
-INSTALL( FILES ${COMPILER_HEADERS} DESTINATION ${ASSIMP_INCLUDE_INSTALL_DIR}/assimp/Compiler COMPONENT assimp-dev)
 
 if(MSVC AND ASSIMP_INSTALL_PDB)
   # When only the static library is built, these properties must

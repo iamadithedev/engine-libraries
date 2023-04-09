@@ -43,7 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ScenePrivate.h"
 #include <assimp/scene.h>
-#include <assimp/version.h>
 
 #include "revision.h"
 
@@ -88,9 +87,6 @@ ASSIMP_API unsigned int aiGetCompileFlags() {
 
 #ifdef ASSIMP_BUILD_BOOST_WORKAROUND
     flags |= ASSIMP_CFLAGS_NOBOOST;
-#endif
-#ifdef ASSIMP_BUILD_SINGLETHREADED
-    flags |= ASSIMP_CFLAGS_SINGLETHREADED;
 #endif
 #ifdef ASSIMP_BUILD_DEBUG
     flags |= ASSIMP_CFLAGS_DEBUG;

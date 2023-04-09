@@ -296,12 +296,6 @@ void SceneCombiner::MergeScenes(aiScene **_dest, aiScene *master, std::vector<At
 
     // Generate unique names for all named stuff?
     if (flags & AI_INT_MERGE_SCENE_GEN_UNIQUE_NAMES) {
-#if 0
-        // Construct a proper random number generator
-        boost::mt19937 rng(  );
-        boost::uniform_int<> dist(1u,1 << 24u);
-        boost::variate_generator<boost::mt19937&, boost::uniform_int<> > rndGen(rng, dist);
-#endif
         for (unsigned int i = 1; i < src.size(); ++i) {
             //if (i != duplicates[i])
             //{

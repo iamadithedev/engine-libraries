@@ -45,7 +45,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/DefaultIOStream.h>
 #include <assimp/ai_assert.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 
 using namespace Assimp;
 

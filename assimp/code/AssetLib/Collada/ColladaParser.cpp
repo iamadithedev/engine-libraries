@@ -59,19 +59,6 @@ using namespace Assimp;
 using namespace Assimp::Collada;
 using namespace Assimp::Formatter;
 
-static void ReportWarning(const char *msg, ...) {
-    ai_assert(nullptr != msg);
-
-    va_list args;
-    va_start(args, msg);
-
-    char szBuffer[3000];
-    const int iLen = vsnprintf(szBuffer, sizeof(szBuffer), msg, args);
-    ai_assert(iLen > 0);
-
-    va_end(args);
-}
-
 static bool FindCommonKey(const std::string &collada_key, const MetaKeyPairVector &key_renaming, size_t &found_index) {
     for (size_t i = 0; i < key_renaming.size(); ++i) {
         if (key_renaming[i].first == collada_key) {
@@ -1605,7 +1592,6 @@ size_t ColladaParser::ReadPrimitives(XmlNode &node, Mesh &pMesh, std::vector<Inp
     if (expectedPointCount > 0 && indices.size() != expectedPointCount * numOffsets) {
         if (pPrimType == Prim_Lines) {
             // HACK: We just fix this number since SketchUp 15.3.331 writes the wrong 'count' for 'lines'
-            ReportWarning("Expected different index count in <p> element, %zu instead of %zu.", indices.size(), expectedPointCount * numOffsets);
             pNumPrimitives = (indices.size() / numOffsets) / 2;
         } else {
             throw DeadlyImportError("Expected different index count in <p> element.");

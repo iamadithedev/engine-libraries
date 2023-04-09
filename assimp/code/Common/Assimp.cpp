@@ -284,12 +284,6 @@ ASSIMP_API const aiScene *aiApplyCustomizedPostProcessing(const aiScene *scene,
 }
 
 // ------------------------------------------------------------------------------------------------
-void CallbackToLogRedirector(const char *msg, char *dt) {
-    ai_assert(nullptr != msg);
-    ai_assert(nullptr != dt);
-}
-
-// ------------------------------------------------------------------------------------------------
 // Returns the error text of the last failed import process.
 const char *aiGetErrorString() {
     return gLastErrorString.c_str();

@@ -43,7 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  @brief Implementation of the CPP-API class #Importer
  */
 
-#include <assimp/config.h>
 #include <assimp/importerdesc.h>
 
 // ------------------------------------------------------------------------------------------------
@@ -606,7 +605,6 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
         pimpl->mErrorString = std::string("std::exception: ") + e.what();
 #endif
 
-        ASSIMP_LOG_ERROR(pimpl->mErrorString);
         delete pimpl->mScene; pimpl->mScene = nullptr;
     }
 #endif // ! ASSIMP_CATCH_GLOBAL_EXCEPTIONS
