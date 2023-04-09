@@ -43,7 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  @brief Implementation of the CPP-API class #Importer
  */
 
-#include <assimp/version.h>
 #include <assimp/config.h>
 #include <assimp/importerdesc.h>
 
@@ -71,14 +70,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/BaseImporter.h>
 #include <assimp/GenericProperty.h>
 #include <assimp/MemoryIOWrapper.h>
-#include <assimp/TinyFormatter.h>
 #include <assimp/Exceptional.h>
 #include <assimp/commonMetaData.h>
 
 #include <exception>
 #include <set>
 #include <memory>
-#include <cctype>
 
 #include <assimp/DefaultIOStream.h>
 #include <assimp/DefaultIOSystem.h>

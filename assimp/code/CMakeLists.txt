@@ -72,7 +72,6 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/mesh.h
   ${HEADER_PATH}/ObjMaterial.h
   ${HEADER_PATH}/pbrmaterial.h
-  ${HEADER_PATH}/GltfMaterial.h
   ${HEADER_PATH}/postprocess.h
   ${HEADER_PATH}/quaternion.h
   ${HEADER_PATH}/quaternion.inl
@@ -84,7 +83,6 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/vector2.inl
   ${HEADER_PATH}/vector3.h
   ${HEADER_PATH}/vector3.inl
-  ${HEADER_PATH}/version.h
   ${HEADER_PATH}/cimport.h
   ${HEADER_PATH}/AssertHandler.h
   ${HEADER_PATH}/importerdesc.h
@@ -427,27 +425,6 @@ ELSE()
   # utf8 is header-only, so Assimp doesn't need to do anything.
 ENDIF()
 
-# poly2tri
-IF(ASSIMP_HUNTER_ENABLED)
-  hunter_add_package(poly2tri)
-  find_package(poly2tri CONFIG REQUIRED)
-ELSE()
-  SET( Poly2Tri_SRCS
-    ../contrib/poly2tri/poly2tri/common/shapes.cc
-    ../contrib/poly2tri/poly2tri/common/shapes.h
-    ../contrib/poly2tri/poly2tri/common/utils.h
-    ../contrib/poly2tri/poly2tri/sweep/advancing_front.h
-    ../contrib/poly2tri/poly2tri/sweep/advancing_front.cc
-    ../contrib/poly2tri/poly2tri/sweep/cdt.cc
-    ../contrib/poly2tri/poly2tri/sweep/cdt.h
-    ../contrib/poly2tri/poly2tri/sweep/sweep.cc
-    ../contrib/poly2tri/poly2tri/sweep/sweep.h
-    ../contrib/poly2tri/poly2tri/sweep/sweep_context.cc
-    ../contrib/poly2tri/poly2tri/sweep/sweep_context.h
-  )
-  SOURCE_GROUP( Contrib\\Poly2Tri FILES ${Poly2Tri_SRCS})
-ENDIF()
-
 # minizip/unzip
 IF(ASSIMP_HUNTER_ENABLED)
   hunter_add_package(minizip)
@@ -551,8 +528,6 @@ SET( assimp_src
 
   # Third-party libraries
   ${unzip_compile_SRCS}
-  ${Poly2Tri_SRCS}
-  ${openddl_parser_SRCS}
   ${ziplib_SRCS}
   ${Pugixml_SRCS}
   ${stb_SRCS}
@@ -664,7 +639,6 @@ TARGET_INCLUDE_DIRECTORIES ( assimp PUBLIC
 IF(ASSIMP_HUNTER_ENABLED)
   TARGET_LINK_LIBRARIES(assimp
       PUBLIC
-      poly2tri::poly2tri
       minizip::minizip
       ZLIB::zlib
       utf8cpp
