@@ -140,18 +140,6 @@ protected:
     /** Reads a material entry into the given material */
     void ReadMaterial(XmlNode &node, Collada::Material &pMaterial);
 
-    /** Reads the camera library */
-    void ReadCameraLibrary(XmlNode &node);
-
-    /** Reads a camera entry into the given camera */
-    void ReadCamera(XmlNode &node, Collada::Camera &pCamera);
-
-    /** Reads the light library */
-    void ReadLightLibrary(XmlNode &node);
-
-    /** Reads a light entry into the given light */
-    void ReadLight(XmlNode &node, Collada::Light &pLight);
-
     /** Reads the effect library */
     void ReadEffectLibrary(XmlNode &node);
 
@@ -289,14 +277,6 @@ protected:
     /** Material library: surface material by ID */
     using MaterialLibrary = std::map<std::string, Collada::Material> ;
     MaterialLibrary mMaterialLibrary;
-
-    /** Light library: surface light by ID */
-    using LightLibrary = std::map<std::string, Collada::Light> ;
-    LightLibrary mLightLibrary;
-
-    /** Camera library: surface material by ID */
-    using CameraLibrary = std::map<std::string, Collada::Camera> ;
-    CameraLibrary mCameraLibrary;
 
     /** Controller library: joint controllers by ID */
     using ControllerLibrary = std::map<std::string, Collada::Controller> ;

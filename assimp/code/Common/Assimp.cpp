@@ -259,8 +259,7 @@ ASSIMP_API const aiScene *aiApplyPostProcessing(const aiScene *pScene,
 
 // ------------------------------------------------------------------------------------------------
 ASSIMP_API const aiScene *aiApplyCustomizedPostProcessing(const aiScene *scene,
-        BaseProcess *process,
-        bool requestValidation) {
+        BaseProcess *process) {
     const aiScene *sc(nullptr);
 
     ASSIMP_BEGIN_EXCEPTION_REGION();
@@ -272,7 +271,7 @@ ASSIMP_API const aiScene *aiApplyCustomizedPostProcessing(const aiScene *scene,
         return nullptr;
     }
 
-    sc = priv->mOrigImporter->ApplyCustomizedPostProcessing(process, requestValidation);
+    sc = priv->mOrigImporter->ApplyCustomizedPostProcessing(process);
 
     if (!sc) {
         aiReleaseImport(scene);

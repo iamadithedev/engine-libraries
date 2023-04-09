@@ -94,7 +94,6 @@ void Model::ResolveLinks(const Element&, const Document &doc) {
 
         const Object *const ob = con->SourceObject();
         if (!ob) {
-            DOMWarning("failed to read source object for incoming Model link, ignoring", &element);
             continue;
         }
 
@@ -116,7 +115,6 @@ void Model::ResolveLinks(const Element&, const Document &doc) {
             continue;
         }
 
-        DOMWarning("source object for model link is neither Material, NodeAttribute nor Geometry, ignoring", &element);
         continue;
     }
 }

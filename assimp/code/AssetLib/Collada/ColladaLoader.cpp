@@ -54,7 +54,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/fast_atof.h>
 #include <assimp/importerdesc.h>
 #include <assimp/scene.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/Importer.hpp>
 
 #include <numeric>
@@ -142,8 +141,6 @@ void ColladaLoader::InternReadFile(const std::string &pFile, aiScene *pScene, IO
     mMeshes.clear();
     mTargetMeshes.clear();
     newMats.clear();
-    mLights.clear();
-    mCameras.clear();
     mTextures.clear();
     mAnims.clear();
 
@@ -157,9 +154,6 @@ void ColladaLoader::InternReadFile(const std::string &pFile, aiScene *pScene, IO
     // reserve some storage to avoid unnecessary reallocs
     newMats.reserve(parser.mMaterialLibrary.size() * 2u);
     mMeshes.reserve(parser.mMeshLibrary.size() * 2u);
-
-    mCameras.reserve(parser.mCameraLibrary.size());
-    mLights.reserve(parser.mLightLibrary.size());
 
     // create the materials first, for the meshes to find
     BuildMaterials(parser, pScene);
@@ -206,8 +200,6 @@ void ColladaLoader::InternReadFile(const std::string &pFile, aiScene *pScene, IO
     StoreSceneMeshes(pScene);
     StoreSceneMaterials(pScene);
     StoreSceneTextures(pScene);
-    StoreSceneLights(pScene);
-    StoreSceneCameras(pScene);
     StoreAnimations(pScene, parser);
 
     // If no meshes have been loaded, it's probably just an animated skeleton.
@@ -260,8 +252,6 @@ aiNode *ColladaLoader::BuildHierarchy(const ColladaParser &pParser, const Collad
     }
 
     BuildMeshesForNode(pParser, pNode, node);
-    BuildCamerasForNode(pParser, pNode, node);
-    BuildLightsForNode(pParser, pNode, node);
 
     return node;
 }
@@ -286,7 +276,6 @@ void ColladaLoader::ResolveNodeInstances(const ColladaParser &pParser, const Nod
             nd = FindNode(pParser.mRootNode, nodeInst.mNode);
         }
         if (nullptr == nd) {
-            ASSIMP_LOG_ERROR("Collada: Unable to resolve reference to instanced node ", nodeInst.mNode);
         } else {
             //  attach this node to the list of children
             resolved.push_back(nd);
@@ -302,131 +291,7 @@ void ColladaLoader::ApplyVertexToEffectSemanticMapping(Sampler &sampler, const S
         return;
     }
 
-    if (it->second.mType != IT_Texcoord) {
-        ASSIMP_LOG_ERROR("Collada: Unexpected effect input mapping");
-    }
-
     sampler.mUVId = it->second.mSet;
-}
-
-// ------------------------------------------------------------------------------------------------
-// Builds lights for the given node and references them
-void ColladaLoader::BuildLightsForNode(const ColladaParser &pParser, const Node *pNode, aiNode *pTarget) {
-    for (const LightInstance &lid : pNode->mLights) {
-        // find the referred light
-        ColladaParser::LightLibrary::const_iterator srcLightIt = pParser.mLightLibrary.find(lid.mLight);
-        if (srcLightIt == pParser.mLightLibrary.end()) {
-            ASSIMP_LOG_WARN("Collada: Unable to find light for ID \"", lid.mLight, "\". Skipping.");
-            continue;
-        }
-        const Collada::Light *srcLight = &srcLightIt->second;
-
-        // now fill our ai data structure
-        aiLight *out = new aiLight();
-        out->mName = pTarget->mName;
-        out->mType = (aiLightSourceType)srcLight->mType;
-
-        // collada lights point in -Z by default, rest is specified in node transform
-        out->mDirection = aiVector3D(0.f, 0.f, -1.f);
-
-        out->mAttenuationConstant = srcLight->mAttConstant;
-        out->mAttenuationLinear = srcLight->mAttLinear;
-        out->mAttenuationQuadratic = srcLight->mAttQuadratic;
-
-        out->mColorDiffuse = out->mColorSpecular = out->mColorAmbient = srcLight->mColor * srcLight->mIntensity;
-        if (out->mType == aiLightSource_AMBIENT) {
-            out->mColorDiffuse = out->mColorSpecular = aiColor3D(0, 0, 0);
-            out->mColorAmbient = srcLight->mColor * srcLight->mIntensity;
-        } else {
-            // collada doesn't differentiate between these color types
-            out->mColorDiffuse = out->mColorSpecular = srcLight->mColor * srcLight->mIntensity;
-            out->mColorAmbient = aiColor3D(0, 0, 0);
-        }
-
-        // convert falloff angle and falloff exponent in our representation, if given
-        if (out->mType == aiLightSource_SPOT) {
-            out->mAngleInnerCone = AI_DEG_TO_RAD(srcLight->mFalloffAngle);
-
-            // ... some extension magic.
-            if (srcLight->mOuterAngle >= ASSIMP_COLLADA_LIGHT_ANGLE_NOT_SET * (1 - ai_epsilon)) {
-                // ... some deprecation magic.
-                if (srcLight->mPenumbraAngle >= ASSIMP_COLLADA_LIGHT_ANGLE_NOT_SET * (1 - ai_epsilon)) {
-                    // Need to rely on falloff_exponent. I don't know how to interpret it, so I need to guess ....
-                    // epsilon chosen to be 0.1
-                    float f = 1.0f;
-                    if ( 0.0f != srcLight->mFalloffExponent ) {
-                        f = 1.f / srcLight->mFalloffExponent;
-                    }
-                    out->mAngleOuterCone = std::acos(std::pow(0.1f, f)) +
-                                           out->mAngleInnerCone;
-                } else {
-                    out->mAngleOuterCone = out->mAngleInnerCone + AI_DEG_TO_RAD(srcLight->mPenumbraAngle);
-                    if (out->mAngleOuterCone < out->mAngleInnerCone)
-                        std::swap(out->mAngleInnerCone, out->mAngleOuterCone);
-                }
-            } else {
-                out->mAngleOuterCone = AI_DEG_TO_RAD(srcLight->mOuterAngle);
-            }
-        }
-
-        // add to light list
-        mLights.push_back(out);
-    }
-}
-
-// ------------------------------------------------------------------------------------------------
-// Builds cameras for the given node and references them
-void ColladaLoader::BuildCamerasForNode(const ColladaParser &pParser, const Node *pNode, aiNode *pTarget) {
-    for (const CameraInstance &cid : pNode->mCameras) {
-        // find the referred light
-        ColladaParser::CameraLibrary::const_iterator srcCameraIt = pParser.mCameraLibrary.find(cid.mCamera);
-        if (srcCameraIt == pParser.mCameraLibrary.end()) {
-            ASSIMP_LOG_WARN("Collada: Unable to find camera for ID \"", cid.mCamera, "\". Skipping.");
-            continue;
-        }
-        const Collada::Camera *srcCamera = &srcCameraIt->second;
-
-        // orthographic cameras not yet supported in Assimp
-        if (srcCamera->mOrtho) {
-            ASSIMP_LOG_WARN("Collada: Orthographic cameras are not supported.");
-        }
-
-        // now fill our ai data structure
-        aiCamera *out = new aiCamera();
-        out->mName = pTarget->mName;
-
-        // collada cameras point in -Z by default, rest is specified in node transform
-        out->mLookAt = aiVector3D(0.f, 0.f, -1.f);
-
-        // near/far z is already ok
-        out->mClipPlaneFar = srcCamera->mZFar;
-        out->mClipPlaneNear = srcCamera->mZNear;
-
-        // ... but for the rest some values are optional
-        // and we need to compute the others in any combination.
-        if (srcCamera->mAspect != 10e10f) {
-            out->mAspect = srcCamera->mAspect;
-        }
-
-        if (srcCamera->mHorFov != 10e10f) {
-            out->mHorizontalFOV = srcCamera->mHorFov;
-
-            if (srcCamera->mVerFov != 10e10f && srcCamera->mAspect == 10e10f) {
-                out->mAspect = std::tan(AI_DEG_TO_RAD(srcCamera->mHorFov)) /
-                               std::tan(AI_DEG_TO_RAD(srcCamera->mVerFov));
-            }
-
-        } else if (srcCamera->mAspect != 10e10f && srcCamera->mVerFov != 10e10f) {
-            out->mHorizontalFOV = 2.0f * AI_RAD_TO_DEG(std::atan(srcCamera->mAspect *
-                                                                 std::tan(AI_DEG_TO_RAD(srcCamera->mVerFov) * 0.5f)));
-        }
-
-        // Collada uses degrees, we use radians
-        out->mHorizontalFOV = AI_DEG_TO_RAD(out->mHorizontalFOV);
-
-        // add to camera list
-        mCameras.push_back(out);
-    }
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -455,7 +320,6 @@ void ColladaLoader::BuildMeshesForNode(const ColladaParser &pParser, const Node 
             }
 
             if (nullptr == srcMesh) {
-                ASSIMP_LOG_WARN("Collada: Unable to find geometry for ID \"", mid.mMeshOrController, "\". Skipping.");
                 continue;
             }
         } else {
@@ -480,8 +344,7 @@ void ColladaLoader::BuildMeshesForNode(const ColladaParser &pParser, const Node 
                 table = &meshMatIt->second;
                 meshMaterial = table->mMatName;
             } else {
-                ASSIMP_LOG_WARN("Collada: No material specified for subgroup <", submesh.mMaterial, "> in geometry <",
-                        mid.mMeshOrController, ">.");
+
                 if (!mid.mMaterials.empty()) {
                     meshMaterial = mid.mMaterials.begin()->second.mMatName;
                 }
@@ -631,15 +494,6 @@ aiMesh *ColladaLoader::CreateMesh(const ColladaParser &pParser, const Mesh *pSrc
             }
 
             dstMesh->mNumUVComponents[real] = pSrcMesh->mNumUVComponents[a];
-            ++real;
-        }
-    }
-
-    // same for vertex colors, as many as we have. again the same packing to avoid empty slots
-    for (size_t a = 0, real = 0; a < AI_MAX_NUMBER_OF_COLOR_SETS; ++a) {
-        if (pSrcMesh->mColors[a].size() >= pStartVertex + numVertices) {
-            dstMesh->mColors[real] = new aiColor4D[numVertices];
-            std::copy(pSrcMesh->mColors[a].begin() + pStartVertex, pSrcMesh->mColors[a].begin() + pStartVertex + numVertices, dstMesh->mColors[real]);
             ++real;
         }
     }
@@ -856,10 +710,7 @@ aiMesh *ColladaLoader::CreateMesh(const ColladaParser &pParser, const Mesh *pSrc
             // assign the name that we would have assigned for the source node
             if (nullptr != bnode) {
                 bone->mName.Set(FindNameForNode(bnode));
-            } else {
-                ASSIMP_LOG_WARN("ColladaLoader::CreateMesh(): could not find corresponding node for joint \"", bone->mName.data, "\".");
             }
-
             // and insert bone
             dstMesh->mBones[boneCount++] = bone;
         }
@@ -878,30 +729,6 @@ void ColladaLoader::StoreSceneMeshes(aiScene *pScene) {
     pScene->mMeshes = new aiMesh *[mMeshes.size()];
     std::copy(mMeshes.begin(), mMeshes.end(), pScene->mMeshes);
     mMeshes.clear();
-}
-
-// ------------------------------------------------------------------------------------------------
-// Stores all cameras in the given scene
-void ColladaLoader::StoreSceneCameras(aiScene *pScene) {
-    pScene->mNumCameras = static_cast<unsigned int>(mCameras.size());
-    if (mCameras.empty()) {
-        return;
-    }
-    pScene->mCameras = new aiCamera *[mCameras.size()];
-    std::copy(mCameras.begin(), mCameras.end(), pScene->mCameras);
-    mCameras.clear();
-}
-
-// ------------------------------------------------------------------------------------------------
-// Stores all lights in the given scene
-void ColladaLoader::StoreSceneLights(aiScene *pScene) {
-    pScene->mNumLights = static_cast<unsigned int>(mLights.size());
-    if (mLights.empty()) {
-        return;
-    }
-    pScene->mLights = new aiLight *[mLights.size()];
-    std::copy(mLights.begin(), mLights.end(), pScene->mLights);
-    mLights.clear();
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1157,8 +984,6 @@ void ColladaLoader::CreateAnimation(aiScene *pScene, const ColladaParser &pParse
                     entry.mSubElement = 1;
                 else if (subElement == "Z")
                     entry.mSubElement = 2;
-                else
-                    ASSIMP_LOG_WARN("Unknown anim subelement <", subElement, ">. Ignoring");
             } else {
                 // no sub-element following, transformId is remaining string
                 entry.mTransformId = srcChannel.mTarget.substr(slashPos + 1);
@@ -1368,8 +1193,6 @@ void ColladaLoader::CreateAnimation(aiScene *pScene, const ColladaParser &pParse
             }
 
             anims.push_back(dstAnim);
-        } else {
-            ASSIMP_LOG_WARN("Collada loader: found empty animation channel, ignored. Please check your exporter.");
         }
 
         if (!entries.empty() && entries.front().mTimeAccessor->mCount > 0) {
@@ -1519,7 +1342,6 @@ void ColladaLoader::AddTexture(aiMaterial &mat,
             }
         }
         if (-1 == map) {
-            ASSIMP_LOG_WARN("Collada: unable to determine UV channel for texture");
             map = 0;
         }
     }
@@ -1553,7 +1375,6 @@ void ColladaLoader::FillMaterials(const ColladaParser &pParser, aiScene * /*pSce
                 break;
 
             default:
-                ASSIMP_LOG_WARN("Collada: Unrecognized shading mode, using gouraud shading");
                 shadeMode = aiShadingMode_Gouraud;
                 break;
             }
@@ -1685,7 +1506,6 @@ aiString ColladaLoader::FindFilenameForEffectTexture(const ColladaParser &pParse
     // find the image referred by this name in the image library of the scene
     ColladaParser::ImageLibrary::const_iterator imIt = pParser.mImageLibrary.find(name);
     if (imIt == pParser.mImageLibrary.end()) {
-        ASSIMP_LOG_WARN("Collada: Unable to resolve effect texture entry \"", pName, "\", ended up at ID \"", name, "\".");
 
         //set default texture file name
         result.Set(name + ".jpg");
@@ -1701,10 +1521,6 @@ aiString ColladaLoader::FindFilenameForEffectTexture(const ColladaParser &pParse
         tex->mFilename.Set(imIt->second.mFileName.c_str());
         result.Set(imIt->second.mFileName);
 
-        // setup format hint
-        if (imIt->second.mEmbeddedFormat.length() >= HINTMAXTEXTURELEN) {
-            ASSIMP_LOG_WARN("Collada: texture format hint is too long, truncating to 3 characters");
-        }
         strncpy(tex->achFormatHint, imIt->second.mEmbeddedFormat.c_str(), 3);
 
         // and copy texture data

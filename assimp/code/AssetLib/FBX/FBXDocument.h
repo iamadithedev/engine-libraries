@@ -176,31 +176,6 @@ private:
     std::shared_ptr<const PropertyTable> props;
 };
 
-/** DOM base class for FBX camera settings attached to a node */
-class CameraSwitcher : public NodeAttribute {
-public:
-    CameraSwitcher(uint64_t id, const Element& element, const Document& doc, const std::string& name);
-
-    virtual ~CameraSwitcher() = default;
-
-    int CameraID() const {
-        return cameraId;
-    }
-
-    const std::string& CameraName() const {
-        return cameraName;
-    }
-
-    const std::string& CameraIndexName() const {
-        return cameraIndexName;
-    }
-
-private:
-    int cameraId;
-    std::string cameraName;
-    std::string cameraIndexName;
-};
-
 #define fbx_stringize(a) #a
 
 #define fbx_simple_property(name, type, default_value) \
@@ -220,33 +195,6 @@ private:
         return static_cast<type>(ival); \
 }
 
-
-/** DOM base class for FBX cameras attached to a node */
-class Camera : public NodeAttribute {
-public:
-    Camera(uint64_t id, const Element& element, const Document& doc, const std::string& name);
-
-    virtual  ~Camera() = default;
-
-    fbx_simple_property(Position, aiVector3D, aiVector3D(0,0,0))
-    fbx_simple_property(UpVector, aiVector3D, aiVector3D(0,1,0))
-    fbx_simple_property(InterestPosition, aiVector3D, aiVector3D(0,0,0))
-
-    fbx_simple_property(AspectWidth, float, 1.0f)
-    fbx_simple_property(AspectHeight, float, 1.0f)
-    fbx_simple_property(FilmWidth, float, 1.0f)
-    fbx_simple_property(FilmHeight, float, 1.0f)
-
-    fbx_simple_property(NearPlane, float, 0.1f)
-    fbx_simple_property(FarPlane, float, 100.0f)
-
-    fbx_simple_property(FilmAspectRatio, float, 1.0f)
-    fbx_simple_property(ApertureMode, int, 0)
-
-    fbx_simple_property(FieldOfView, float, 1.0f)
-    fbx_simple_property(FocalLength, float, 1.0f)
-};
-
 /** DOM base class for FBX null markers attached to a node */
 class Null : public NodeAttribute {
 public:
@@ -259,64 +207,6 @@ class LimbNode : public NodeAttribute {
 public:
     LimbNode(uint64_t id, const Element& element, const Document& doc, const std::string& name);
     virtual ~LimbNode() = default;
-};
-
-/** DOM base class for FBX lights attached to a node */
-class Light : public NodeAttribute {
-public:
-    Light(uint64_t id, const Element& element, const Document& doc, const std::string& name);
-    virtual ~Light() = default;
-
-    enum Type {
-        Type_Point,
-        Type_Directional,
-        Type_Spot,
-        Type_Area,
-        Type_Volume,
-
-        Type_MAX // end-of-enum sentinel
-    };
-
-    enum Decay {
-        Decay_None,
-        Decay_Linear,
-        Decay_Quadratic,
-        Decay_Cubic,
-
-        Decay_MAX // end-of-enum sentinel
-    };
-
-    fbx_simple_property(Color, aiVector3D, aiVector3D(1,1,1))
-    fbx_simple_enum_property(LightType, Type, 0)
-    fbx_simple_property(CastLightOnObject, bool, false)
-    fbx_simple_property(DrawVolumetricLight, bool, true)
-    fbx_simple_property(DrawGroundProjection, bool, true)
-    fbx_simple_property(DrawFrontFacingVolumetricLight, bool, false)
-    fbx_simple_property(Intensity, float, 100.0f)
-    fbx_simple_property(InnerAngle, float, 0.0f)
-    fbx_simple_property(OuterAngle, float, 45.0f)
-    fbx_simple_property(Fog, int, 50)
-    fbx_simple_enum_property(DecayType, Decay, 2)
-    fbx_simple_property(DecayStart, float, 1.0f)
-    fbx_simple_property(FileName, std::string, "")
-
-    fbx_simple_property(EnableNearAttenuation, bool, false)
-    fbx_simple_property(NearAttenuationStart, float, 0.0f)
-    fbx_simple_property(NearAttenuationEnd, float, 0.0f)
-    fbx_simple_property(EnableFarAttenuation, bool, false)
-    fbx_simple_property(FarAttenuationStart, float, 0.0f)
-    fbx_simple_property(FarAttenuationEnd, float, 0.0f)
-
-    fbx_simple_property(CastShadows, bool, true)
-    fbx_simple_property(ShadowColor, aiVector3D, aiVector3D(0,0,0))
-
-    fbx_simple_property(AreaLightShape, int, 0)
-
-    fbx_simple_property(LeftBarnDoor, float, 20.0f)
-    fbx_simple_property(RightBarnDoor, float, 20.0f)
-    fbx_simple_property(TopBarnDoor, float, 20.0f)
-    fbx_simple_property(BottomBarnDoor, float, 20.0f)
-    fbx_simple_property(EnableBarnDoor, bool, true)
 };
 
 /** DOM base class for FBX models (even though its semantics are more "node" than "model" */

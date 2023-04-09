@@ -55,9 +55,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assimp/anim.h>
 #include <assimp/material.h>
-#include <assimp/light.h>
 #include <assimp/texture.h>
-#include <assimp/camera.h>
 #include <assimp/StringComparison.h>
 #include <unordered_map>
 #include <unordered_set>
@@ -135,18 +133,6 @@ private:
     // ------------------------------------------------------------------------------------------------
     // collect and assign child nodes
     void ConvertNodes(uint64_t id, aiNode *parent, aiNode *root_node);
-
-    // ------------------------------------------------------------------------------------------------
-    void ConvertLights(const Model& model, const std::string &orig_name );
-
-    // ------------------------------------------------------------------------------------------------
-    void ConvertCameras(const Model& model, const std::string &orig_name );
-
-    // ------------------------------------------------------------------------------------------------
-    void ConvertLight( const Light& light, const std::string &orig_name );
-
-    // ------------------------------------------------------------------------------------------------
-    void ConvertCamera( const Camera& cam, const std::string &orig_name );
 
     // ------------------------------------------------------------------------------------------------
     void GetUniqueName( const std::string &name, std::string& uniqueName );
@@ -421,7 +407,7 @@ private:
     void ConvertGlobalSettings();
 
     // ------------------------------------------------------------------------------------------------
-    // copy generated meshes, animations, lights, cameras and textures to the output scene
+    // copy generated meshes, animations, textures to the output scene
     void TransferDataToScene();
 
     // ------------------------------------------------------------------------------------------------
@@ -435,8 +421,6 @@ private:
     std::vector<aiMesh*> mMeshes;
     std::vector<aiMaterial*> materials;
     std::vector<aiAnimation*> animations;
-    std::vector<aiLight*> lights;
-    std::vector<aiCamera*> cameras;
     std::vector<aiTexture*> textures;
 
     using MaterialMap = std::fbx_unordered_map<const Material*, unsigned int>;

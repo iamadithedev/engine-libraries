@@ -342,8 +342,6 @@ void SceneCombiner::MergeScenes(aiScene **_dest, aiScene *master, std::vector<At
             dest->mNumMeshes += (*cur)->mNumMeshes;
         }
 
-        dest->mNumLights += (*cur)->mNumLights;
-        dest->mNumCameras += (*cur)->mNumCameras;
         dest->mNumAnimations += (*cur)->mNumAnimations;
 
         // Combine the flags of all scenes
@@ -479,10 +477,7 @@ void SceneCombiner::MergeScenes(aiScene **_dest, aiScene *master, std::vector<At
     // Chances are quite good we don't collide, so we try that ...
     // ----------------------------------------------------------------------------
 
-    // Allocate space for light sources, cameras and animations
-    aiLight **ppLights = dest->mLights = (dest->mNumLights ? new aiLight *[dest->mNumLights] : nullptr);
-
-    aiCamera **ppCameras = dest->mCameras = (dest->mNumCameras ? new aiCamera *[dest->mNumCameras] : nullptr);
+    // Allocate space for animations
 
     aiAnimation **ppAnims = dest->mAnimations = (dest->mNumAnimations ? new aiAnimation *[dest->mNumAnimations] : nullptr);
 
@@ -530,46 +525,6 @@ void SceneCombiner::MergeScenes(aiScene **_dest, aiScene *master, std::vector<At
                     }
                     PrefixString(mesh->mBones[a]->mName, (*cur).id, (*cur).idlen);
                 }
-            }
-        }
-
-        // --------------------------------------------------------------------
-        // Copy light sources
-        for (unsigned int i = 0; i < (*cur)->mNumLights; ++i, ++ppLights) {
-            if (n != (int)duplicates[n]) // duplicate scene?
-            {
-                Copy(ppLights, (*cur)->mLights[i]);
-            } else
-                *ppLights = (*cur)->mLights[i];
-
-            // Add name prefixes?
-            if (flags & AI_INT_MERGE_SCENE_GEN_UNIQUE_NAMES) {
-                if (flags & AI_INT_MERGE_SCENE_GEN_UNIQUE_NAMES_IF_NECESSARY) {
-                    if (!FindNameMatch((*ppLights)->mName, src, n))
-                        continue;
-                }
-
-                PrefixString((*ppLights)->mName, (*cur).id, (*cur).idlen);
-            }
-        }
-
-        // --------------------------------------------------------------------
-        // Copy cameras
-        for (unsigned int i = 0; i < (*cur)->mNumCameras; ++i, ++ppCameras) {
-            if (n != (int)duplicates[n]) // duplicate scene?
-            {
-                Copy(ppCameras, (*cur)->mCameras[i]);
-            } else
-                *ppCameras = (*cur)->mCameras[i];
-
-            // Add name prefixes?
-            if (flags & AI_INT_MERGE_SCENE_GEN_UNIQUE_NAMES) {
-                if (flags & AI_INT_MERGE_SCENE_GEN_UNIQUE_NAMES_IF_NECESSARY) {
-                    if (!FindNameMatch((*ppCameras)->mName, src, n))
-                        continue;
-                }
-
-                PrefixString((*ppCameras)->mName, (*cur).id, (*cur).idlen);
             }
         }
 
@@ -637,10 +592,6 @@ void SceneCombiner::MergeScenes(aiScene **_dest, aiScene *master, std::vector<At
         // we are reusing the array members
         delete[] deleteMe->mMeshes;
         deleteMe->mMeshes = nullptr;
-        delete[] deleteMe->mCameras;
-        deleteMe->mCameras = nullptr;
-        delete[] deleteMe->mLights;
-        deleteMe->mLights = nullptr;
         delete[] deleteMe->mMaterials;
         deleteMe->mMaterials = nullptr;
         delete[] deleteMe->mAnimations;
@@ -845,16 +796,6 @@ void SceneCombiner::MergeMeshes(aiMesh **_out, unsigned int /*flags*/,
         }
         // copy vertex colors
         n = 0;
-        while ((**begin).HasVertexColors(n)) {
-            aiColor4D *pVec2 = out->mColors[n] = new aiColor4D[out->mNumVertices];
-            for (std::vector<aiMesh *>::const_iterator it = begin; it != end; ++it) {
-                if ((*it)->mColors[n]) {
-                    ::memcpy(pVec2, (*it)->mColors[n], (*it)->mNumVertices * sizeof(aiColor4D));
-                }
-                pVec2 += (*it)->mNumVertices;
-            }
-            ++n;
-        }
     }
 
     if (out->mNumFaces) // just for safety
@@ -1018,16 +959,6 @@ void SceneCombiner::CopyScene(aiScene **_dest, const aiScene *src, bool allocate
     CopyPtrArray(dest->mMaterials, src->mMaterials,
             dest->mNumMaterials);
 
-    // copy lights
-    dest->mNumLights = src->mNumLights;
-    CopyPtrArray(dest->mLights, src->mLights,
-            dest->mNumLights);
-
-    // copy cameras
-    dest->mNumCameras = src->mNumCameras;
-    CopyPtrArray(dest->mCameras, src->mCameras,
-            dest->mNumCameras);
-
     // copy meshes
     dest->mNumMeshes = src->mNumMeshes;
     CopyPtrArray(dest->mMeshes, src->mMeshes,
@@ -1068,9 +999,6 @@ void SceneCombiner::Copy(aiMesh **_dest, const aiMesh *src) {
     }
 
     n = 0;
-    while (dest->HasVertexColors(n)) {
-        GetArrayCopy(dest->mColors[n++], dest->mNumVertices);
-    }
 
     // make a deep copy of all bones
     CopyPtrArray(dest->mBones, dest->mBones, dest->mNumBones);
@@ -1116,8 +1044,6 @@ void SceneCombiner::Copy(aiAnimMesh **_dest, const aiAnimMesh *src) {
         GetArrayCopy(dest->mTextureCoords[n++], dest->mNumVertices);
 
     n = 0;
-    while (dest->HasVertexColors(n))
-        GetArrayCopy(dest->mColors[n++], dest->mNumVertices);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -1231,30 +1157,6 @@ void SceneCombiner::Copy(aiMeshMorphAnim **_dest, const aiMeshMorphAnim *src) {
         ::memcpy(dest->mKeys[i].mValues, src->mKeys[i].mValues, dest->mKeys[i].mNumValuesAndWeights * sizeof(unsigned int));
         ::memcpy(dest->mKeys[i].mWeights, src->mKeys[i].mWeights, dest->mKeys[i].mNumValuesAndWeights * sizeof(double));
     }
-}
-
-// ------------------------------------------------------------------------------------------------
-void SceneCombiner::Copy(aiCamera **_dest, const aiCamera *src) {
-    if (nullptr == _dest || nullptr == src) {
-        return;
-    }
-
-    aiCamera *dest = *_dest = new aiCamera();
-
-    // get a flat copy, that's already OK
-    *dest = *src;
-}
-
-// ------------------------------------------------------------------------------------------------
-void SceneCombiner::Copy(aiLight **_dest, const aiLight *src) {
-    if (nullptr == _dest || nullptr == src) {
-        return;
-    }
-
-    aiLight *dest = *_dest = new aiLight();
-
-    // get a flat copy, that's already OK
-    *dest = *src;
 }
 
 // ------------------------------------------------------------------------------------------------

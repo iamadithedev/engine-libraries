@@ -54,10 +54,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXDocumentUtil.h"
 #include "FBXProperties.h"
 
-#include <assimp/DefaultLogger.hpp>
-
 #include <functional>
-#include <map>
 #include <memory>
 #include <utility>
 
@@ -85,15 +82,8 @@ const Object* LazyObject::Get(bool dieOnError) {
     const Token& key = element.KeyToken();
     const TokenList& tokens = element.Tokens();
 
-    if(tokens.size() < 3) {
-        DOMError("expected at least 3 tokens: id, name and class tag",&element);
-    }
-
     const char* err;
     std::string name = ParseTokenAsString(*tokens[1],err);
-    if (err) {
-        DOMError(err,&element);
-    }
 
     // small fix for binary reading: binary fbx files don't use
     // prefixes such as Model:: in front of their names. The
@@ -109,9 +99,6 @@ const Object* LazyObject::Get(bool dieOnError) {
     }
 
     const std::string classtag = ParseTokenAsString(*tokens[2],err);
-    if (err) {
-        DOMError(err,&element);
-    }
 
     // prevent recursive calls
     flags |= BEING_CONSTRUCTED;
@@ -137,16 +124,7 @@ const Object* LazyObject::Get(bool dieOnError) {
             }
         }
         else if (!strncmp(obtype,"NodeAttribute",length)) {
-            if (!strcmp(classtag.c_str(),"Camera")) {
-                object.reset(new Camera(id,element,doc,name));
-            }
-            else if (!strcmp(classtag.c_str(),"CameraSwitcher")) {
-                object.reset(new CameraSwitcher(id,element,doc,name));
-            }
-            else if (!strcmp(classtag.c_str(),"Light")) {
-                object.reset(new Light(id,element,doc,name));
-            }
-            else if (!strcmp(classtag.c_str(),"Null")) {
+            if (!strcmp(classtag.c_str(),"Null")) {
                 object.reset(new Null(id,element,doc,name));
             }
             else if (!strcmp(classtag.c_str(),"LimbNode")) {
@@ -207,7 +185,7 @@ const Object* LazyObject::Get(bool dieOnError) {
 
         throw;
     }
-    catch(std::exception& ex) {
+    catch(std::exception&) {
         flags &= ~BEING_CONSTRUCTED;
         flags |= FAILED_TO_CONSTRUCT;
 
@@ -215,10 +193,6 @@ const Object* LazyObject::Get(bool dieOnError) {
             throw;
         }
 
-        // note: the error message is already formatted, so raw logging is ok
-        if(!DefaultLogger::isNullLogger()) {
-            ASSIMP_LOG_ERROR(ex.what());
-        }
         return nullptr;
     }
 
@@ -245,7 +219,6 @@ FileGlobalSettings::FileGlobalSettings(const Document &doc, std::shared_ptr<cons
 // ------------------------------------------------------------------------------------------------
 Document::Document(const Parser& parser, const ImportSettings& settings) :
      settings(settings), parser(parser) {
-	ASSIMP_LOG_DEBUG("Creating FBX Document");
 
     // Cannot use array default initialization syntax because vc8 fails on it
     for (auto &timeStamp : creationTimeStamp) {
@@ -284,29 +257,9 @@ void Document::ReadHeader() {
     // Read ID objects from "Objects" section
     const Scope& sc = parser.GetRootScope();
     const Element* const ehead = sc["FBXHeaderExtension"];
-    if(!ehead || !ehead->Compound()) {
-        DOMError("no FBXHeaderExtension dictionary found");
-    }
 
     const Scope& shead = *ehead->Compound();
     fbxVersion = ParseTokenAsInt(GetRequiredToken(GetRequiredElement(shead,"FBXVersion",ehead),0));
-	ASSIMP_LOG_DEBUG("FBX Version: ", fbxVersion);
-
-    // While we may have some success with newer files, we don't support
-    // the older 6.n fbx format
-    if(fbxVersion < LowerSupportedVersion ) {
-        DOMError("unsupported, old format version, supported are only FBX 2011, FBX 2012 and FBX 2013");
-    }
-    if(fbxVersion > UpperSupportedVersion ) {
-        if(Settings().strictMode) {
-            DOMError("unsupported, newer format version, supported are only FBX 2011, FBX 2012 and FBX 2013"
-                " (turn off strict mode to try anyhow) ");
-        }
-        else {
-            DOMWarning("unsupported, newer format version, supported are only FBX 2011, FBX 2012 and FBX 2013,"
-                " trying to read it nevertheless");
-        }
-    }
 
     const Element* const ecreator = shead["Creator"];
     if(ecreator) {
@@ -331,18 +284,11 @@ void Document::ReadGlobalSettings() {
     const Scope& sc = parser.GetRootScope();
     const Element* const ehead = sc["GlobalSettings"];
     if ( nullptr == ehead || !ehead->Compound() ) {
-        DOMWarning( "no GlobalSettings dictionary found" );
         globals.reset(new FileGlobalSettings(*this, std::make_shared<const PropertyTable>()));
         return;
     }
 
     std::shared_ptr<const PropertyTable> props = GetPropertyTable( *this, "", *ehead, *ehead->Compound(), true );
-
-    //double v = PropertyGet<float>( *props.get(), std::string("UnitScaleFactor"), 1.0 );
-
-    if(!props) {
-        DOMError("GlobalSettings dictionary contains no property table");
-    }
 
     globals.reset(new FileGlobalSettings(*this, std::move(props)));
 }
@@ -352,9 +298,6 @@ void Document::ReadObjects() {
     // read ID objects from "Objects" section
     const Scope& sc = parser.GetRootScope();
     const Element* const eobjects = sc["Objects"];
-    if(!eobjects || !eobjects->Compound()) {
-        DOMError("no Objects dictionary found");
-    }
 
     // add a dummy entry to represent the Model::RootNode object (id 0),
     // which is only indirectly defined in the input file
@@ -366,24 +309,11 @@ void Document::ReadObjects() {
         // extract ID
         const TokenList& tok = el.second->Tokens();
 
-        if (tok.empty()) {
-            DOMError("expected ID after object key",el.second);
-        }
-
         const char* err;
         const uint64_t id = ParseTokenAsID(*tok[0], err);
-        if(err) {
-            DOMError(err,el.second);
-        }
-
-        // id=0 is normally implicit
-        if(id == 0L) {
-            DOMError("encountered object with implicitly defined id 0",el.second);
-        }
 
         const auto foundObject = objects.find(id);
         if(foundObject != objects.end()) {
-            DOMWarning("encountered duplicate object id, ignoring first occurrence",el.second);
             delete foundObject->second;
         }
 
@@ -402,7 +332,6 @@ void Document::ReadPropertyTemplates() {
     // read property templates from "Definitions" section
     const Element* const edefs = sc["Definitions"];
     if(!edefs || !edefs->Compound()) {
-        DOMWarning("no Definitions dictionary found");
         return;
     }
 
@@ -412,13 +341,11 @@ void Document::ReadPropertyTemplates() {
         const Element& el = *(*it).second;
         const Scope* curSc = el.Compound();
         if (!curSc) {
-            DOMWarning("expected nested scope in ObjectType, ignoring",&el);
             continue;
         }
 
         const TokenList& tok = el.Tokens();
         if(tok.empty()) {
-            DOMWarning("expected name for ObjectType element, ignoring",&el);
             continue;
         }
 
@@ -429,13 +356,11 @@ void Document::ReadPropertyTemplates() {
             const Element &innerEl = *(*elemIt).second;
             const Scope *innerSc = innerEl.Compound();
             if (!innerSc) {
-                DOMWarning("expected nested scope in PropertyTemplate, ignoring",&el);
                 continue;
             }
 
             const TokenList &curTok = innerEl.Tokens();
             if (curTok.empty()) {
-                DOMWarning("expected name for PropertyTemplate element, ignoring",&el);
                 continue;
             }
 
@@ -458,9 +383,6 @@ void Document::ReadConnections() {
     const Scope& sc = parser.GetRootScope();
     // read property templates from "Definitions" section
     const Element* const econns = sc["Connections"];
-    if(!econns || !econns->Compound()) {
-        DOMError("no Connections dictionary found");
-    }
 
     uint64_t insertionOrder = 0l;
     const Scope& sconns = *econns->Compound();
@@ -483,13 +405,11 @@ void Document::ReadConnections() {
         const std::string& prop = (type == "OP" ? ParseTokenAsString(GetRequiredToken(el,3)) : "");
 
         if(objects.find(src) == objects.end()) {
-            DOMWarning("source object for connection does not exist",&el);
             continue;
         }
 
         // dest may be 0 (root node) but we added a dummy object before
         if(objects.find(dest) == objects.end()) {
-            DOMWarning("destination object for connection does not exist",&el);
             continue;
         }
 
@@ -511,7 +431,6 @@ const std::vector<const AnimationStack*>& Document::AnimationStacks() const {
         LazyObject* const lazy = GetObject(id);
         const AnimationStack *stack = lazy->Get<AnimationStack>();
         if(!lazy || nullptr == stack ) {
-            DOMWarning("failed to read AnimationStack object");
             continue;
         }
         animationStacksResolved.push_back(stack);

@@ -53,8 +53,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/types.h>
 #include <assimp/texture.h>
 #include <assimp/mesh.h>
-#include <assimp/light.h>
-#include <assimp/camera.h>
 #include <assimp/material.h>
 #include <assimp/anim.h>
 #include <assimp/metadata.h>
@@ -87,8 +85,6 @@ struct ASSIMP_API aiNode {
      * Multiple nodes may have the same name, except for nodes which are referenced
      * by bones (see #aiBone and #aiMesh::mBones). Their names *must* be unique.
      *
-     * Cameras and lights reference a specific node by name - if there
-     * are multiple nodes with this name, they are assigned to each of them.
      * <br>
      * There are no limitations with regard to the characters contained in
      * the name string as it is usually taken directly from the source file.
@@ -303,32 +299,6 @@ struct aiScene
     */
     C_STRUCT aiTexture** mTextures;
 
-    /** The number of light sources in the scene. Light sources
-    * are fully optional, in most cases this attribute will be 0
-        */
-    unsigned int mNumLights;
-
-    /** The array of light sources.
-    *
-    * All light sources imported from the given file are
-    * listed here. The array is mNumLights in size.
-    */
-    C_STRUCT aiLight** mLights;
-
-    /** The number of cameras in the scene. Cameras
-    * are fully optional, in most cases this attribute will be 0
-        */
-    unsigned int mNumCameras;
-
-    /** The array of cameras.
-    *
-    * All cameras imported from the given file are listed here.
-    * The array is mNumCameras in size. The first camera in the
-    * array (if existing) is the default camera view into
-    * the scene.
-    */
-    C_STRUCT aiCamera** mCameras;
-
     /**
      *  @brief  The global metadata assigned to the scene itself.
      *
@@ -372,19 +342,9 @@ struct aiScene
         return mMaterials != nullptr && mNumMaterials > 0;
     }
 
-    //! Check whether the scene contains lights
-    inline bool HasLights() const {
-        return mLights != nullptr && mNumLights > 0;
-    }
-
     //! Check whether the scene contains textures
     inline bool HasTextures() const {
         return mTextures != nullptr && mNumTextures > 0;
-    }
-
-    //! Check whether the scene contains cameras
-    inline bool HasCameras() const {
-        return mCameras != nullptr && mNumCameras > 0;
     }
 
     //! Check whether the scene contains animations

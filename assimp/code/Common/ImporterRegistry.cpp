@@ -64,12 +64,6 @@ corresponding preprocessor flag to selectively disable formats.
 #ifndef ASSIMP_BUILD_NO_FBX_IMPORTER
 #include "AssetLib/FBX/FBXImporter.h"
 #endif
-#if !defined(ASSIMP_BUILD_NO_GLTF_IMPORTER) && !defined(ASSIMP_BUILD_NO_GLTF1_IMPORTER)
-#include "AssetLib/glTF/glTFImporter.h"
-#endif
-#if !defined(ASSIMP_BUILD_NO_GLTF_IMPORTER) && !defined(ASSIMP_BUILD_NO_GLTF2_IMPORTER)
-#include "AssetLib/glTF2/glTF2Importer.h"
-#endif
 
 namespace Assimp {
 
@@ -89,7 +83,7 @@ void GetImporterInstanceList(std::vector<BaseImporter *> &out) {
     // Add an instance of each worker class here
     // (register_new_importers_here)
     // ----------------------------------------------------------------------------
-    out.reserve(5);
+    out.reserve(3);
 
 #if (!defined ASSIMP_BUILD_NO_OBJ_IMPORTER)
     out.push_back(new ObjFileImporter());
@@ -99,12 +93,6 @@ void GetImporterInstanceList(std::vector<BaseImporter *> &out) {
 #endif
 #if (!defined ASSIMP_BUILD_NO_FBX_IMPORTER)
     out.push_back(new FBXImporter());
-#endif
-#if (!defined ASSIMP_BUILD_NO_GLTF_IMPORTER && !defined ASSIMP_BUILD_NO_GLTF1_IMPORTER)
-    out.push_back(new glTFImporter());
-#endif
-#if (!defined ASSIMP_BUILD_NO_GLTF_IMPORTER && !defined ASSIMP_BUILD_NO_GLTF2_IMPORTER)
-    out.push_back(new glTF2Importer());
 #endif
 }
 

@@ -49,7 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXDocument.h"
 #include "FBXImporter.h"
 #include "FBXMeshGeometry.h"
-#include "FBXParser.h"
 #include "FBXProperties.h"
 #include "FBXUtil.h"
 
@@ -62,8 +61,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/StringUtils.h>
 #include <assimp/commonMetaData.h>
 
-#include <stdlib.h>
-#include <cstdint>
 #include <iomanip>
 #include <iterator>
 #include <memory>
@@ -81,8 +78,6 @@ using namespace Util;
 FBXConverter::FBXConverter(aiScene *out, const Document &doc, bool removeEmptyBones) :
         defaultMaterialIndex(),
         mMeshes(),
-        lights(),
-        cameras(),
         textures(),
         materials_converted(),
         textures_converted(),
@@ -140,8 +135,6 @@ FBXConverter::~FBXConverter() {
     std::for_each(mMeshes.begin(), mMeshes.end(), Util::delete_fun<aiMesh>());
     std::for_each(materials.begin(), materials.end(), Util::delete_fun<aiMaterial>());
     std::for_each(animations.begin(), animations.end(), Util::delete_fun<aiAnimation>());
-    std::for_each(lights.begin(), lights.end(), Util::delete_fun<aiLight>());
-    std::for_each(cameras.begin(), cameras.end(), Util::delete_fun<aiCamera>());
     std::for_each(textures.begin(), textures.end(), Util::delete_fun<aiTexture>());
 }
 
@@ -209,14 +202,12 @@ void FBXConverter::ConvertNodes(uint64_t id, aiNode *parent, aiNode *root_node) 
         // ignore object-property links
         if (con->PropertyName().length()) {
             // really important we document why this is ignored.
-            FBXImporter::LogInfo("ignoring property link - no docs on why this is ignored");
             continue; //?
         }
 
         // convert connection source object into Object base class
         const Object *const object = con->SourceObject();
         if (nullptr == object) {
-            FBXImporter::LogError("failed to convert source object for Model link");
             continue;
         }
 
@@ -292,14 +283,6 @@ void FBXConverter::ConvertNodes(uint64_t id, aiNode *parent, aiNode *root_node) 
             // recursion call - child nodes
             ConvertNodes(model->ID(), last_parent, root_node);
 
-            if (doc.Settings().readLights) {
-                ConvertLights(*model, node_name);
-            }
-
-            if (doc.Settings().readCameras) {
-                ConvertCameras(*model, node_name);
-            }
-
             nodes.push_back(std::move(nodes_chain.front()));
             nodes_chain.clear();
         }
@@ -315,124 +298,6 @@ void FBXConverter::ConvertNodes(uint64_t id, aiNode *parent, aiNode *root_node) 
     for (unsigned int i = 0; i < nodes.size(); ++i) {
         parent->mChildren[i] = nodes[i].mOwnership.release();
     }
-}
-
-void FBXConverter::ConvertLights(const Model &model, const std::string &orig_name) {
-    const std::vector<const NodeAttribute *> &node_attrs = model.GetAttributes();
-    for (const NodeAttribute *attr : node_attrs) {
-        const Light *const light = dynamic_cast<const Light *>(attr);
-        if (light) {
-            ConvertLight(*light, orig_name);
-        }
-    }
-}
-
-void FBXConverter::ConvertCameras(const Model &model, const std::string &orig_name) {
-    const std::vector<const NodeAttribute *> &node_attrs = model.GetAttributes();
-    for (const NodeAttribute *attr : node_attrs) {
-        const Camera *const cam = dynamic_cast<const Camera *>(attr);
-        if (cam) {
-            ConvertCamera(*cam, orig_name);
-        }
-    }
-}
-
-void FBXConverter::ConvertLight(const Light &light, const std::string &orig_name) {
-    lights.push_back(new aiLight());
-    aiLight *const out_light = lights.back();
-
-    out_light->mName.Set(orig_name);
-
-    const float intensity = light.Intensity() / 100.0f;
-    const aiVector3D &col = light.Color();
-
-    out_light->mColorDiffuse = aiColor3D(col.x, col.y, col.z);
-    out_light->mColorDiffuse.r *= intensity;
-    out_light->mColorDiffuse.g *= intensity;
-    out_light->mColorDiffuse.b *= intensity;
-
-    out_light->mColorSpecular = out_light->mColorDiffuse;
-
-    //lights are defined along negative y direction
-    out_light->mPosition = aiVector3D(0.0f);
-    out_light->mDirection = aiVector3D(0.0f, -1.0f, 0.0f);
-    out_light->mUp = aiVector3D(0.0f, 0.0f, -1.0f);
-
-    switch (light.LightType()) {
-        case Light::Type_Point:
-            out_light->mType = aiLightSource_POINT;
-            break;
-
-        case Light::Type_Directional:
-            out_light->mType = aiLightSource_DIRECTIONAL;
-            break;
-
-        case Light::Type_Spot:
-            out_light->mType = aiLightSource_SPOT;
-            out_light->mAngleOuterCone = AI_DEG_TO_RAD(light.OuterAngle());
-            out_light->mAngleInnerCone = AI_DEG_TO_RAD(light.InnerAngle());
-            break;
-
-        case Light::Type_Area:
-            FBXImporter::LogWarn("cannot represent area light, set to UNDEFINED");
-            out_light->mType = aiLightSource_UNDEFINED;
-            break;
-
-        case Light::Type_Volume:
-            FBXImporter::LogWarn("cannot represent volume light, set to UNDEFINED");
-            out_light->mType = aiLightSource_UNDEFINED;
-            break;
-        default:
-            ai_assert(false);
-    }
-
-    float decay = light.DecayStart();
-    switch (light.DecayType()) {
-        case Light::Decay_None:
-            out_light->mAttenuationConstant = decay;
-            out_light->mAttenuationLinear = 0.0f;
-            out_light->mAttenuationQuadratic = 0.0f;
-            break;
-        case Light::Decay_Linear:
-            out_light->mAttenuationConstant = 0.0f;
-            out_light->mAttenuationLinear = 2.0f / decay;
-            out_light->mAttenuationQuadratic = 0.0f;
-            break;
-        case Light::Decay_Quadratic:
-            out_light->mAttenuationConstant = 0.0f;
-            out_light->mAttenuationLinear = 0.0f;
-            out_light->mAttenuationQuadratic = 2.0f / (decay * decay);
-            break;
-        case Light::Decay_Cubic:
-            FBXImporter::LogWarn("cannot represent cubic attenuation, set to Quadratic");
-            out_light->mAttenuationQuadratic = 1.0f;
-            break;
-        default:
-            ai_assert(false);
-            break;
-    }
-}
-
-void FBXConverter::ConvertCamera(const Camera &cam, const std::string &orig_name) {
-    cameras.push_back(new aiCamera());
-    aiCamera *const out_camera = cameras.back();
-
-    out_camera->mName.Set(orig_name);
-
-    out_camera->mAspect = cam.AspectWidth() / cam.AspectHeight();
-
-    out_camera->mPosition = aiVector3D(0.0f);
-    out_camera->mLookAt = aiVector3D(1.0f, 0.0f, 0.0f);
-    out_camera->mUp = aiVector3D(0.0f, 1.0f, 0.0f);
-
-    out_camera->mHorizontalFOV = AI_DEG_TO_RAD(cam.FieldOfView());
-
-    out_camera->mClipPlaneNear = cam.NearPlane();
-    out_camera->mClipPlaneFar = cam.FarPlane();
-
-    out_camera->mHorizontalFOV = AI_DEG_TO_RAD(cam.FieldOfView());
-    out_camera->mClipPlaneNear = cam.NearPlane();
-    out_camera->mClipPlaneFar = cam.FarPlane();
 }
 
 void FBXConverter::GetUniqueName(const std::string &name, std::string &uniqueName) {
@@ -547,7 +412,6 @@ aiVector3D FBXConverter::TransformationCompDefaultValue(TransformationComp comp)
 
 void FBXConverter::GetRotationMatrix(Model::RotOrder mode, const aiVector3D &rotation, aiMatrix4x4 &out) {
     if (mode == Model::RotOrder_SphericXYZ) {
-        FBXImporter::LogError("Unsupported RotationMode: SphericXYZ");
         out = aiMatrix4x4();
         return;
     }
@@ -769,7 +633,6 @@ bool FBXConverter::GenerateTransformationNodeChain(const Model &model, const std
             if (std::fabs(GeometricScalingInverse[i]) > zero_epsilon) {
                 GeometricScalingInverse[i] = 1.0f / GeometricScaling[i];
             } else {
-                FBXImporter::LogError("cannot invert geometric scaling matrix with a 0.0 scale component");
                 canscale = false;
                 break;
             }
@@ -799,7 +662,6 @@ bool FBXConverter::GenerateTransformationNodeChain(const Model &model, const std
     // we need to generate a full node chain to accommodate for assimp's
     // lack to express pivots and offsets.
     if ((chainBits & chainMaskComplex) && doc.Settings().preservePivots) {
-        FBXImporter::LogInfo("generating full transformation chain for node: ", name);
 
         // query the anim_chain_bits dictionary to find out which chain elements
         // have associated node animation channels. These can not be dropped
@@ -906,10 +768,6 @@ void FBXConverter::ConvertModel(const Model &model, aiNode *parent, aiNode *root
         } else if (line) {
             const std::vector<unsigned int> &indices = ConvertLine(*line, root_node);
             std::copy(indices.begin(), indices.end(), std::back_inserter(meshes));
-        } else if (geo) {
-            FBXImporter::LogWarn("ignoring unrecognized geometry: ", geo->Name());
-        } else {
-            FBXImporter::LogWarn("skipping null geometry");
         }
     }
 
@@ -934,7 +792,6 @@ FBXConverter::ConvertMesh(const MeshGeometry &mesh, const Model &model, aiNode *
     const std::vector<aiVector3D> &vertices = mesh.GetVertices();
     const std::vector<unsigned int> &faces = mesh.GetFaceIndexCounts();
     if (vertices.empty() || faces.empty()) {
-        FBXImporter::LogWarn("ignoring empty geometry: ", mesh.Name());
         return temp;
     }
 
@@ -961,7 +818,6 @@ std::vector<unsigned int> FBXConverter::ConvertLine(const LineGeometry &line, ai
     const std::vector<aiVector3D> &vertices = line.GetVertices();
     const std::vector<int> &indices = line.GetIndices();
     if (vertices.empty() || indices.empty()) {
-        FBXImporter::LogWarn("ignoring empty line: ", line.Name());
         return temp;
     }
 
@@ -1148,19 +1004,7 @@ unsigned int FBXConverter::ConvertMeshSingleMaterial(const MeshGeometry &mesh, c
         out_mesh->mNumUVComponents[i] = 2;
     }
 
-    // copy vertex colors
-    for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_COLOR_SETS; ++i) {
-        const std::vector<aiColor4D> &colors = mesh.GetVertexColors(i);
-        if (colors.empty()) {
-            break;
-        }
-
-        out_mesh->mColors[i] = new aiColor4D[vertices.size()];
-        std::copy(colors.begin(), colors.end(), out_mesh->mColors[i]);
-    }
-
     if (!doc.Settings().readMaterials || mindices.empty()) {
-        FBXImporter::LogError("no material assigned to mesh, setting default material");
         out_mesh->mMaterialIndex = GetDefaultMaterial();
     } else {
         ConvertMaterialForMesh(out_mesh, model, mesh, mindices[0]);
@@ -1339,17 +1183,6 @@ unsigned int FBXConverter::ConvertMeshMultiMaterial(const MeshGeometry &mesh, co
         out_mesh->mNumUVComponents[i] = 2;
     }
 
-    // allocate vertex colors
-    unsigned int num_vcs = 0;
-    for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_COLOR_SETS; ++i, ++num_vcs) {
-        const std::vector<aiColor4D> &colors = mesh.GetVertexColors(i);
-        if (colors.empty()) {
-            break;
-        }
-
-        out_mesh->mColors[i] = new aiColor4D[count_vertices];
-    }
-
     unsigned int cursor = 0, in_cursor = 0;
 
     itf = faces.begin();
@@ -1400,11 +1233,6 @@ unsigned int FBXConverter::ConvertMeshMultiMaterial(const MeshGeometry &mesh, co
             for (unsigned int j = 0; j < num_uvs; ++j) {
                 const std::vector<aiVector2D> &uvs = mesh.GetTextureCoords(j);
                 out_mesh->mTextureCoords[j][cursor] = aiVector3D(uvs[in_cursor].x, uvs[in_cursor].y, 0.0f);
-            }
-
-            for (unsigned int j = 0; j < num_vcs; ++j) {
-                const std::vector<aiColor4D> &cols = mesh.GetVertexColors(j);
-                out_mesh->mColors[j][cursor] = cols[in_cursor];
             }
         }
     }
@@ -1595,10 +1423,8 @@ void FBXConverter::ConvertCluster(std::vector<aiBone*> &local_mesh_bones, const 
     aiBone *bone = nullptr;
 
     if (bone_map.count(deformer_name)) {
-        ASSIMP_LOG_VERBOSE_DEBUG("retrieved bone from lookup ", bone_name.C_Str(), ". Deformer:", deformer_name);
         bone = bone_map[deformer_name];
     } else {
-        ASSIMP_LOG_VERBOSE_DEBUG("created new bone ", bone_name.C_Str(), ". Deformer: ", deformer_name);
         bone = new aiBone();
         bone->mName = bone_name;
 
@@ -1646,8 +1472,6 @@ void FBXConverter::ConvertCluster(std::vector<aiBone*> &local_mesh_bones, const 
         bone_map.insert(std::pair<const std::string, aiBone *>(deformer_name, bone));
     }
 
-    ASSIMP_LOG_DEBUG("bone research: Indices size: ", out_indices.size());
-
     // lookup must be populated in case something goes wrong
     // this also allocates bones to mesh instance outside
     local_mesh_bones.push_back(bone);
@@ -1658,7 +1482,6 @@ void FBXConverter::ConvertMaterialForMesh(aiMesh *out, const Model &model, const
     // locate source materials for this mesh
     const std::vector<const Material *> &mats = model.GetMaterials();
     if (static_cast<unsigned int>(materialIndex) >= mats.size() || materialIndex < 0) {
-        FBXImporter::LogError("material index out of bounds, setting default material");
         out->mMaterialIndex = GetDefaultMaterial();
         return;
     }
@@ -1871,15 +1694,11 @@ void FBXConverter::TrySetTextureProperties(aiMaterial *out_mat, const TextureMap
                             }
                         }
                         if (index == -1) {
-                            FBXImporter::LogWarn("did not find UV channel named ", uvSet, " in a mesh using this material");
                             continue;
                         }
 
                         if (uvIndex == -1) {
                             uvIndex = index;
-                        } else {
-                            FBXImporter::LogWarn("the UV channel named ", uvSet,
-                                                 " appears at different positions in meshes, results will be wrong");
                         }
                     }
                 } else {
@@ -1894,9 +1713,6 @@ void FBXConverter::TrySetTextureProperties(aiMaterial *out_mat, const TextureMap
                             break;
                         }
                     }
-                    if (index == -1) {
-                        FBXImporter::LogWarn("did not find UV channel named ", uvSet, " in a mesh using this material");
-                    }
 
                     if (uvIndex == -1) {
                         uvIndex = index;
@@ -1904,7 +1720,6 @@ void FBXConverter::TrySetTextureProperties(aiMaterial *out_mat, const TextureMap
                 }
 
                 if (uvIndex == -1) {
-                    FBXImporter::LogWarn("failed to resolve UV channel ", uvSet, ", using first UV channel");
                     uvIndex = 0;
                 }
             }
@@ -1991,15 +1806,11 @@ void FBXConverter::TrySetTextureProperties(aiMaterial *out_mat, const LayeredTex
                             }
                         }
                         if (index == -1) {
-                            FBXImporter::LogWarn("did not find UV channel named ", uvSet, " in a mesh using this material");
                             continue;
                         }
 
                         if (uvIndex == -1) {
                             uvIndex = index;
-                        } else {
-                            FBXImporter::LogWarn("the UV channel named ", uvSet,
-                                                 " appears at different positions in meshes, results will be wrong");
                         }
                     }
                 } else {
@@ -2014,9 +1825,6 @@ void FBXConverter::TrySetTextureProperties(aiMaterial *out_mat, const LayeredTex
                             break;
                         }
                     }
-                    if (index == -1) {
-                        FBXImporter::LogWarn("did not find UV channel named ", uvSet, " in a mesh using this material");
-                    }
 
                     if (uvIndex == -1) {
                         uvIndex = index;
@@ -2024,7 +1832,6 @@ void FBXConverter::TrySetTextureProperties(aiMaterial *out_mat, const LayeredTex
                 }
 
                 if (uvIndex == -1) {
-                    FBXImporter::LogWarn("failed to resolve UV channel ", uvSet, ", using first UV channel");
                     uvIndex = 0;
                 }
             }
@@ -2100,9 +1907,6 @@ void FBXConverter::SetTextureProperties(aiMaterial *out_mat, const TextureMap &_
         else if (useGlossiness == 2) {
             TrySetTextureProperties(out_mat, _textures, "3dsMax|main|roughness_map", aiTextureType_DIFFUSE_ROUGHNESS, mesh);
             TrySetTextureProperties(out_mat, _textures, "3dsMax|main|glossiness_map", aiTextureType_DIFFUSE_ROUGHNESS, mesh);
-        }
-        else {
-            FBXImporter::LogWarn("A 3dsMax Pbr Material must have a useGlossiness value to correctly interpret roughness and glossiness textures.");
         }
     }
 }
@@ -2432,14 +2236,11 @@ void FBXConverter::SetShadingPropertiesRaw(aiMaterial *out_mat, const PropertyTa
                                 }
                             }
                             if (index == -1) {
-                                FBXImporter::LogWarn("did not find UV channel named ", uvSet, " in a mesh using this material");
                                 continue;
                             }
 
                             if (uvIndex == -1) {
                                 uvIndex = index;
-                            } else {
-                                FBXImporter::LogWarn("the UV channel named ", uvSet, " appears at different positions in meshes, results will be wrong");
                             }
                         }
                     } else {
@@ -2454,9 +2255,6 @@ void FBXConverter::SetShadingPropertiesRaw(aiMaterial *out_mat, const PropertyTa
                                 break;
                             }
                         }
-                        if (index == -1) {
-                            FBXImporter::LogWarn("did not find UV channel named ", uvSet, " in a mesh using this material");
-                        }
 
                         if (uvIndex == -1) {
                             uvIndex = index;
@@ -2464,7 +2262,6 @@ void FBXConverter::SetShadingPropertiesRaw(aiMaterial *out_mat, const PropertyTa
                     }
 
                     if (uvIndex == -1) {
-                        FBXImporter::LogWarn("failed to resolve UV channel ", uvSet, ", using first UV channel");
                         uvIndex = 0;
                     }
                 }
@@ -2687,7 +2484,6 @@ void FBXConverter::ConvertAnimationStack(const AnimationStack &st) {
         // empty animations would fail validation, so drop them
         delete anim;
         animations.pop_back();
-        FBXImporter::LogInfo("ignoring empty AnimationStack (using IK?): ", name);
         return;
     }
 
@@ -2789,9 +2585,6 @@ static void validateAnimCurveNodes(const std::vector<const AnimationCurveNode *>
     for (const AnimationCurveNode *node : curves) {
         if (!target) {
             target = node->Target();
-        }
-        if (node->Target() != target) {
-            FBXImporter::LogWarn("Node target is nullptr type.");
         }
         if (strictMode) {
             ai_assert(node->Target() == target);
@@ -3663,20 +3456,6 @@ void FBXConverter::TransferDataToScene() {
         mSceneOut->mNumAnimations = static_cast<unsigned int>(animations.size());
 
         std::swap_ranges(animations.begin(), animations.end(), mSceneOut->mAnimations);
-    }
-
-    if (!lights.empty()) {
-        mSceneOut->mLights = new aiLight *[lights.size()]();
-        mSceneOut->mNumLights = static_cast<unsigned int>(lights.size());
-
-        std::swap_ranges(lights.begin(), lights.end(), mSceneOut->mLights);
-    }
-
-    if (!cameras.empty()) {
-        mSceneOut->mCameras = new aiCamera *[cameras.size()]();
-        mSceneOut->mNumCameras = static_cast<unsigned int>(cameras.size());
-
-        std::swap_ranges(cameras.begin(), cameras.end(), mSceneOut->mCameras);
     }
 
     if (!textures.empty()) {

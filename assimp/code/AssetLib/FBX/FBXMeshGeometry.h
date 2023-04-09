@@ -128,11 +128,6 @@ public:
     /// @return The texture coordinate channel name.
     std::string GetTextureCoordChannelName( unsigned int index ) const;
 
-    /// @brief Get a vertex color coordinate slot, returns an empty array if the requested slot does not exist.
-    /// @param index    The requested texture coordinate slot.
-    /// @return The vertex color vector.
-    const std::vector<aiColor4D>& GetVertexColors( unsigned int index ) const;
-
     /// @brief Get per-face-vertex material assignments.
     /// @return The Material indices Array.
     const MatIndexArray& GetMaterialIndices() const;
@@ -190,7 +185,6 @@ private:
 
     std::string m_uvNames[ AI_MAX_NUMBER_OF_TEXTURECOORDS ];
     std::vector<aiVector2D> m_uvs[ AI_MAX_NUMBER_OF_TEXTURECOORDS ];
-    std::vector<aiColor4D> m_colors[ AI_MAX_NUMBER_OF_COLOR_SETS ];
 
     std::vector<unsigned int> m_mapping_counts;
     std::vector<unsigned int> m_mapping_offsets;

@@ -56,8 +56,6 @@ struct ImportSettings {
             readAllMaterials(false),
             readMaterials(true),
             readTextures(true),
-            readCameras(true),
-            readLights(true),
             readAnimations(true),
             readWeights(true),
             useSkeleton(false),
@@ -98,12 +96,6 @@ struct ImportSettings {
 
     /** import embedded textures? Default value is true.*/
     bool readTextures;
-
-    /** import cameras? Default value is true.*/
-    bool readCameras;
-
-    /** import light sources? Default value is true.*/
-    bool readLights;
 
     /** import animations (i.e. animation curves, the node
      *  skeleton is always imported). Default value is true. */

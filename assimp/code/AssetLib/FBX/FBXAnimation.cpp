@@ -66,13 +66,9 @@ AnimationCurve::AnimationCurve(uint64_t id, const Element &element, const std::s
     ParseVectorDataArray(keys, KeyTime);
     ParseVectorDataArray(values, KeyValueFloat);
 
-    if (keys.size() != values.size()) {
-        DOMError("the number of key times does not match the number of keyframe values", &KeyTime);
-    }
-
     // check if the key times are well-ordered
     if (!std::equal(keys.begin(), keys.end() - 1, keys.begin() + 1, std::less<KeyTimeList::value_type>())) {
-        DOMError("the keyframes are not in ascending order", &KeyTime);
+
     }
 
     const Element *KeyAttrDataFloat = sc["KeyAttrDataFloat"];
@@ -121,7 +117,6 @@ AnimationCurveNode::AnimationCurveNode(uint64_t id, const Element &element, cons
 
         const Object *const ob = con->DestinationObject();
         if (!ob) {
-            DOMWarning("failed to read destination object for AnimationCurveNode->Model link, ignoring", &element);
             continue;
         }
 
@@ -132,10 +127,6 @@ AnimationCurveNode::AnimationCurveNode(uint64_t id, const Element &element, cons
 
         prop = con->PropertyName();
         break;
-    }
-
-    if (!target) {
-        DOMWarning("failed to resolve target Model/NodeAttribute/Constraint for AnimationCurveNode", &element);
     }
 
     props = GetPropertyTable(doc, "AnimationCurveNode.FbxAnimCurveNode", element, sc, false);
@@ -156,13 +147,11 @@ const AnimationCurveMap &AnimationCurveNode::Curves() const {
 
             const Object *const ob = con->SourceObject();
             if (nullptr == ob) {
-                DOMWarning("failed to read source object for AnimationCurve->AnimationCurveNode link, ignoring", &element);
                 continue;
             }
 
             const AnimationCurve *const anim = dynamic_cast<const AnimationCurve *>(ob);
             if (nullptr == anim) {
-                DOMWarning("source object for ->AnimationCurveNode link is not an AnimationCurve", &element);
                 continue;
             }
 
@@ -200,13 +189,11 @@ AnimationCurveNodeList AnimationLayer::Nodes(const char *const *target_prop_whit
 
         const Object *const ob = con->SourceObject();
         if (!ob) {
-            DOMWarning("failed to read source object for AnimationCurveNode->AnimationLayer link, ignoring", &element);
             continue;
         }
 
         const AnimationCurveNode *const anim = dynamic_cast<const AnimationCurveNode *>(ob);
         if (!anim) {
-            DOMWarning("source object for ->AnimationLayer link is not an AnimationCurveNode", &element);
             continue;
         }
 
@@ -250,13 +237,11 @@ AnimationStack::AnimationStack(uint64_t id, const Element &element, const std::s
 
         const Object *const ob = con->SourceObject();
         if (!ob) {
-            DOMWarning("failed to read source object for AnimationLayer->AnimationStack link, ignoring", &element);
             continue;
         }
 
         const AnimationLayer *const anim = dynamic_cast<const AnimationLayer *>(ob);
         if (!anim) {
-            DOMWarning("source object for ->AnimationStack link is not an AnimationLayer", &element);
             continue;
         }
         layers.push_back(anim);

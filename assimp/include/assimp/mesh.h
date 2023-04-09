@@ -96,13 +96,6 @@ extern "C" {
 #define AI_MAX_FACES 0x7fffffff
 #endif
 
-/** @def AI_MAX_NUMBER_OF_COLOR_SETS
- *  Supported number of vertex color sets per mesh. */
-
-#ifndef AI_MAX_NUMBER_OF_COLOR_SETS
-#define AI_MAX_NUMBER_OF_COLOR_SETS 0x8
-#endif // !! AI_MAX_NUMBER_OF_COLOR_SETS
-
 /** @def AI_MAX_NUMBER_OF_TEXTURECOORDS
  *  Supported number of texture coord sets (UV(W) channels) per mesh */
 
@@ -489,9 +482,6 @@ struct aiAnimMesh {
     /** Replacement for aiMesh::mBitangents. */
     C_STRUCT aiVector3D *mBitangents;
 
-    /** Replacement for aiMesh::mColors */
-    C_STRUCT aiColor4D *mColors[AI_MAX_NUMBER_OF_COLOR_SETS];
-
     /** Replacement for aiMesh::mTextureCoords */
     C_STRUCT aiVector3D *mTextureCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
 
@@ -517,7 +507,6 @@ struct aiAnimMesh {
             mNormals(nullptr),
             mTangents(nullptr),
             mBitangents(nullptr),
-            mColors {nullptr},
             mTextureCoords{nullptr},
             mNumVertices(0),
             mWeight(0.0f) {
@@ -532,9 +521,6 @@ struct aiAnimMesh {
         delete[] mBitangents;
         for (unsigned int a = 0; a < AI_MAX_NUMBER_OF_TEXTURECOORDS; a++) {
             delete[] mTextureCoords[a];
-        }
-        for (unsigned int a = 0; a < AI_MAX_NUMBER_OF_COLOR_SETS; a++) {
-            delete[] mColors[a];
         }
     }
 
@@ -564,17 +550,6 @@ struct aiAnimMesh {
      */
     bool HasTangentsAndBitangents() const {
         return mTangents != nullptr;
-    }
-
-    /**
-     *  @brief Check whether the anim mesh overrides a particular
-     *         set of vertex colors on his host mesh.
-     *  @param pIndex 0<index<AI_MAX_NUMBER_OF_COLOR_SETS
-     *  @return true if vertex colors are stored, false if not.
-     */
-
-    bool HasVertexColors(unsigned int pIndex) const {
-        return pIndex >= AI_MAX_NUMBER_OF_COLOR_SETS ? false : mColors[pIndex] != nullptr;
     }
 
     /**
@@ -716,15 +691,6 @@ struct aiMesh {
     C_STRUCT aiVector3D *mBitangents;
 
     /**
-     * @brief Vertex color sets.
-     * 
-     * A mesh may contain 0 to #AI_MAX_NUMBER_OF_COLOR_SETS vertex
-     * colors per vertex. nullptr if not present. Each array is
-     * mNumVertices in size if present.
-     */
-    C_STRUCT aiColor4D *mColors[AI_MAX_NUMBER_OF_COLOR_SETS];
-
-    /**
      * @brief Vertex texture coordinates, also known as UV channels.
      * 
      * A mesh may contain 0 to AI_MAX_NUMBER_OF_TEXTURECOORDS per
@@ -834,7 +800,6 @@ struct aiMesh {
               mNormals(nullptr),
               mTangents(nullptr),
               mBitangents(nullptr),
-              mColors{nullptr},
               mTextureCoords{nullptr},
               mNumUVComponents{0},
               mFaces(nullptr),
@@ -864,10 +829,6 @@ struct aiMesh {
                 delete mTextureCoordsNames[a];
             }
             delete[] mTextureCoordsNames;
-        }
-
-        for (unsigned int a = 0; a < AI_MAX_NUMBER_OF_COLOR_SETS; a++) {
-            delete[] mColors[a];
         }
 
         // DO NOT REMOVE THIS ADDITIONAL CHECK
@@ -920,16 +881,6 @@ struct aiMesh {
         return mTangents != nullptr && mBitangents != nullptr && mNumVertices > 0;
     }
 
-    //! @brief Check whether the mesh contains a vertex color set
-    //! @param index    Index of the vertex color set
-    //! @return true, if vertex colors are stored, false if not.
-    bool HasVertexColors(unsigned int index) const {
-        if (index >= AI_MAX_NUMBER_OF_COLOR_SETS) {
-            return false;
-        }
-        return mColors[index] != nullptr && mNumVertices > 0;        
-    }
-
     //! @brief Check whether the mesh contains a texture coordinate set
     //! @param index    Index of the texture coordinates set
     //! @return true, if texture coordinates are stored, false if not.
@@ -948,16 +899,6 @@ struct aiMesh {
             ++n;
         }
 
-        return n;
-    }
-
-    //! @brief Get the number of vertex color channels the mesh contains.
-    //! @return The number of stored color channels.
-    unsigned int GetNumColorChannels() const {
-        unsigned int n(0);
-        while (n < AI_MAX_NUMBER_OF_COLOR_SETS && mColors[n]) {
-            ++n;
-        }
         return n;
     }
 

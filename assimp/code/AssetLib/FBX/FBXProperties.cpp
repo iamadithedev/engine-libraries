@@ -173,19 +173,16 @@ PropertyTable::PropertyTable(const Element &element, std::shared_ptr<const Prope
     const Scope& scope = GetRequiredScope(element);
     for(const ElementMap::value_type& v : scope.Elements()) {
         if(v.first != "P") {
-            DOMWarning("expected only P elements in property table",v.second);
             continue;
         }
 
         const std::string& name = PeekPropertyName(*v.second);
         if(!name.length()) {
-            DOMWarning("could not read property name",v.second);
             continue;
         }
 
         LazyPropertyMap::const_iterator it = lazyProps.find(name);
         if (it != lazyProps.end()) {
-            DOMWarning("duplicate property name, will hide previous value: " + name,v.second);
             continue;
         }
 

@@ -84,18 +84,9 @@ Cluster::Cluster(uint64_t id, const Element& element, const Document& doc, const
     transform = ReadMatrix(Transform);
     transformLink = ReadMatrix(TransformLink);
 
-    // it is actually possible that there be Deformer's with no weights
-    if (!!Indexes != !!Weights) {
-        DOMError("either Indexes or Weights are missing from Cluster",&element);
-    }
-
     if(Indexes) {
         ParseVectorDataArray(indices,*Indexes);
         ParseVectorDataArray(weights,*Weights);
-    }
-
-    if(indices.size() != weights.size()) {
-        DOMError("sizes of index and weight array don't match up",&element);
     }
 
     // read assigned node
@@ -106,10 +97,6 @@ Cluster::Cluster(uint64_t id, const Element& element, const Document& doc, const
             node = mod;
             break;
         }
-    }
-
-    if (!node) {
-        DOMError("failed to read target Node for Cluster",&element);
     }
 }
 
@@ -155,9 +142,6 @@ BlendShape::BlendShape(uint64_t id, const Element& element, const Document& doc,
         const BlendShapeChannel* const bspc = ProcessSimpleConnection<BlendShapeChannel>(*con, false, "BlendShapeChannel -> BlendShape", element);
         if (bspc) {
             auto pr = blendShapeChannels.insert(bspc);
-            if (!pr.second) {
-                FBXImporter::LogWarn("there is the same blendShapeChannel id ", bspc->ID());
-            }
         }
     }
 }
@@ -182,9 +166,6 @@ BlendShapeChannel::BlendShapeChannel(uint64_t id, const Element& element, const 
         const ShapeGeometry* const sg = ProcessSimpleConnection<ShapeGeometry>(*con, false, "Shape -> BlendShapeChannel", element);
         if (sg) {
             auto pr = shapeGeometries.insert(sg);
-            if (!pr.second) {
-                FBXImporter::LogWarn("there is the same shapeGeometrie id ", sg->ID());
-            }
         }
     }
 }

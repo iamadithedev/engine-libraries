@@ -71,39 +71,6 @@ NodeAttribute::NodeAttribute(uint64_t id, const Element &element, const Document
 }
 
 // ------------------------------------------------------------------------------------------------
-CameraSwitcher::CameraSwitcher(uint64_t id, const Element &element, const Document &doc, const std::string &name) :
-        NodeAttribute(id, element, doc, name) {
-    const Scope &sc = GetRequiredScope(element);
-    const Element *const CameraId = sc["CameraId"];
-    const Element *const CameraName = sc["CameraName"];
-    const Element *const CameraIndexName = sc["CameraIndexName"];
-
-    if (CameraId) {
-        cameraId = ParseTokenAsInt(GetRequiredToken(*CameraId, 0));
-    }
-
-    if (CameraName) {
-        cameraName = GetRequiredToken(*CameraName, 0).StringContents();
-    }
-
-    if (CameraIndexName && CameraIndexName->Tokens().size()) {
-        cameraIndexName = GetRequiredToken(*CameraIndexName, 0).StringContents();
-    }
-}
-
-// ------------------------------------------------------------------------------------------------
-Camera::Camera(uint64_t id, const Element &element, const Document &doc, const std::string &name) :
-        NodeAttribute(id, element, doc, name) {
-    // empty
-}
-
-// ------------------------------------------------------------------------------------------------
-Light::Light(uint64_t id, const Element &element, const Document &doc, const std::string &name) :
-        NodeAttribute(id, element, doc, name) {
-    // empty
-}
-
-// ------------------------------------------------------------------------------------------------
 Null::Null(uint64_t id, const Element &element, const Document &doc, const std::string &name) :
         NodeAttribute(id, element, doc, name) {
     // empty

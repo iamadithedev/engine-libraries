@@ -64,8 +64,6 @@ struct aiScene;
 struct aiNode;
 struct aiMaterial;
 struct aiTexture;
-struct aiCamera;
-struct aiLight;
 struct aiMetadata;
 struct aiBone;
 struct aiMesh;
@@ -351,9 +349,7 @@ public:
     static void Copy(aiMaterial **dest, const aiMaterial *src);
     static void Copy(aiTexture **dest, const aiTexture *src);
     static void Copy(aiAnimation **dest, const aiAnimation *src);
-    static void Copy(aiCamera **dest, const aiCamera *src);
     static void Copy(aiBone **dest, const aiBone *src);
-    static void Copy(aiLight **dest, const aiLight *src);
     static void Copy(aiNodeAnim **dest, const aiNodeAnim *src);
     static void Copy(aiMeshMorphAnim **dest, const aiMeshMorphAnim *src);
     static void Copy(aiMetadata **dest, const aiMetadata *src);

@@ -44,7 +44,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 namespace Assimp    {
 
-aiAnimMesh *aiCreateAnimMesh(const aiMesh *mesh, bool needPositions, bool needNormals, bool needTangents, bool needColors, bool needTexCoords)
+aiAnimMesh *aiCreateAnimMesh(const aiMesh *mesh, bool needPositions, bool needNormals, bool needTangents, bool, bool needTexCoords)
 {
     aiAnimMesh *animesh = new aiAnimMesh;
     animesh->mNumVertices = mesh->mNumVertices;
@@ -63,17 +63,6 @@ aiAnimMesh *aiCreateAnimMesh(const aiMesh *mesh, bool needPositions, bool needNo
     if (needTangents && mesh->mBitangents) {
         animesh->mBitangents = new aiVector3D[animesh->mNumVertices];
         std::memcpy(animesh->mBitangents, mesh->mBitangents, mesh->mNumVertices * sizeof(aiVector3D));
-    }
-
-    if (needColors) {
-        for (int i = 0; i < AI_MAX_NUMBER_OF_COLOR_SETS; ++i) {
-            if (mesh->mColors[i]) {
-                animesh->mColors[i] = new aiColor4D[animesh->mNumVertices];
-                std::memcpy(animesh->mColors[i], mesh->mColors[i], mesh->mNumVertices * sizeof(aiColor4D));
-            } else {
-                animesh->mColors[i] = nullptr;
-            }
-        }
     }
 
     if (needTexCoords) {

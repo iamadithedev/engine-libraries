@@ -70,9 +70,6 @@ Geometry::Geometry(uint64_t id, const Element& element, const std::string& name,
         const BlendShape* const bsp = ProcessSimpleConnection<BlendShape>(*con, false, "BlendShape -> Geometry", element);
         if (bsp) {
             auto pr = blendShapes.insert(bsp);
-            if (!pr.second) {
-                FBXImporter::LogWarn("there is the same blendShape id ", bsp->ID());
-            }
         }
     }
 }
@@ -92,9 +89,6 @@ MeshGeometry::MeshGeometry(uint64_t id, const Element& element, const std::strin
 : Geometry(id, element,name, doc)
 {
     const Scope* sc = element.Compound();
-    if (!sc) {
-        DOMError("failed to read Geometry object (class: Mesh), no data scope found");
-    }
 
     // must have Mesh elements:
     const Element& Vertices = GetRequiredElement(*sc,"Vertices",&element);
@@ -106,16 +100,8 @@ MeshGeometry::MeshGeometry(uint64_t id, const Element& element, const std::strin
     std::vector<aiVector3D> tempVerts;
     ParseVectorDataArray(tempVerts,Vertices);
 
-    if(tempVerts.empty()) {
-        FBXImporter::LogWarn("encountered mesh with no vertices");
-    }
-
     std::vector<int> tempFaces;
     ParseVectorDataArray(tempFaces,PolygonVertexIndex);
-
-    if(tempFaces.empty()) {
-        FBXImporter::LogWarn("encountered mesh with no faces");
-    }
 
     m_vertices.reserve(tempFaces.size());
     m_faces.reserve(tempFaces.size() / 3);
@@ -124,16 +110,11 @@ MeshGeometry::MeshGeometry(uint64_t id, const Element& element, const std::strin
     m_mapping_counts.resize(tempVerts.size(),0);
     m_mappings.resize(tempFaces.size());
 
-    const size_t vertex_count = tempVerts.size();
-
     // generate output vertices, computing an adjacency table to
     // preserve the mapping from fbx indices to *this* indexing.
     unsigned int count = 0;
     for(int index : tempFaces) {
         const int absi = index < 0 ? (-index - 1) : index;
-        if(static_cast<size_t>(absi) >= vertex_count) {
-            DOMError("polygon vertex index out of range",&PolygonVertexIndex);
-        }
 
         m_vertices.push_back(tempVerts[absi]);
         ++count;
@@ -169,15 +150,10 @@ MeshGeometry::MeshGeometry(uint64_t id, const Element& element, const std::strin
 
         const char* err;
         const int index = ParseTokenAsInt(*tokens[0], err);
-        if(err) {
-            DOMError(err,&element);
-        }
 
         if(doc.Settings().readAllLayers || index == 0) {
             const Scope& layer = GetRequiredScope(*(*it).second);
             ReadLayer(layer);
-        } else {
-            FBXImporter::LogWarn("ignoring additional geometry layers");
         }
     }
 }
@@ -215,11 +191,6 @@ const std::vector<aiVector2D>& MeshGeometry::GetTextureCoords( unsigned int inde
 
 std::string MeshGeometry::GetTextureCoordChannelName( unsigned int index ) const {
     return index >= AI_MAX_NUMBER_OF_TEXTURECOORDS ? "" : m_uvNames[ index ];
-}
-
-const std::vector<aiColor4D>& MeshGeometry::GetVertexColors( unsigned int index ) const {
-    static const std::vector<aiColor4D> empty;
-    return index >= AI_MAX_NUMBER_OF_COLOR_SETS ? empty : m_colors[ index ];
 }
 
 const MatIndexArray& MeshGeometry::GetMaterialIndices() const {
@@ -324,7 +295,6 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
     }
     else if (type == "LayerElementMaterial") {
         if (m_materials.size() > 0) {
-            FBXImporter::LogError("ignoring additional material layer");
             return;
         }
 
@@ -378,16 +348,6 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
             ReferenceInformationType
         );
     }
-    else if (type == "LayerElementColor") {
-        if(index >= AI_MAX_NUMBER_OF_COLOR_SETS) {
-            return;
-        }
-
-        ReadVertexDataColors(m_colors[index],source,
-            MappingInformationType,
-            ReferenceInformationType
-        );
-    }
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -421,15 +381,12 @@ void ResolveVertexDataArray(std::vector<T>& data_out, const Scope& source,
     // now it seems unavoidable.
     if (MappingInformationType == "ByVertice" && isDirect) {
         if (!hasDataElement) {
-            FBXImporter::LogWarn("missing data element: ", dataElementName);
             return;
         }
         std::vector<T> tempData;
         ParseVectorDataArray(tempData, GetRequiredElement(source, dataElementName));
 
         if (tempData.size() != mapping_offsets.size()) {
-            FBXImporter::LogError("length of input data unexpected for ByVertice mapping: ",
-                                  tempData.size(), ", expected ", mapping_offsets.size());
             return;
         }
 
@@ -444,10 +401,6 @@ void ResolveVertexDataArray(std::vector<T>& data_out, const Scope& source,
     else if (MappingInformationType == "ByVertice" && isIndexToDirect) {
 		std::vector<T> tempData;
         if (!hasDataElement || !hasIndexDataElement) {
-            if (!hasDataElement)
-                FBXImporter::LogWarn("missing data element: ", dataElementName);
-            if (!hasIndexDataElement)
-                FBXImporter::LogWarn("missing index data element: ", indexDataElementName);
             return;
         }
 
@@ -457,8 +410,6 @@ void ResolveVertexDataArray(std::vector<T>& data_out, const Scope& source,
         ParseVectorDataArray(uvIndices,GetRequiredElement(source,indexDataElementName));
 
         if (uvIndices.size() != vertex_count) {
-            FBXImporter::LogError("length of input data unexpected for ByVertice mapping: ",
-                                  uvIndices.size(), ", expected ", vertex_count);
             return;
         }
 
@@ -468,16 +419,12 @@ void ResolveVertexDataArray(std::vector<T>& data_out, const Scope& source,
 
             const unsigned int istart = mapping_offsets[i], iend = istart + mapping_counts[i];
             for (unsigned int j = istart; j < iend; ++j) {
-				if (static_cast<size_t>(uvIndices[i]) >= tempData.size()) {
-                    DOMError("index out of range",&GetRequiredElement(source,indexDataElementName));
-                }
 				data_out[mappings[j]] = tempData[uvIndices[i]];
             }
         }
     }
     else if (MappingInformationType == "ByPolygonVertex" && isDirect) {
         if (!hasDataElement) {
-            FBXImporter::LogWarn("missing data element: ", dataElementName);
             return;
         }
 
@@ -485,9 +432,6 @@ void ResolveVertexDataArray(std::vector<T>& data_out, const Scope& source,
 		ParseVectorDataArray(tempData, GetRequiredElement(source, dataElementName));
 
 		if (tempData.size() != vertex_count) {
-            FBXImporter::LogError("length of input data unexpected for ByPolygon mapping: ",
-				tempData.size(), ", expected ", vertex_count
-            );
             return;
         }
 
@@ -496,10 +440,6 @@ void ResolveVertexDataArray(std::vector<T>& data_out, const Scope& source,
     else if (MappingInformationType == "ByPolygonVertex" && isIndexToDirect) {
 		std::vector<T> tempData;
         if (!hasDataElement || !hasIndexDataElement) {
-            if (!hasDataElement)
-                FBXImporter::LogWarn("missing data element: ", dataElementName);
-            if (!hasIndexDataElement)
-                FBXImporter::LogWarn("missing index data element: ", indexDataElementName);
             return;
         }
         ParseVectorDataArray(tempData, GetRequiredElement(source, dataElementName));
@@ -508,14 +448,10 @@ void ResolveVertexDataArray(std::vector<T>& data_out, const Scope& source,
         ParseVectorDataArray(uvIndices,GetRequiredElement(source,indexDataElementName));
 
         if (uvIndices.size() > vertex_count) {
-            FBXImporter::LogWarn("trimming length of input array for ByPolygonVertex mapping: ",
-                                          uvIndices.size(), ", expected ", vertex_count);
             uvIndices.resize(vertex_count);
         }
 
         if (uvIndices.size() != vertex_count) {
-            FBXImporter::LogError("length of input data unexpected for ByPolygonVertex mapping: ",
-                                  uvIndices.size(), ", expected ", vertex_count);
             return;
         }
 
@@ -528,16 +464,9 @@ void ResolveVertexDataArray(std::vector<T>& data_out, const Scope& source,
                 data_out[ next++ ] = empty;
                 continue;
             }
-            if (static_cast<size_t>(i) >= tempData.size()) {
-                DOMError("index out of range",&GetRequiredElement(source,indexDataElementName));
-            }
 
 			data_out[next++] = tempData[i];
         }
-    }
-    else {
-        FBXImporter::LogError("ignoring vertex data channel, access type not implemented: ",
-            MappingInformationType, ",", ReferenceInformationType);
     }
 }
 
@@ -641,10 +570,8 @@ void MeshGeometry::ReadVertexDataMaterials(std::vector<int>& materials_out, cons
     if (MappingInformationType == "AllSame") {
         // easy - same material for all faces
         if (materials_out.empty()) {
-            FBXImporter::LogError("expected material index, ignoring");
             return;
         } else if (materials_out.size() > 1) {
-            FBXImporter::LogWarn("expected only a single material index, ignoring all except the first one");
             materials_out.clear();
         }
 
@@ -654,23 +581,15 @@ void MeshGeometry::ReadVertexDataMaterials(std::vector<int>& materials_out, cons
         materials_out.resize(face_count);
 
         if(materials_out.size() != face_count) {
-            FBXImporter::LogError("length of input data unexpected for ByPolygon mapping: ",
-                materials_out.size(), ", expected ", face_count
-            );
             return;
         }
-    } else {
-        FBXImporter::LogError("ignoring material assignments, access type not implemented: ",
-            MappingInformationType, ",", ReferenceInformationType);
     }
 }
 // ------------------------------------------------------------------------------------------------
 ShapeGeometry::ShapeGeometry(uint64_t id, const Element& element, const std::string& name, const Document& doc)
 : Geometry(id, element, name, doc) {
     const Scope *sc = element.Compound();
-    if (nullptr == sc) {
-        DOMError("failed to read Geometry object (class: Shape), no data scope found");
-    }
+
     const Element& Indexes = GetRequiredElement(*sc, "Indexes", &element);
     const Element& Normals = GetRequiredElement(*sc, "Normals", &element);
     const Element& Vertices = GetRequiredElement(*sc, "Vertices", &element);
@@ -698,9 +617,7 @@ LineGeometry::LineGeometry(uint64_t id, const Element& element, const std::strin
     : Geometry(id, element, name, doc)
 {
     const Scope* sc = element.Compound();
-    if (!sc) {
-        DOMError("failed to read Geometry object (class: Line), no data scope found");
-    }
+
     const Element& Points = GetRequiredElement(*sc, "Points", &element);
     const Element& PointsIndex = GetRequiredElement(*sc, "PointsIndex", &element);
     ParseVectorDataArray(m_vertices, Points);

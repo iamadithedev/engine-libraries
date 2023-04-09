@@ -76,7 +76,6 @@ Material::Material(uint64_t id, const Element& element, const Document& doc, con
     if(ShadingModel) {
         shading = ParseTokenAsString(GetRequiredToken(*ShadingModel,0));
     } else {
-        DOMWarning("shading mode not specified, assuming phong",&element);
         shading = "phong";
     }
 
@@ -89,8 +88,6 @@ Material::Material(uint64_t id, const Element& element, const Document& doc, con
         templateName = "Material.FbxSurfacePhong";
     } else if(shading == "lambert") {
         templateName = "Material.FbxSurfaceLambert";
-    } else {
-        DOMWarning("shading mode not recognized: " + shading,&element);
     }
 
     props = GetPropertyTable(doc,templateName,element,sc);
@@ -105,7 +102,6 @@ Material::Material(uint64_t id, const Element& element, const Document& doc, con
 
         const Object* const ob = con->SourceObject();
         if(nullptr == ob) {
-            DOMWarning("failed to read source object for texture link, ignoring",&element);
             continue;
         }
 
@@ -113,21 +109,14 @@ Material::Material(uint64_t id, const Element& element, const Document& doc, con
         if(nullptr == tex) {
             const LayeredTexture* const layeredTexture = dynamic_cast<const LayeredTexture*>(ob);
             if(!layeredTexture) {
-                DOMWarning("source object for texture link is not a texture or layered texture, ignoring",&element);
                 continue;
             }
             const std::string& prop = con->PropertyName();
-            if (layeredTextures.find(prop) != layeredTextures.end()) {
-                DOMWarning("duplicate layered texture link: " + prop,&element);
-            }
 
             layeredTextures[prop] = layeredTexture;
             ((LayeredTexture*)layeredTexture)->fillTexture(doc);
         } else {
             const std::string& prop = con->PropertyName();
-            if (textures.find(prop) != textures.end()) {
-                DOMWarning("duplicate texture link: " + prop,&element);
-            }
 
             textures[prop] = tex;
         }
@@ -240,7 +229,6 @@ Texture::Texture(uint64_t id, const Element& element, const Document& doc, const
         for(const Connection* con : conns) {
             const Object* const ob = con->SourceObject();
             if (nullptr == ob) {
-                DOMWarning("failed to read source object for texture link, ignoring",&element);
                 continue;
             }
 
@@ -281,7 +269,6 @@ void LayeredTexture::fillTexture(const Document& doc) {
 
         const Object* const ob = con->SourceObject();
         if (nullptr == ob) {
-            DOMWarning("failed to read source object for texture link, ignoring",&element);
             continue;
         }
 
@@ -322,7 +309,7 @@ Video::Video(uint64_t id, const Element &element, const Document &doc, const std
             const char* data = token.begin();
             if (!token.IsBinary()) {
                 if (*data != '"') {
-                    DOMError("embedded content is not surrounded by quotation marks", &element);
+
                 } else {
                     size_t targetLength = 0;
                     auto numTokens = Content->Tokens().size();
@@ -332,14 +319,10 @@ Video::Video(uint64_t id, const Element &element, const Document &doc, const std
                         size_t tokenLength = dataToken.end() - dataToken.begin() - 2; // ignore double quotes
                         const char* base64data = dataToken.begin() + 1;
                         const size_t outLength = Util::ComputeDecodedSizeBase64(base64data, tokenLength);
-                        if (outLength == 0) {
-                            DOMError("Corrupted embedded content found", &element);
-                        }
+
                         targetLength += outLength;
                     }
-                    if (targetLength == 0) {
-                        DOMError("Corrupted embedded content found", &element);
-                    }
+
                     content = new uint8_t[targetLength];
                     contentLength = static_cast<uint64_t>(targetLength);
                     size_t dst_offset = 0;
@@ -352,13 +335,10 @@ Video::Video(uint64_t id, const Element &element, const Document &doc, const std
                     if (targetLength != dst_offset) {
                         delete[] content;
                         contentLength = 0;
-                        DOMError("Corrupted embedded content found", &element);
                     }
                 }
-            } else if (static_cast<size_t>(token.end() - data) < 5) {
-                DOMError("binary data array is too short, need five (5) bytes for type signature and element count", &element);
             } else if (*data != 'R') {
-                DOMWarning("video content is not raw binary data, ignoring", &element);
+
             } else {
                 // read number of elements
                 uint32_t len = 0;
@@ -370,7 +350,7 @@ Video::Video(uint64_t id, const Element &element, const Document &doc, const std
                 content = new uint8_t[len];
                 ::memcpy(content, data + 5, len);
             }
-        } catch (const runtime_error& runtimeError) {
+        } catch (const runtime_error&) {
             //we don't need the content data for contents that has already been loaded
         }
     }

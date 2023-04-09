@@ -49,8 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/BaseImporter.h>
 
 struct aiNode;
-struct aiCamera;
-struct aiLight;
 struct aiTexture;
 struct aiAnimation;
 
@@ -119,25 +117,11 @@ protected:
     aiMesh *CreateMesh(const ColladaParser &pParser, const Collada::Mesh *pSrcMesh, const Collada::SubMesh &pSubMesh,
             const Collada::Controller *pSrcController, size_t pStartVertex, size_t pStartFace);
 
-    /** Builds cameras for the given node and references them */
-    void BuildCamerasForNode(const ColladaParser &pParser, const Collada::Node *pNode,
-            aiNode *pTarget);
-
-    /** Builds lights for the given node and references them */
-    void BuildLightsForNode(const ColladaParser &pParser, const Collada::Node *pNode,
-            aiNode *pTarget);
-
     /** Stores all meshes in the given scene */
     void StoreSceneMeshes(aiScene *pScene);
 
     /** Stores all materials in the given scene */
     void StoreSceneMaterials(aiScene *pScene);
-
-    /** Stores all lights in the given scene */
-    void StoreSceneLights(aiScene *pScene);
-
-    /** Stores all cameras in the given scene */
-    void StoreSceneCameras(aiScene *pScene);
 
     /** Stores all textures in the given scene */
     void StoreSceneTextures(aiScene *pScene);
@@ -223,12 +207,6 @@ protected:
 
     /** Temporary material list */
     std::vector<std::pair<Collada::Effect *, aiMaterial *>> newMats;
-
-    /** Temporary camera list */
-    std::vector<aiCamera *> mCameras;
-
-    /** Temporary light list */
-    std::vector<aiLight *> mLights;
 
     /** Temporary texture list */
     std::vector<aiTexture *> mTextures;

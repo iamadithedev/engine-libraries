@@ -291,7 +291,6 @@ bool TXmlParser<TNodeType>::parse(IOStream *stream) {
     }
 
     if (nullptr == stream) {
-        ASSIMP_LOG_DEBUG("Stream is nullptr.");
         return false;
     }
 
@@ -305,8 +304,6 @@ bool TXmlParser<TNodeType>::parse(IOStream *stream) {
     if (parse_result.status == pugi::status_ok) {
         return true;
     }
-
-    ASSIMP_LOG_DEBUG("Error while parse xml.", std::string(parse_result.description()), " @ ", parse_result.offset);
 
     return false;
 }

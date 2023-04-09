@@ -445,7 +445,6 @@ void ComputeUVMappingProcess::Execute( aiScene* pScene)
                                 ComputePlaneMapping(mesh,info.axis,p);
                                 break;
                             case aiTextureMapping_BOX:
-                                ComputeBoxMapping(mesh,p);
                                 break;
                             default:
                                 ai_assert(false);

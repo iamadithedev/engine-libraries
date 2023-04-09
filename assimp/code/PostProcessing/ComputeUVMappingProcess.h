@@ -111,14 +111,6 @@ protected:
     void ComputePlaneMapping(aiMesh* mesh,const aiVector3D& axis,
         aiVector3D* out);
 
-    // -------------------------------------------------------------------
-    /** Computes cubic UV coordinates for a mesh
-     *
-     *  @param mesh Mesh to be processed
-     *  @param out Receives output UV coordinates
-    */
-    void ComputeBoxMapping(aiMesh* mesh, aiVector3D* out);
-
 private:
 
     // temporary structure to describe a mapping

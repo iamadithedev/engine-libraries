@@ -437,10 +437,6 @@ void CatmullClarkSubdivider::InternSubdivide(
                 mout->mNumUVComponents[i] = minp->mNumUVComponents[i];
             }
 
-            for (unsigned int i = 0; minp->HasVertexColors(i); ++i) {
-                mout->mColors[i] = new aiColor4D[mout->mNumVertices];
-            }
-
             mout->mNumVertices = mout->mNumFaces << 2u;
             for (unsigned int i = 0, v = 0, n = 0; i < minp->mNumFaces; ++i) {
 

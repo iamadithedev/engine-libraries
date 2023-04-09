@@ -225,18 +225,6 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model *pModel, aiScene
             memcpy(mesh->mNormals, pModel->mNormals.data(), n * sizeof(aiVector3D));
         }
 
-        if (!pModel->mVertexColors.empty()) {
-            mesh->mColors[0] = new aiColor4D[mesh->mNumVertices];
-            for (unsigned int i = 0; i < n; ++i) {
-                if (i < pModel->mVertexColors.size()) {
-                    const aiVector3D &color = pModel->mVertexColors[i];
-                    mesh->mColors[0][i] = aiColor4D(color.x, color.y, color.z, 1.0);
-                } else {
-                    throw DeadlyImportError("OBJ: vertex color index out of range");
-                }
-            }
-        }
-
         pScene->mRootNode->mNumMeshes = 1;
         pScene->mRootNode->mMeshes = new unsigned int[1];
         pScene->mRootNode->mMeshes[0] = 0;
@@ -424,10 +412,6 @@ void ObjFileImporter::createVertexArray(const ObjFile::Model *pModel,
     if (!pModel->mNormals.empty() && pObjMesh->m_hasNormals)
         pMesh->mNormals = new aiVector3D[pMesh->mNumVertices];
 
-    // Allocate buffer for vertex-color vectors
-    if (!pModel->mVertexColors.empty())
-        pMesh->mColors[0] = new aiColor4D[pMesh->mNumVertices];
-
     // Allocate buffer for texture coordinates
     if (!pModel->mTextureCoord.empty() && pObjMesh->m_uiUVCoordinates[0]) {
         pMesh->mNumUVComponents[0] = pModel->mTextureCoordDim;
@@ -459,12 +443,6 @@ void ObjFileImporter::createVertexArray(const ObjFile::Model *pModel,
                 } else {
                     pMesh->mNormals[newIndex] = pModel->mNormals[normal];
                 }
-            }
-
-            // Copy all vertex colors
-            if (vertex < pModel->mVertexColors.size()) {
-                const aiVector3D &color = pModel->mVertexColors[vertex];
-                pMesh->mColors[0][newIndex] = aiColor4D(color.x, color.y, color.z, 1.0);
             }
 
             // Copy all texture coordinates

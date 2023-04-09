@@ -665,7 +665,7 @@ const aiScene* Importer::ApplyPostProcessing(unsigned int pFlags) {
 }
 
 // ------------------------------------------------------------------------------------------------
-const aiScene* Importer::ApplyCustomizedPostProcessing( BaseProcess *rootProcess, bool requestValidation ) {
+const aiScene* Importer::ApplyCustomizedPostProcessing( BaseProcess *rootProcess ) {
     ai_assert(nullptr != pimpl);
 
     ASSIMP_BEGIN_EXCEPTION_REGION();
@@ -934,13 +934,6 @@ void Importer::GetMemoryRequirements(aiMemoryInfo& in) const {
             in.meshes += sizeof(aiVector3D) * mScene->mMeshes[i]->mNumVertices * 2;
         }
 
-        for (unsigned int a = 0; a < AI_MAX_NUMBER_OF_COLOR_SETS;++a) {
-            if (mScene->mMeshes[i]->HasVertexColors(a)) {
-                in.meshes += sizeof(aiColor4D) * mScene->mMeshes[i]->mNumVertices;
-            } else {
-                break;
-            }
-        }
         for (unsigned int a = 0; a < AI_MAX_NUMBER_OF_TEXTURECOORDS;++a) {
             if (mScene->mMeshes[i]->HasTextureCoords(a)) {
                 in.meshes += sizeof(aiVector3D) * mScene->mMeshes[i]->mNumVertices;
@@ -986,10 +979,6 @@ void Importer::GetMemoryRequirements(aiMemoryInfo& in) const {
         }
     }
     in.total += in.animations;
-
-    // add all cameras and all lights
-    in.total += in.cameras = sizeof(aiCamera) *  mScene->mNumCameras;
-    in.total += in.lights  = sizeof(aiLight)  *  mScene->mNumLights;
 
     // add all nodes
     AddNodeWeight(in.nodes,mScene->mRootNode);

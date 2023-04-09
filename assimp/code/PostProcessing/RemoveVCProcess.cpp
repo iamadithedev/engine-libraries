@@ -175,18 +175,6 @@ void RemoveVCProcess::Execute(aiScene *pScene) {
         helper->AddProperty(&s, AI_MATKEY_NAME);
     }
 
-    // handle light sources
-    if (configDeleteFlags & aiComponent_LIGHTS) {
-        bHas = true;
-        ArrayDelete(pScene->mLights, pScene->mNumLights);
-    }
-
-    // handle camneras
-    if (configDeleteFlags & aiComponent_CAMERAS) {
-        bHas = true;
-        ArrayDelete(pScene->mCameras, pScene->mNumCameras);
-    }
-
     // handle meshes
     if (configDeleteFlags & aiComponent_MESHES) {
         bHas = true;
@@ -256,27 +244,6 @@ bool RemoveVCProcess::ProcessMesh(aiMesh *pMesh) {
                     pMesh->mTextureCoords[a - 1] = pMesh->mTextureCoords[a];
 
                 pMesh->mTextureCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS - 1] = nullptr;
-                continue;
-            }
-        }
-        ++i;
-    }
-
-    // handle vertex colors
-    b = (0 != (configDeleteFlags & aiComponent_COLORS));
-    for (unsigned int i = 0, real = 0; real < AI_MAX_NUMBER_OF_COLOR_SETS; ++real) {
-        if (!pMesh->mColors[i]) break;
-        if (configDeleteFlags & aiComponent_COLORSn(i) || b) {
-            delete[] pMesh->mColors[i];
-            pMesh->mColors[i] = nullptr;
-            ret = true;
-
-            if (!b) {
-                // collapse the rest of the array
-                for (unsigned int a = i + 1; a < AI_MAX_NUMBER_OF_COLOR_SETS; ++a)
-                    pMesh->mColors[a - 1] = pMesh->mColors[a];
-
-                pMesh->mColors[AI_MAX_NUMBER_OF_COLOR_SETS - 1] = nullptr;
                 continue;
             }
         }

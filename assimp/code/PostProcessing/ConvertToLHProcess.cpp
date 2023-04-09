@@ -340,13 +340,6 @@ void FlipWindingOrderProcess::ProcessMesh(aiMesh *pMesh) {
                 std::swap(animMesh->mBitangents[a], animMesh->mBitangents[numVertices - 1 - a]);
             }
         }
-        for (unsigned int v = 0; v < AI_MAX_NUMBER_OF_COLOR_SETS; v++) {
-            if (animMesh->HasVertexColors(v)) {
-                for (unsigned int a = 0; a < numVertices; a++) {
-                    std::swap(animMesh->mColors[v][a], animMesh->mColors[v][numVertices - 1 - a]);
-                }
-            }
-        }
     }
 }
 

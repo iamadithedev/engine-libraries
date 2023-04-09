@@ -184,20 +184,6 @@ void FindInstancesProcess::Execute( aiScene* pScene)
                             continue;
                         }
                     }
-                    {
-                        unsigned int j, end = orig->GetNumColorChannels();
-                        for(j = 0; j < end; ++j) {
-                            if (!orig->mColors[j]) {
-                                continue;
-                            }
-                            if(!CompareArrays(orig->mColors[j],inst->mColors[j],orig->mNumVertices,uvEpsilon)) {
-                                break;
-                            }
-                        }
-                        if (j != end) {
-                            continue;
-                        }
-                    }
 
                     // These two checks are actually quite expensive and almost *never* required.
                     // Almost. That's why they're still here. But there's no reason to do them

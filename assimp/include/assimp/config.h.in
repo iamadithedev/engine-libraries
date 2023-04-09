@@ -378,10 +378,6 @@ enum aiComponent
     aiComponent_TANGENTS_AND_BITANGENTS = 0x4u,
 #endif
 
-    /** ALL color sets
-     * Use aiComponent_COLORn(N) to specify the N'th set */
-    aiComponent_COLORS = 0x8,
-
     /** ALL texture UV sets
      * aiComponent_TEXCOORDn(N) to specify the N'th set  */
     aiComponent_TEXCOORDS = 0x10,
@@ -399,16 +395,6 @@ enum aiComponent
     /** Removes all embedded textures (aiScene::mTextures) */
     aiComponent_TEXTURES = 0x80,
 
-    /** Removes all light sources (aiScene::mLights).
-     * The corresponding scenegraph nodes are NOT removed.
-     * use the #aiProcess_OptimizeGraph step to do this */
-    aiComponent_LIGHTS = 0x100,
-
-    /** Removes all cameras (aiScene::mCameras).
-     * The corresponding scenegraph nodes are NOT removed.
-     * use the #aiProcess_OptimizeGraph step to do this */
-    aiComponent_CAMERAS = 0x200,
-
     /** Removes all meshes (aiScene::mMeshes). */
     aiComponent_MESHES = 0x400,
 
@@ -423,9 +409,6 @@ enum aiComponent
     _aiComponent_Force32Bit = 0x9fffffff
 #endif
 };
-
-// Remove a specific color channel 'n'
-#define aiComponent_COLORSn(n) (1u << (n+20u))
 
 // Remove a specific UV channel 'n'
 #define aiComponent_TEXCOORDSn(n) (1u << (n+25u))
@@ -518,8 +501,7 @@ enum aiComponent
 // ###########################################################################
 
 // ---------------------------------------------------------------------------
-/** @brief Importers which parse JSON may use this to obtain a pointer to a
- * rapidjson::IRemoteSchemaDocumentProvider.
+/** @brief Importers which parse JSON may use this to obtain a pointer
  *
  * The default value is nullptr
  * Property type: void*
@@ -566,24 +548,6 @@ enum aiComponent
  */
 #define AI_CONFIG_IMPORT_FBX_READ_TEXTURES \
     "IMPORT_FBX_READ_TEXTURES"
-
-// ---------------------------------------------------------------------------
-/** @brief Set whether the fbx importer will read cameras.
- *
- * The default value is true (1)
- * Property type: bool
- */
-#define AI_CONFIG_IMPORT_FBX_READ_CAMERAS \
-    "IMPORT_FBX_READ_CAMERAS"
-
-// ---------------------------------------------------------------------------
-/** @brief Set whether the fbx importer will read light sources.
- *
- * The default value is true (1)
- * Property type: bool
- */
-#define AI_CONFIG_IMPORT_FBX_READ_LIGHTS \
-    "IMPORT_FBX_READ_LIGHTS"
 
 // ---------------------------------------------------------------------------
 /** @brief Set whether the fbx importer will read animations.

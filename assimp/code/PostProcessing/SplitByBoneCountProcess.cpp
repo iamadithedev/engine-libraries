@@ -237,11 +237,6 @@ void SplitByBoneCountProcess::SplitMesh( const aiMesh* pMesh, std::vector<aiMesh
             }
             newMesh->mNumUVComponents[a] = pMesh->mNumUVComponents[a];
         }
-        for( unsigned int a = 0; a < AI_MAX_NUMBER_OF_COLOR_SETS; ++a ) {
-            if( pMesh->HasVertexColors( a) ) {
-                newMesh->mColors[a] = new aiColor4D[newMesh->mNumVertices];
-            }
-        }
 
         // and copy over the data, generating faces with linear indices along the way
         newMesh->mFaces = new aiFace[subMeshFaces.size()];
@@ -270,11 +265,6 @@ void SplitByBoneCountProcess::SplitMesh( const aiMesh* pMesh, std::vector<aiMesh
                 for( unsigned int c = 0; c < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++c ) {
                     if( pMesh->HasTextureCoords( c) ) {
                         newMesh->mTextureCoords[c][nvi] = pMesh->mTextureCoords[c][srcIndex];
-                    }
-                }
-                for( unsigned int c = 0; c < AI_MAX_NUMBER_OF_COLOR_SETS; ++c ) {
-                    if( pMesh->HasVertexColors( c) ) {
-                        newMesh->mColors[c][nvi] = pMesh->mColors[c][srcIndex];
                     }
                 }
 

@@ -209,13 +209,6 @@ void PretransformVertices::CollectData(const aiScene *pcScene, const aiNode *pcN
 				++p;
 			}
 			p = 0;
-			while (iVFormat & (0x1000000 << p)) {
-				// copy vertex colors
-				memcpy(pcMeshOut->mColors[p] + aiCurrent[AI_PTVS_VERTEX],
-						pcMesh->mColors[p],
-						pcMesh->mNumVertices * sizeof(aiColor4D));
-				++p;
-			}
 			// now we need to copy all faces. since we will delete the source mesh afterwards,
 			// we don't need to reallocate the array of indices except if this mesh is
 			// referenced multiple times.
@@ -508,8 +501,6 @@ void PretransformVertices::Execute(aiScene *pScene) {
 						iFaces++;
 					}
 					iFaces = 0;
-					while ((*j) & (0x1000000 << iFaces))
-						pcMesh->mColors[iFaces++] = new aiColor4D[iVertices];
 
 					// fill the mesh ...
 					unsigned int aiTemp[2] = { 0, 0 };
@@ -562,31 +553,6 @@ void PretransformVertices::Execute(aiScene *pScene) {
 	pScene->mAnimations = nullptr;
 	pScene->mNumAnimations = 0;
 
-	// --- we need to keep all cameras and lights
-	for (unsigned int i = 0; i < pScene->mNumCameras; ++i) {
-		aiCamera *cam = pScene->mCameras[i];
-		const aiNode *nd = pScene->mRootNode->FindNode(cam->mName);
-        ai_assert(nullptr != nd);
-
-		// multiply all properties of the camera with the absolute
-		// transformation of the corresponding node
-		cam->mPosition = nd->mTransformation * cam->mPosition;
-		cam->mLookAt = aiMatrix3x3(nd->mTransformation) * cam->mLookAt;
-		cam->mUp = aiMatrix3x3(nd->mTransformation) * cam->mUp;
-	}
-
-	for (unsigned int i = 0; i < pScene->mNumLights; ++i) {
-		aiLight *l = pScene->mLights[i];
-		const aiNode *nd = pScene->mRootNode->FindNode(l->mName);
-        ai_assert(nullptr != nd);
-
-		// multiply all properties of the camera with the absolute
-		// transformation of the corresponding node
-		l->mPosition = nd->mTransformation * l->mPosition;
-		l->mDirection = aiMatrix3x3(nd->mTransformation) * l->mDirection;
-		l->mUp = aiMatrix3x3(nd->mTransformation) * l->mUp;
-	}
-
 	if (!configKeepHierarchy) {
 
 		// now delete all nodes in the scene and build a new
@@ -596,12 +562,12 @@ void PretransformVertices::Execute(aiScene *pScene) {
 		delete pScene->mRootNode;
 		pScene->mRootNode = newRoot;
 
-		if (1 == pScene->mNumMeshes && !pScene->mNumLights && !pScene->mNumCameras) {
+		if (1 == pScene->mNumMeshes) {
 			pScene->mRootNode->mNumMeshes = 1;
 			pScene->mRootNode->mMeshes = new unsigned int[1];
 			pScene->mRootNode->mMeshes[0] = 0;
 		} else {
-			pScene->mRootNode->mNumChildren = pScene->mNumMeshes + pScene->mNumLights + pScene->mNumCameras;
+			pScene->mRootNode->mNumChildren = pScene->mNumMeshes;
 			aiNode **nodes = pScene->mRootNode->mChildren = new aiNode *[pScene->mRootNode->mNumChildren];
 
 			// generate mesh nodes
@@ -615,22 +581,6 @@ void PretransformVertices::Execute(aiScene *pScene) {
 				pcNode->mNumMeshes = 1;
 				pcNode->mMeshes = new unsigned int[1];
 				pcNode->mMeshes[0] = i;
-			}
-			// generate light nodes
-			for (unsigned int i = 0; i < pScene->mNumLights; ++i, ++nodes) {
-				aiNode *pcNode = new aiNode();
-				*nodes = pcNode;
-				pcNode->mParent = pScene->mRootNode;
-				pcNode->mName.length = ai_snprintf(pcNode->mName.data, MAXLEN, "light_%u", i);
-				pScene->mLights[i]->mName = pcNode->mName;
-			}
-			// generate camera nodes
-			for (unsigned int i = 0; i < pScene->mNumCameras; ++i, ++nodes) {
-				aiNode *pcNode = new aiNode();
-				*nodes = pcNode;
-				pcNode->mParent = pScene->mRootNode;
-				pcNode->mName.length = ::ai_snprintf(pcNode->mName.data, MAXLEN, "cam_%u", i);
-				pScene->mCameras[i]->mName = pcNode->mName;
 			}
 		}
 	} else {

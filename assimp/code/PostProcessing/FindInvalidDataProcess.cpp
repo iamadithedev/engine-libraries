@@ -185,7 +185,7 @@ inline const char *ValidateArrayContents<aiVector3D>(const aiVector3D *arr, unsi
 
 // ------------------------------------------------------------------------------------------------
 template <typename T>
-inline bool ProcessArray(T *&in, unsigned int num, const char *name,
+inline bool ProcessArray(T *&in, unsigned int num, const char*,
         const std::vector<bool> &dirtyMask, bool mayBeIdentical = false, bool mayBeZero = true) {
     const char *err = ValidateArrayContents(in, num, dirtyMask, mayBeIdentical, mayBeZero);
     if (err) {

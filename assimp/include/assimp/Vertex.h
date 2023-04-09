@@ -125,10 +125,6 @@ public:
         for (unsigned int i = 0; msh->HasTextureCoords(i); ++i) {
             texcoords[i] = msh->mTextureCoords[i][idx];
         }
-
-        for (unsigned int i = 0; msh->HasVertexColors(i); ++i) {
-            colors[i] = msh->mColors[i][idx];
-        }
     }
 
     // ----------------------------------------------------------------------------
@@ -150,10 +146,6 @@ public:
 
         for (unsigned int i = 0; msh->HasTextureCoords(i); ++i) {
             texcoords[i] = msh->mTextureCoords[i][idx];
-        }
-
-        for (unsigned int i = 0; msh->HasVertexColors(i); ++i) {
-           colors[i] = msh->mColors[i][idx];
         }
     }
 
@@ -195,10 +187,6 @@ public:
         for(unsigned int i = 0; out->HasTextureCoords(i); ++i) {
             out->mTextureCoords[i][idx] = texcoords[i];
         }
-
-        for(unsigned int i = 0; out->HasVertexColors(i); ++i) {
-            out->mColors[i][idx] = colors[i];
-        }
     }
 
 private:
@@ -217,9 +205,6 @@ private:
         for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++i) {
             res.texcoords[i] = op<aiVector3D>()(v0.texcoords[i],v1.texcoords[i]);
         }
-        for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_COLOR_SETS; ++i) {
-            res.colors[i] = op<aiColor4D>()(v0.colors[i],v1.colors[i]);
-        }
         return res;
     }
 
@@ -236,9 +221,6 @@ private:
 
         for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++i) {
             res.texcoords[i] = op<aiVector3D,ai_real,aiVector3D>()(v0.texcoords[i],f);
-        }
-        for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_COLOR_SETS; ++i) {
-            res.colors[i] = op<aiColor4D,ai_real,aiColor4D>()(v0.colors[i],f);
         }
         return res;
     }
@@ -257,9 +239,6 @@ private:
         for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_TEXTURECOORDS; ++i) {
             res.texcoords[i] = op<ai_real,aiVector3D,aiVector3D>()(f,v0.texcoords[i]);
         }
-        for (unsigned int i = 0; i < AI_MAX_NUMBER_OF_COLOR_SETS; ++i) {
-            res.colors[i] = op<ai_real,aiColor4D,aiColor4D>()(f,v0.colors[i]);
-        }
         return res;
     }
 
@@ -270,7 +249,6 @@ public:
     aiVector3D tangent, bitangent;
 
     aiVector3D texcoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
-    aiColor4D colors[AI_MAX_NUMBER_OF_COLOR_SETS];
 };
 
 // ------------------------------------------------------------------------------------------------

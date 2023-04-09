@@ -278,16 +278,6 @@ void OptimizeGraphProcess::Execute(aiScene *pScene) {
 		}
 	}
 
-	for (unsigned int i = 0; i < pScene->mNumCameras; ++i) {
-		aiCamera *cam = pScene->mCameras[i];
-		locked.insert(AI_OG_GETKEY(cam->mName));
-	}
-
-	for (unsigned int i = 0; i < pScene->mNumLights; ++i) {
-		aiLight *lgh = pScene->mLights[i];
-		locked.insert(AI_OG_GETKEY(lgh->mName));
-	}
-
 	// Insert a dummy master node and make it read-only
 	aiNode *dummy_root = new aiNode(AI_RESERVED_NODE_NAME);
 	locked.insert(AI_OG_GETKEY(dummy_root->mName));

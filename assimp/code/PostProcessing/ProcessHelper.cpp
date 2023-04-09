@@ -190,8 +190,6 @@ unsigned int GetMeshVFormatUnique(const aiMesh *pcMesh) {
     }
     // vertex colors
     p = 0;
-    while (pcMesh->HasVertexColors(p))
-        iRet |= (0x1000000 << p++);
     return iRet;
 }
 
@@ -278,10 +276,6 @@ aiMesh *MakeSubmesh(const aiMesh *pMesh, const std::vector<unsigned int> &subMes
         oMesh->mNumUVComponents[a] = pMesh->mNumUVComponents[a];
     }
 
-    for (size_t a = 0; pMesh->HasVertexColors(static_cast<unsigned int>(a)); ++a) {
-        oMesh->mColors[a] = new aiColor4D[numSubVerts];
-    }
-
     // and copy over the data, generating faces with linear indices along the way
     oMesh->mFaces = new aiFace[numSubFaces];
 
@@ -315,9 +309,6 @@ aiMesh *MakeSubmesh(const aiMesh *pMesh, const std::vector<unsigned int> &subMes
         }
         for (size_t c = 0, cc = pMesh->GetNumUVChannels(); c < cc; ++c) {
             oMesh->mTextureCoords[c][nvi] = pMesh->mTextureCoords[c][srcIndex];
-        }
-        for (size_t c = 0, cc = pMesh->GetNumColorChannels(); c < cc; ++c) {
-            oMesh->mColors[c][nvi] = pMesh->mColors[c][srcIndex];
         }
     }
 

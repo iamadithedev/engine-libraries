@@ -130,10 +130,6 @@ ASSIMP_API aiScene::aiScene() :
         mAnimations(nullptr),
         mNumTextures(0),
         mTextures(nullptr),
-        mNumLights(0),
-        mLights(nullptr),
-        mNumCameras(0),
-        mCameras(nullptr),
         mMetaData(nullptr),
         mName(),
         mNumSkeletons(0),
@@ -171,16 +167,6 @@ ASSIMP_API aiScene::~aiScene() {
         for (unsigned int a = 0; a < mNumTextures; a++)
             delete mTextures[a];
     delete[] mTextures;
-
-    if (mNumLights && mLights)
-        for (unsigned int a = 0; a < mNumLights; a++)
-            delete mLights[a];
-    delete[] mLights;
-
-    if (mNumCameras && mCameras)
-        for (unsigned int a = 0; a < mNumCameras; a++)
-            delete mCameras[a];
-    delete[] mCameras;
 
     aiMetadata::Dealloc(mMetaData);
 

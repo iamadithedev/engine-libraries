@@ -73,10 +73,6 @@ OPTION( ASSIMP_OPT_BUILD_PACKAGES
   "Set to ON to generate CPack configuration files and packaging targets"
   OFF
 )
-OPTION( ASSIMP_NO_EXPORT
-  "Disable Assimp's export functionality."
-  OFF
-)
 OPTION( ASSIMP_BUILD_ASSIMP_TOOLS
   "If the supplementary tools for Assimp are built in addition to the library."
   OFF
@@ -503,11 +499,6 @@ ELSE ()
     ENDIF()
   ENDIF ()
 ENDIF ()
-
-IF ( ASSIMP_NO_EXPORT )
-  ADD_DEFINITIONS( -DASSIMP_BUILD_NO_EXPORT)
-  MESSAGE( STATUS "Build an import-only version of Assimp." )
-ENDIF()
 
 SET ( ASSIMP_BUILD_ARCHITECTURE "" CACHE STRING
   "describe the current architecture."

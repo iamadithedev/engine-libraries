@@ -53,9 +53,6 @@ corresponding preprocessor flag to selectively disable steps.
 #ifndef ASSIMP_BUILD_NO_CALCTANGENTS_PROCESS
 #   include "PostProcessing/CalcTangentsProcess.h"
 #endif
-#ifndef ASSIMP_BUILD_NO_JOINVERTICES_PROCESS
-#   include "PostProcessing/JoinVerticesProcess.h"
-#endif
 #if !(defined ASSIMP_BUILD_NO_MAKELEFTHANDED_PROCESS && defined ASSIMP_BUILD_NO_FLIPUVS_PROCESS && defined ASSIMP_BUILD_NO_FLIPWINDINGORDER_PROCESS)
 #   include "PostProcessing/ConvertToLHProcess.h"
 #endif
@@ -73,9 +70,6 @@ corresponding preprocessor flag to selectively disable steps.
 #endif
 #ifndef ASSIMP_BUILD_NO_REMOVEVC_PROCESS
 #   include "PostProcessing/RemoveVCProcess.h"
-#endif
-#ifndef ASSIMP_BUILD_NO_SPLITLARGEMESHES_PROCESS
-#   include "PostProcessing/SplitLargeMeshes.h"
 #endif
 #ifndef ASSIMP_BUILD_NO_PRETRANSFORMVERTICES_PROCESS
 #   include "PostProcessing/PretransformVertices.h"
@@ -97,9 +91,6 @@ corresponding preprocessor flag to selectively disable steps.
 #endif
 #ifndef ASSIMP_BUILD_NO_FINDDEGENERATES_PROCESS
 #   include "PostProcessing/FindDegenerates.h"
-#endif
-#ifndef ASSIMP_BUILD_NO_SORTBYPTYPE_PROCESS
-#   include "PostProcessing/SortByPTypeProcess.h"
 #endif
 #ifndef ASSIMP_BUILD_NO_GENUVCOORDS_PROCESS
 #   include "PostProcessing/ComputeUVMappingProcess.h"
@@ -193,9 +184,6 @@ void GetPostProcessingStepInstanceList(std::vector< BaseProcess* >& out)
     //and points generated and inserted into a mesh)
     out.push_back( new FindDegeneratesProcess());
 #endif
-#if (!defined ASSIMP_BUILD_NO_SORTBYPTYPE_PROCESS)
-    out.push_back( new SortByPTypeProcess());
-#endif
 #if (!defined ASSIMP_BUILD_NO_FINDINVALIDDATA_PROCESS)
     out.push_back( new FindInvalidDataProcess());
 #endif
@@ -207,9 +195,6 @@ void GetPostProcessingStepInstanceList(std::vector< BaseProcess* >& out)
 #endif
 #if (!defined ASSIMP_BUILD_NO_SPLITBYBONECOUNT_PROCESS)
     out.push_back( new SplitByBoneCountProcess());
-#endif
-#if (!defined ASSIMP_BUILD_NO_SPLITLARGEMESHES_PROCESS)
-    out.push_back( new SplitLargeMeshesProcess_Triangle());
 #endif
 #if (!defined ASSIMP_BUILD_NO_GENFACENORMALS_PROCESS)
     out.push_back( new DropFaceNormalsProcess());
@@ -231,17 +216,11 @@ void GetPostProcessingStepInstanceList(std::vector< BaseProcess* >& out)
 #if (!defined ASSIMP_BUILD_NO_CALCTANGENTS_PROCESS)
     out.push_back( new CalcTangentsProcess());
 #endif
-#if (!defined ASSIMP_BUILD_NO_JOINVERTICES_PROCESS)
-    out.push_back( new JoinVerticesProcess());
-#endif
 
     // .........................................................................
     out.push_back( new DestroySpatialSortProcess());
     // .........................................................................
 
-#if (!defined ASSIMP_BUILD_NO_SPLITLARGEMESHES_PROCESS)
-    out.push_back( new SplitLargeMeshesProcess_Vertex());
-#endif
 #if (!defined ASSIMP_BUILD_NO_DEBONE_PROCESS)
     out.push_back( new DeboneProcess());
 #endif

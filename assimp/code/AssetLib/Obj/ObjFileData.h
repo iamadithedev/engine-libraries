@@ -286,8 +286,6 @@ struct Model {
     std::vector<aiVector3D> mVertices;
     //! vector with all generated normals
     std::vector<aiVector3D> mNormals;
-    //! vector with all vertex colors
-    std::vector<aiVector3D> mVertexColors;
     //! Group map
     GroupMap mGroups;
     //! Group to face id assignment

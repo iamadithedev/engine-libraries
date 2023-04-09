@@ -51,8 +51,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/ZipArchiveIOSystem.h>
 #include <assimp/commonMetaData.h>
 #include <assimp/fast_atof.h>
-#include <assimp/light.h>
-#include <assimp/DefaultLogger.hpp>
 #include <assimp/IOSystem.hpp>
 #include <memory>
 #include <utility>
@@ -72,7 +70,6 @@ static void ReportWarning(const char *msg, ...) {
     ai_assert(iLen > 0);
 
     va_end(args);
-    ASSIMP_LOG_WARN("Validation warning: ", std::string(szBuffer, iLen));
 }
 
 static bool FindCommonKey(const std::string &collada_key, const MetaKeyPairVector &key_renaming, size_t &found_index) {
@@ -110,8 +107,6 @@ ColladaParser::ColladaParser(IOSystem *pIOHandler, const std::string &pFile) :
         mImageLibrary(),
         mEffectLibrary(),
         mMaterialLibrary(),
-        mLightLibrary(),
-        mCameraLibrary(),
         mControllerLibrary(),
         mRootNode(nullptr),
         mAnims(),
@@ -270,13 +265,10 @@ void ColladaParser::ReadContents(XmlNode &node) {
             mAssetMetaData.emplace(AI_METADATA_SOURCE_FORMAT_VERSION, v);
             if (!::strncmp(version.c_str(), "1.5", 3)) {
                 mFormat = FV_1_5_n;
-                ASSIMP_LOG_DEBUG("Collada schema version is 1.5.n");
             } else if (!::strncmp(version.c_str(), "1.4", 3)) {
                 mFormat = FV_1_4_n;
-                ASSIMP_LOG_DEBUG("Collada schema version is 1.4.n");
             } else if (!::strncmp(version.c_str(), "1.3", 3)) {
                 mFormat = FV_1_3_n;
-                ASSIMP_LOG_DEBUG("Collada schema version is 1.3.n");
             }
         }
         ReadStructure(node);
@@ -306,10 +298,6 @@ void ColladaParser::ReadStructure(XmlNode &node) {
             ReadGeometryLibrary(currentNode);
         } else if (currentName == "library_visual_scenes") {
             ReadSceneLibrary(currentNode);
-        } else if (currentName == "library_lights") {
-            ReadLightLibrary(currentNode);
-        } else if (currentName == "library_cameras") {
-            ReadCameraLibrary(currentNode);
         } else if (currentName == "library_nodes") {
             ReadSceneNode(currentNode, nullptr); /* some hacking to reuse this piece of code */
         } else if (currentName == "scene") {
@@ -339,7 +327,6 @@ void ColladaParser::ReadAssetInfo(XmlNode &node) {
                 } catch (const DeadlyImportError& die) {
                     std::string warning("Collada: Failed to parse meter parameter to real number. Exception:\n");
                     warning.append(die.what());
-                    ASSIMP_LOG_WARN(warning.data());
                 }
             }
         } else if (currentName == "up_axis") {
@@ -829,9 +816,6 @@ void ColladaParser::ReadImage(XmlNode &node, Collada::Image &pImage) {
             } else if (hexChild && !pImage.mFileName.length()) {
                 // embedded image. get format
                 pImage.mEmbeddedFormat = hexChild.attribute("format").as_string();
-                if (pImage.mEmbeddedFormat.empty()) {
-                    ASSIMP_LOG_WARN("Collada: Unknown image file format");
-                }
 
                 XmlParser::getValueAsString(hexChild, value);
                 const char *data = value.c_str();
@@ -879,45 +863,6 @@ void ColladaParser::ReadMaterialLibrary(XmlNode &node) {
 }
 
 // ------------------------------------------------------------------------------------------------
-// Reads the light library
-void ColladaParser::ReadLightLibrary(XmlNode &node) {
-    for (XmlNode &currentNode : node.children()) {
-        const std::string &currentName = currentNode.name();
-        if (currentName == "light") {
-            std::string id;
-            if (XmlParser::getStdStrAttribute(currentNode, "id", id)) {
-                ReadLight(currentNode, mLightLibrary[id] = Light());
-            }
-        }
-    }
-}
-
-// ------------------------------------------------------------------------------------------------
-// Reads the camera library
-void ColladaParser::ReadCameraLibrary(XmlNode &node) {
-    for (XmlNode &currentNode : node.children()) {
-        const std::string &currentName = currentNode.name();
-        if (currentName == "camera") {
-            std::string id;
-            if (!XmlParser::getStdStrAttribute(currentNode, "id", id)) {
-                continue;
-            }
-
-            // create an entry and store it in the library under its ID
-            Camera &cam = mCameraLibrary[id];
-            std::string name;
-            if (!XmlParser::getStdStrAttribute(currentNode, "name", name)) {
-                continue;
-            }
-            if (!name.empty()) {
-                cam.mName = name;
-            }
-            ReadCamera(currentNode, cam);
-        }
-    }
-}
-
-// ------------------------------------------------------------------------------------------------
 // Reads a material entry into the given material
 void ColladaParser::ReadMaterial(XmlNode &node, Collada::Material &pMaterial) {
     for (XmlNode &currentNode : node.children()) {
@@ -926,93 +871,6 @@ void ColladaParser::ReadMaterial(XmlNode &node, Collada::Material &pMaterial) {
             std::string url;
             readUrlAttribute(currentNode, url);
             pMaterial.mEffect = url;
-        }
-    }
-}
-
-// ------------------------------------------------------------------------------------------------
-// Reads a light entry into the given light
-void ColladaParser::ReadLight(XmlNode &node, Collada::Light &pLight) {
-    XmlNodeIterator xmlIt(node, XmlNodeIterator::PreOrderMode);
-    XmlNode currentNode;
-    // TODO: Check the current technique and skip over unsupported extra techniques
-
-    while (xmlIt.getNext(currentNode)) {
-        const std::string &currentName = currentNode.name();
-        if (currentName == "spot") {
-            pLight.mType = aiLightSource_SPOT;
-        } else if (currentName == "ambient") {
-            pLight.mType = aiLightSource_AMBIENT;
-        } else if (currentName == "directional") {
-            pLight.mType = aiLightSource_DIRECTIONAL;
-        } else if (currentName == "point") {
-            pLight.mType = aiLightSource_POINT;
-        } else if (currentName == "color") {
-            // text content contains 3 floats
-            std::string v;
-            XmlParser::getValueAsString(currentNode, v);
-            const char *content = v.c_str();
-
-            content = fast_atoreal_move<ai_real>(content, (ai_real &)pLight.mColor.r);
-            SkipSpacesAndLineEnd(&content);
-
-            content = fast_atoreal_move<ai_real>(content, (ai_real &)pLight.mColor.g);
-            SkipSpacesAndLineEnd(&content);
-
-            content = fast_atoreal_move<ai_real>(content, (ai_real &)pLight.mColor.b);
-            SkipSpacesAndLineEnd(&content);
-        } else if (currentName == "constant_attenuation") {
-            XmlParser::getValueAsFloat(currentNode, pLight.mAttConstant);
-        } else if (currentName == "linear_attenuation") {
-            XmlParser::getValueAsFloat(currentNode, pLight.mAttLinear);
-        } else if (currentName == "quadratic_attenuation") {
-            XmlParser::getValueAsFloat(currentNode, pLight.mAttQuadratic);
-        } else if (currentName == "falloff_angle") {
-            XmlParser::getValueAsFloat(currentNode, pLight.mFalloffAngle);
-        } else if (currentName == "falloff_exponent") {
-            XmlParser::getValueAsFloat(currentNode, pLight.mFalloffExponent);
-        }
-        // FCOLLADA extensions
-        // -------------------------------------------------------
-        else if (currentName == "outer_cone") {
-            XmlParser::getValueAsFloat(currentNode, pLight.mOuterAngle);
-        } else if (currentName == "penumbra_angle") { // this one is deprecated, now calculated using outer_cone
-            XmlParser::getValueAsFloat(currentNode, pLight.mPenumbraAngle);
-        } else if (currentName == "intensity") {
-            XmlParser::getValueAsFloat(currentNode, pLight.mIntensity);
-        }
-        else if (currentName == "falloff") {
-            XmlParser::getValueAsFloat(currentNode, pLight.mOuterAngle);
-        } else if (currentName == "hotspot_beam") {
-            XmlParser::getValueAsFloat(currentNode, pLight.mFalloffAngle);
-        }
-        // OpenCOLLADA extensions
-        // -------------------------------------------------------
-        else if (currentName == "decay_falloff") {
-            XmlParser::getValueAsFloat(currentNode, pLight.mOuterAngle);
-        }
-    }
-}
-
-// ------------------------------------------------------------------------------------------------
-// Reads a camera entry into the given light
-void ColladaParser::ReadCamera(XmlNode &node, Collada::Camera &camera) {
-    XmlNodeIterator xmlIt(node, XmlNodeIterator::PreOrderMode);
-    XmlNode currentNode;
-    while (xmlIt.getNext(currentNode)) {
-        const std::string &currentName = currentNode.name();
-        if (currentName == "orthographic") {
-            camera.mOrtho = true;
-        } else if (currentName == "xfov" || currentName == "xmag") {
-            XmlParser::getValueAsFloat(currentNode, camera.mHorFov);
-        } else if (currentName == "yfov" || currentName == "ymag") {
-            XmlParser::getValueAsFloat(currentNode, camera.mVerFov);
-        } else if (currentName == "aspect_ratio") {
-            XmlParser::getValueAsFloat(currentNode, camera.mAspect);
-        } else if (currentName == "znear") {
-            XmlParser::getValueAsFloat(currentNode, camera.mZNear);
-        } else if (currentName == "zfar") {
-            XmlParser::getValueAsFloat(currentNode, camera.mZFar);
         }
     }
 }
@@ -1185,9 +1043,6 @@ void ColladaParser::ReadSamplerProperties(XmlNode &node, Sampler &out) {
                 out.mOp = aiTextureOp_Subtract;
             else if (0 == ASSIMP_strincmp(sz, "MULTIPLY", 8))
                 out.mOp = aiTextureOp_Multiply;
-            else {
-                ASSIMP_LOG_WARN("Collada: Unsupported MAYA texture blend mode");
-            }
         }
         // OKINO extensions
         // -------------------------------------------------------
@@ -1680,7 +1535,7 @@ void ColladaParser::ReadInputChannel(XmlNode &node, std::vector<InputChannel> &p
     }
 
     // read set if texture coordinates
-    if (channel.mType == IT_Texcoord || channel.mType == IT_Color) {
+    if (channel.mType == IT_Texcoord) {
         unsigned int attrSet = 0;
         if (XmlParser::getUIntAttribute(node, "set", attrSet))
             channel.mIndex = attrSet;
@@ -1932,8 +1787,6 @@ void ColladaParser::ExtractDataObjectFromChannel(const InputChannel &pInput, siz
     case IT_Position: // ignore all position streams except 0 - there can be only one position
         if (pInput.mIndex == 0) {
             pMesh.mPositions.emplace_back(obj[0], obj[1], obj[2]);
-        } else {
-            ASSIMP_LOG_ERROR("Collada: just one vertex position stream supported");
         }
         break;
     case IT_Normal:
@@ -1944,8 +1797,6 @@ void ColladaParser::ExtractDataObjectFromChannel(const InputChannel &pInput, siz
         // ignore all normal streams except 0 - there can be only one normal
         if (pInput.mIndex == 0) {
             pMesh.mNormals.emplace_back(obj[0], obj[1], obj[2]);
-        } else {
-            ASSIMP_LOG_ERROR("Collada: just one vertex normal stream supported");
         }
         break;
     case IT_Tangent:
@@ -1956,8 +1807,6 @@ void ColladaParser::ExtractDataObjectFromChannel(const InputChannel &pInput, siz
         // ignore all tangent streams except 0 - there can be only one tangent
         if (pInput.mIndex == 0) {
             pMesh.mTangents.emplace_back(obj[0], obj[1], obj[2]);
-        } else {
-            ASSIMP_LOG_ERROR("Collada: just one vertex tangent stream supported");
         }
         break;
     case IT_Bitangent:
@@ -1969,8 +1818,6 @@ void ColladaParser::ExtractDataObjectFromChannel(const InputChannel &pInput, siz
         // ignore all bitangent streams except 0 - there can be only one bitangent
         if (pInput.mIndex == 0) {
             pMesh.mBitangents.emplace_back(obj[0], obj[1], obj[2]);
-        } else {
-            ASSIMP_LOG_ERROR("Collada: just one vertex bitangent stream supported");
         }
         break;
     case IT_Texcoord:
@@ -1985,27 +1832,7 @@ void ColladaParser::ExtractDataObjectFromChannel(const InputChannel &pInput, siz
             if (0 != acc.mSubOffset[2] || 0 != acc.mSubOffset[3]) {
                 pMesh.mNumUVComponents[pInput.mIndex] = 3;
             }
-        } else {
-            ASSIMP_LOG_ERROR("Collada: too many texture coordinate sets. Skipping.");
         }
-        break;
-    case IT_Color:
-        // up to 4 color sets are fine, ignore the others
-        if (pInput.mIndex < AI_MAX_NUMBER_OF_COLOR_SETS) {
-            // pad to current vertex count if necessary
-            if (pMesh.mColors[pInput.mIndex].size() < pMesh.mPositions.size() - 1)
-                pMesh.mColors[pInput.mIndex].insert(pMesh.mColors[pInput.mIndex].end(),
-                        pMesh.mPositions.size() - pMesh.mColors[pInput.mIndex].size() - 1, aiColor4D(0, 0, 0, 1));
-
-            aiColor4D result(0, 0, 0, 1);
-            for (size_t i = 0; i < pInput.mResolved->mSize; ++i) {
-                result[static_cast<unsigned int>(i)] = obj[pInput.mResolved->mSubOffset[i]];
-            }
-            pMesh.mColors[pInput.mIndex].push_back(result);
-        } else {
-            ASSIMP_LOG_ERROR("Collada: too many vertex color sets. Skipping.");
-        }
-
         break;
     default:
         // IT_Invalid and IT_Vertex
@@ -2093,27 +1920,13 @@ void ColladaParser::ReadSceneNode(XmlNode &node, Node *pNode) {
             ReadNodeTransformation(currentNode, pNode, TF_SKEW);
         } else if (currentName == "translate") {
             ReadNodeTransformation(currentNode, pNode, TF_TRANSLATE);
-        } else if (currentName == "render" && pNode->mParent == nullptr && 0 == pNode->mPrimaryCamera.length()) {
-            // ... scene evaluation or, in other words, postprocessing pipeline,
-            // or, again in other words, a turing-complete description how to
-            // render a Collada scene. The only thing that is interesting for
-            // us is the primary camera.
-            if (XmlParser::hasAttribute(currentNode, "camera_node")) {
-                std::string s;
-                XmlParser::getStdStrAttribute(currentNode, "camera_node", s);
-                if (s[0] != '#') {
-                    ASSIMP_LOG_ERROR("Collada: Unresolved reference format of camera");
-                } else {
-                    pNode->mPrimaryCamera = s.c_str() + 1;
-                }
-            }
         } else if (currentName == "instance_node") {
             // find the node in the library
             if (XmlParser::hasAttribute(currentNode, "url")) {
                 std::string s;
                 XmlParser::getStdStrAttribute(currentNode, "url", s);
                 if (s[0] != '#') {
-                    ASSIMP_LOG_ERROR("Collada: Unresolved reference format of node");
+
                 } else {
                     pNode->mNodeInstances.emplace_back();
                     pNode->mNodeInstances.back().mNode = s.c_str() + 1;
@@ -2122,29 +1935,6 @@ void ColladaParser::ReadSceneNode(XmlNode &node, Node *pNode) {
         } else if (currentName == "instance_geometry" || currentName == "instance_controller") {
             // Reference to a mesh or controller, with possible material associations
             ReadNodeGeometry(currentNode, pNode);
-        } else if (currentName == "instance_light") {
-            // Reference to a light, name given in 'url' attribute
-            if (XmlParser::hasAttribute(currentNode, "url")) {
-                std::string url;
-                XmlParser::getStdStrAttribute(currentNode, "url", url);
-                if (url[0] != '#') {
-                    throw DeadlyImportError("Unknown reference format in <instance_light> element");
-                }
-
-                pNode->mLights.emplace_back();
-                pNode->mLights.back().mLight = url.c_str() + 1;
-            }
-        } else if (currentName == "instance_camera") {
-            // Reference to a camera, name given in 'url' attribute
-            if (XmlParser::hasAttribute(currentNode, "url")) {
-                std::string url;
-                XmlParser::getStdStrAttribute(currentNode, "url", url);
-                if (url[0] != '#') {
-                    throw DeadlyImportError("Unknown reference format in <instance_camera> element");
-                }
-                pNode->mCameras.emplace_back();
-                pNode->mCameras.back().mCamera = url.c_str() + 1;
-            }
         }
     }
 }
@@ -2211,8 +2001,6 @@ void ColladaParser::ReadMaterialVertexInputBinding(XmlNode &node, Collada::Seman
             }
 
             tbl.mMap[s] = vn;
-        } else if (currentName == "bind") {
-            ASSIMP_LOG_WARN("Collada: Found unsupported <bind> element");
         }
     }
 }
@@ -2379,7 +2167,6 @@ aiMatrix4x4 ColladaParser::CalculateResultTransform(const std::vector<Transform>
 // Determines the input data type for the given semantic string
 Collada::InputType ColladaParser::GetTypeForSemantic(const std::string &semantic) {
     if (semantic.empty()) {
-        ASSIMP_LOG_WARN("Vertex input type is empty.");
         return IT_Invalid;
     }
 
@@ -2389,8 +2176,6 @@ Collada::InputType ColladaParser::GetTypeForSemantic(const std::string &semantic
         return IT_Texcoord;
     else if (semantic == "NORMAL")
         return IT_Normal;
-    else if (semantic == "COLOR")
-        return IT_Color;
     else if (semantic == "VERTEX")
         return IT_Vertex;
     else if (semantic == "BINORMAL" || semantic == "TEXBINORMAL")
@@ -2398,7 +2183,6 @@ Collada::InputType ColladaParser::GetTypeForSemantic(const std::string &semantic
     else if (semantic == "TANGENT" || semantic == "TEXTANGENT")
         return IT_Tangent;
 
-    ASSIMP_LOG_WARN("Unknown vertex input type \"", semantic, "\". Ignoring.");
     return IT_Invalid;
 }
 

@@ -431,7 +431,7 @@ enum aiPostProcessSteps
     // -------------------------------------------------------------------------
     /** <hr>A post-processing step to optimize the scene hierarchy.
      *
-     *  Nodes without animations, bones, lights or cameras assigned are
+     *  Nodes without animations, bones assigned are
      *  collapsed and joined.
      *
      *  Node names can be lost during this step. If you use special 'tag nodes'

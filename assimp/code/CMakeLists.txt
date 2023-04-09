@@ -56,7 +56,6 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/anim.h
   ${HEADER_PATH}/aabb.h
   ${HEADER_PATH}/ai_assert.h
-  ${HEADER_PATH}/camera.h
   ${HEADER_PATH}/color4.h
   ${HEADER_PATH}/color4.inl
   ${CMAKE_CURRENT_BINARY_DIR}/../include/assimp/config.h
@@ -64,7 +63,6 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/commonMetaData.h
   ${HEADER_PATH}/defs.h
   ${HEADER_PATH}/cfileio.h
-  ${HEADER_PATH}/light.h
   ${HEADER_PATH}/material.h
   ${HEADER_PATH}/material.inl
   ${HEADER_PATH}/matrix3x3.h
@@ -362,18 +360,12 @@ SET( PostProcessing_SRCS
   PostProcessing/GenVertexNormalsProcess.h
   PostProcessing/PretransformVertices.cpp
   PostProcessing/PretransformVertices.h
-  PostProcessing/JoinVerticesProcess.cpp
-  PostProcessing/JoinVerticesProcess.h
   PostProcessing/LimitBoneWeightsProcess.cpp
   PostProcessing/LimitBoneWeightsProcess.h
   PostProcessing/RemoveRedundantMaterials.cpp
   PostProcessing/RemoveRedundantMaterials.h
   PostProcessing/RemoveVCProcess.cpp
   PostProcessing/RemoveVCProcess.h
-  PostProcessing/SortByPTypeProcess.cpp
-  PostProcessing/SortByPTypeProcess.h
-  PostProcessing/SplitLargeMeshes.cpp
-  PostProcessing/SplitLargeMeshes.h
   PostProcessing/TextureTransform.cpp
   PostProcessing/TextureTransform.h
   PostProcessing/TriangulateProcess.cpp
@@ -386,8 +378,6 @@ SET( PostProcessing_SRCS
   PostProcessing/DeboneProcess.h
   PostProcessing/ProcessHelper.h
   PostProcessing/ProcessHelper.cpp
-  PostProcessing/MakeVerboseFormat.cpp
-  PostProcessing/MakeVerboseFormat.h
   PostProcessing/ScaleProcess.cpp
   PostProcessing/ScaleProcess.h
   PostProcessing/ArmaturePopulate.cpp
@@ -398,23 +388,6 @@ SET( PostProcessing_SRCS
   PostProcessing/SplitByBoneCountProcess.h
 )
 SOURCE_GROUP( PostProcessing FILES ${PostProcessing_SRCS})
-
-ADD_ASSIMP_IMPORTER( GLTF
-  AssetLib/glTF/glTFCommon.h
-  AssetLib/glTF/glTFCommon.cpp
-  AssetLib/glTF/glTFAsset.h
-  AssetLib/glTF/glTFAsset.inl
-  AssetLib/glTF/glTFAssetWriter.h
-  AssetLib/glTF/glTFAssetWriter.inl
-  AssetLib/glTF/glTFImporter.cpp
-  AssetLib/glTF/glTFImporter.h
-  AssetLib/glTF2/glTF2Asset.h
-  AssetLib/glTF2/glTF2Asset.inl
-  AssetLib/glTF2/glTF2AssetWriter.h
-  AssetLib/glTF2/glTF2AssetWriter.inl
-  AssetLib/glTF2/glTF2Importer.cpp
-  AssetLib/glTF2/glTF2Importer.h
-)
 
 # Workaround for issue #2406 - force problematic large file to be optimized to prevent string table overflow error
 # Used -Os instead of -O2 as previous issues had mentioned, since -Os is roughly speaking -O2, excluding any
@@ -602,19 +575,6 @@ ELSE ()
   MESSAGE (INFO " Hunter enabled or RT-extension not found. glTF import/export will be built without Open3DGC-compression.")
   #!TODO: off course is better to remove statistics timers from o3dgc codec. Or propose to choose what to use.
 ENDIF ()
-
-# RapidJSON
-IF(ASSIMP_HUNTER_ENABLED)
-  hunter_add_package(RapidJSON)
-  find_package(RapidJSON CONFIG REQUIRED)
-ELSE()
-  INCLUDE_DIRECTORIES("../contrib/rapidjson/include")
-  ADD_DEFINITIONS( -DRAPIDJSON_HAS_STDSTRING=1)
-  option( ASSIMP_RAPIDJSON_NO_MEMBER_ITERATOR "Suppress rapidjson warning on MSVC (NOTE: breaks android build)" ON )
-  if(ASSIMP_RAPIDJSON_NO_MEMBER_ITERATOR)
-    ADD_DEFINITIONS( -DRAPIDJSON_NOMEMBERITERATORCLASS )
-  endif()
-ENDIF()
 
 # stb
 IF(ASSIMP_HUNTER_ENABLED)

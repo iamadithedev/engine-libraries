@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_COLLADAHELPER_H_INC
 #define AI_COLLADAHELPER_H_INC
 
-#include <assimp/light.h>
 #include <assimp/material.h>
 #include <assimp/mesh.h>
 
@@ -82,7 +81,6 @@ enum InputType {
     IT_Position,
     IT_Normal,
     IT_Texcoord,
-    IT_Color,
     IT_Tangent,
     IT_Bitangent
 };
@@ -117,74 +115,6 @@ struct Transform {
     std::string mID; ///< SID of the transform step, by which anim channels address their target node
     TransformType mType;
     ai_real f[16]; ///< Interpretation of data depends on the type of the transformation
-};
-
-/// A collada camera.
-struct Camera {
-    Camera() :
-            mOrtho(false),
-            mHorFov(10e10f),
-            mVerFov(10e10f),
-            mAspect(10e10f),
-            mZNear(0.1f),
-            mZFar(1000.f) {}
-
-    /// Name of camera
-    std::string mName;
-
-    /// True if it is an orthographic camera
-    bool mOrtho;
-
-    /// Horizontal field of view in degrees
-    ai_real mHorFov;
-
-    /// Vertical field of view in degrees
-    ai_real mVerFov;
-
-    /// Screen aspect
-    ai_real mAspect;
-
-    /// Near& far z
-    ai_real mZNear, mZFar;
-};
-
-#define ASSIMP_COLLADA_LIGHT_ANGLE_NOT_SET 1e9f
-
-/** A collada light source. */
-struct Light {
-    Light() :
-            mType(aiLightSource_UNDEFINED),
-            mAttConstant(1.f),
-            mAttLinear(0.f),
-            mAttQuadratic(0.f),
-            mFalloffAngle(180.f),
-            mFalloffExponent(0.f),
-            mPenumbraAngle(ASSIMP_COLLADA_LIGHT_ANGLE_NOT_SET),
-            mOuterAngle(ASSIMP_COLLADA_LIGHT_ANGLE_NOT_SET),
-            mIntensity(1.f) {}
-
-    /// Type of the light source aiLightSourceType + ambient
-    unsigned int mType;
-
-    /// Color of the light
-    aiColor3D mColor;
-
-    /// Light attenuation
-    ai_real mAttConstant, mAttLinear, mAttQuadratic;
-
-    /// Spot light falloff
-    ai_real mFalloffAngle;
-    ai_real mFalloffExponent;
-
-    // -----------------------------------------------------
-    // FCOLLADA extension from here
-
-    /// ... related stuff from maja and max extensions
-    ai_real mPenumbraAngle;
-    ai_real mOuterAngle;
-
-    /// Common light intensity
-    ai_real mIntensity;
 };
 
 /** Short vertex index description */
@@ -225,18 +155,6 @@ struct MeshInstance {
     std::map<std::string, SemanticMappingTable> mMaterials;
 };
 
-/// A reference to a camera inside a node
-struct CameraInstance {
-    ///< ID of the camera
-    std::string mCamera;
-};
-
-/// A reference to a light inside a node
-struct LightInstance {
-    ///< ID of the camera
-    std::string mLight;
-};
-
 /// A reference to a node inside a node
 struct NodeInstance {
     ///< ID of the node
@@ -257,17 +175,8 @@ struct Node {
     /// Meshes at this node
     std::vector<MeshInstance> mMeshes;
 
-    /// Lights at this node
-    std::vector<LightInstance> mLights;
-
-    /// Cameras at this node
-    std::vector<CameraInstance> mCameras;
-
     /// Node instances at this node
     std::vector<NodeInstance> mNodeInstances;
-
-    /// Root-nodes: Name of primary camera, if any
-    std::string mPrimaryCamera;
 
     /// Constructor. Begin with a zero parent
     Node() :
@@ -364,7 +273,6 @@ struct Mesh {
     std::vector<aiVector3D> mTangents;
     std::vector<aiVector3D> mBitangents;
     std::vector<aiVector3D> mTexCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
-    std::vector<aiColor4D> mColors[AI_MAX_NUMBER_OF_COLOR_SETS];
 
     unsigned int mNumUVComponents[AI_MAX_NUMBER_OF_TEXTURECOORDS];
 
