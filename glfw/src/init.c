@@ -47,11 +47,9 @@ _GLFWlibrary _glfw = { GLFW_FALSE };
 // after termination without special handling when _glfw is cleared to zero
 //
 static _GLFWerror _glfwMainThreadError;
-static GLFWerrorfun _glfwErrorCallback;
 static GLFWallocator _glfwInitAllocator;
 static _GLFWinitconfig _glfwInitHints =
 {
-    GLFW_ANGLE_PLATFORM_TYPE_NONE, // ANGLE backend
     GLFW_ANY_PLATFORM, // preferred platform
     NULL,           // vkGetInstanceProcAddr function
     {
@@ -390,9 +388,6 @@ void _glfwInputError(int code, const char* format, ...)
 
     error->code = code;
     strcpy(error->description, description);
-
-    if (_glfwErrorCallback)
-        _glfwErrorCallback(code, description);
 }
 
 
@@ -453,9 +448,6 @@ GLFWAPI void glfwInitHint(int hint, int value)
 {
     switch (hint)
     {
-        case GLFW_ANGLE_PLATFORM_TYPE:
-            _glfwInitHints.angleType = value;
-            return;
         case GLFW_PLATFORM:
             _glfwInitHints.platformID = value;
             return;
@@ -527,11 +519,5 @@ GLFWAPI int glfwGetError(const char** description)
     }
 
     return code;
-}
-
-GLFWAPI GLFWerrorfun glfwSetErrorCallback(GLFWerrorfun cbfun)
-{
-    _GLFW_SWAP(GLFWerrorfun, _glfwErrorCallback, cbfun)
-    return cbfun;
 }
 

@@ -67,8 +67,6 @@ extern "C" {
  *  * `GLFW_EXPOSE_NATIVE_WGL`
  *  * `GLFW_EXPOSE_NATIVE_NSGL`
  *  * `GLFW_EXPOSE_NATIVE_GLX`
- *  * `GLFW_EXPOSE_NATIVE_EGL`
- *  * `GLFW_EXPOSE_NATIVE_OSMESA`
  *
  *  These macros select which of the native access functions that are declared
  *  and which platform-specific headers to include.  It is then up your (by
@@ -139,20 +137,6 @@ extern "C" {
    #undef GLFW_GLAPIENTRY_DEFINED
   #endif
   #include <GL/glx.h>
- #endif
- #if defined(GLFW_EXPOSE_NATIVE_EGL)
-  #include <EGL/egl.h>
- #endif
- #if defined(GLFW_EXPOSE_NATIVE_OSMESA)
-  /* This is a workaround for the fact that glfw3.h defines GLAPIENTRY because by
-   * default it also acts as an OpenGL header
-   * However, osmesa.h will include gl.h, which will define it unconditionally
-   */
-  #if defined(GLFW_GLAPIENTRY_DEFINED)
-   #undef GLAPIENTRY
-   #undef GLFW_GLAPIENTRY_DEFINED
-  #endif
-  #include <GL/osmesa.h>
  #endif
 
 #endif /*GLFW_NATIVE_INCLUDE_NONE*/
@@ -502,128 +486,6 @@ GLFWAPI struct wl_output* glfwGetWaylandMonitor(GLFWmonitor* monitor);
  *  @ingroup native
  */
 GLFWAPI struct wl_surface* glfwGetWaylandWindow(GLFWwindow* window);
-#endif
-
-#if defined(GLFW_EXPOSE_NATIVE_EGL)
-/*! @brief Returns the `EGLDisplay` used by GLFW.
- *
- *  @return The `EGLDisplay` used by GLFW, or `EGL_NO_DISPLAY` if an
- *  [error](@ref error_handling) occurred.
- *
- *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED.
- *
- *  @remark Because EGL is initialized on demand, this function will return
- *  `EGL_NO_DISPLAY` until the first context has been created via EGL.
- *
- *  @thread_safety This function may be called from any thread.  Access is not
- *  synchronized.
- *
- *  @since Added in version 3.0.
- *
- *  @ingroup native
- */
-GLFWAPI EGLDisplay glfwGetEGLDisplay(void);
-
-/*! @brief Returns the `EGLContext` of the specified window.
- *
- *  @return The `EGLContext` of the specified window, or `EGL_NO_CONTEXT` if an
- *  [error](@ref error_handling) occurred.
- *
- *  @errors Possible errors include @ref GLFW_NO_WINDOW_CONTEXT and @ref
- *  GLFW_NOT_INITIALIZED.
- *
- *  @thread_safety This function may be called from any thread.  Access is not
- *  synchronized.
- *
- *  @since Added in version 3.0.
- *
- *  @ingroup native
- */
-GLFWAPI EGLContext glfwGetEGLContext(GLFWwindow* window);
-
-/*! @brief Returns the `EGLSurface` of the specified window.
- *
- *  @return The `EGLSurface` of the specified window, or `EGL_NO_SURFACE` if an
- *  [error](@ref error_handling) occurred.
- *
- *  @errors Possible errors include @ref GLFW_NO_WINDOW_CONTEXT and @ref
- *  GLFW_NOT_INITIALIZED.
- *
- *  @thread_safety This function may be called from any thread.  Access is not
- *  synchronized.
- *
- *  @since Added in version 3.0.
- *
- *  @ingroup native
- */
-GLFWAPI EGLSurface glfwGetEGLSurface(GLFWwindow* window);
-#endif
-
-#if defined(GLFW_EXPOSE_NATIVE_OSMESA)
-/*! @brief Retrieves the color buffer associated with the specified window.
- *
- *  @param[in] window The window whose color buffer to retrieve.
- *  @param[out] width Where to store the width of the color buffer, or `NULL`.
- *  @param[out] height Where to store the height of the color buffer, or `NULL`.
- *  @param[out] format Where to store the OSMesa pixel format of the color
- *  buffer, or `NULL`.
- *  @param[out] buffer Where to store the address of the color buffer, or
- *  `NULL`.
- *  @return `GLFW_TRUE` if successful, or `GLFW_FALSE` if an
- *  [error](@ref error_handling) occurred.
- *
- *  @errors Possible errors include @ref GLFW_NO_WINDOW_CONTEXT and @ref
- *  GLFW_NOT_INITIALIZED.
- *
- *  @thread_safety This function may be called from any thread.  Access is not
- *  synchronized.
- *
- *  @since Added in version 3.3.
- *
- *  @ingroup native
- */
-GLFWAPI int glfwGetOSMesaColorBuffer(GLFWwindow* window, int* width, int* height, int* format, void** buffer);
-
-/*! @brief Retrieves the depth buffer associated with the specified window.
- *
- *  @param[in] window The window whose depth buffer to retrieve.
- *  @param[out] width Where to store the width of the depth buffer, or `NULL`.
- *  @param[out] height Where to store the height of the depth buffer, or `NULL`.
- *  @param[out] bytesPerValue Where to store the number of bytes per depth
- *  buffer element, or `NULL`.
- *  @param[out] buffer Where to store the address of the depth buffer, or
- *  `NULL`.
- *  @return `GLFW_TRUE` if successful, or `GLFW_FALSE` if an
- *  [error](@ref error_handling) occurred.
- *
- *  @errors Possible errors include @ref GLFW_NO_WINDOW_CONTEXT and @ref
- *  GLFW_NOT_INITIALIZED.
- *
- *  @thread_safety This function may be called from any thread.  Access is not
- *  synchronized.
- *
- *  @since Added in version 3.3.
- *
- *  @ingroup native
- */
-GLFWAPI int glfwGetOSMesaDepthBuffer(GLFWwindow* window, int* width, int* height, int* bytesPerValue, void** buffer);
-
-/*! @brief Returns the `OSMesaContext` of the specified window.
- *
- *  @return The `OSMesaContext` of the specified window, or `NULL` if an
- *  [error](@ref error_handling) occurred.
- *
- *  @errors Possible errors include @ref GLFW_NO_WINDOW_CONTEXT and @ref
- *  GLFW_NOT_INITIALIZED.
- *
- *  @thread_safety This function may be called from any thread.  Access is not
- *  synchronized.
- *
- *  @since Added in version 3.3.
- *
- *  @ingroup native
- */
-GLFWAPI OSMesaContext glfwGetOSMesaContext(GLFWwindow* window);
 #endif
 
 #ifdef __cplusplus

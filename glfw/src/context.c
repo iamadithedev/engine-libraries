@@ -57,8 +57,7 @@ GLFWbool _glfwIsValidContextConfig(const _GLFWctxconfig* ctxconfig)
     }
 
     if (ctxconfig->client != GLFW_NO_API &&
-        ctxconfig->client != GLFW_OPENGL_API &&
-        ctxconfig->client != GLFW_OPENGL_ES_API)
+        ctxconfig->client != GLFW_OPENGL_API)
     {
         _glfwInputError(GLFW_INVALID_ENUM,
                         "Invalid client API 0x%08X",
@@ -87,8 +86,7 @@ GLFWbool _glfwIsValidContextConfig(const _GLFWctxconfig* ctxconfig)
 
         if (ctxconfig->profile)
         {
-            if (ctxconfig->profile != GLFW_OPENGL_CORE_PROFILE &&
-                ctxconfig->profile != GLFW_OPENGL_COMPAT_PROFILE)
+            if (ctxconfig->profile != GLFW_OPENGL_CORE_PROFILE)
             {
                 _glfwInputError(GLFW_INVALID_ENUM,
                                 "Invalid OpenGL profile 0x%08X",
@@ -106,31 +104,6 @@ GLFWbool _glfwIsValidContextConfig(const _GLFWctxconfig* ctxconfig)
                                 "Context profiles are only defined for OpenGL version 3.2 and above");
                 return GLFW_FALSE;
             }
-        }
-
-        if (ctxconfig->forward && ctxconfig->major <= 2)
-        {
-            // Forward-compatible contexts are only defined for OpenGL version 3.0 and above
-            _glfwInputError(GLFW_INVALID_VALUE,
-                            "Forward-compatibility is only defined for OpenGL version 3.0 and above");
-            return GLFW_FALSE;
-        }
-    }
-    else if (ctxconfig->client == GLFW_OPENGL_ES_API)
-    {
-        if (ctxconfig->major < 1 || ctxconfig->minor < 0 ||
-            (ctxconfig->major == 1 && ctxconfig->minor > 1) ||
-            (ctxconfig->major == 2 && ctxconfig->minor > 0))
-        {
-            // OpenGL ES 1.0 is the smallest valid version
-            // OpenGL ES 1.x series ended with version 1.1
-            // OpenGL ES 2.x series ended with version 2.0
-            // For now, let everything else through
-
-            _glfwInputError(GLFW_INVALID_VALUE,
-                            "Invalid OpenGL ES version %i.%i",
-                            ctxconfig->major, ctxconfig->minor);
-            return GLFW_FALSE;
         }
     }
 
@@ -210,9 +183,6 @@ const _GLFWfbconfig* _glfwChooseFBConfig(const _GLFWfbconfig* desired,
                 // not important to us here, so we count them as one
                 missing++;
             }
-
-            if (desired->transparent != current->transparent)
-                missing++;
         }
 
         // These polynomials make many small channel size differences matter
@@ -381,7 +351,6 @@ GLFWbool _glfwRefreshContextAttribs(_GLFWwindow* window,
         if (strncmp(version, prefixes[i], length) == 0)
         {
             version += length;
-            window->context.client = GLFW_OPENGL_ES_API;
             break;
         }
     }
@@ -455,30 +424,6 @@ GLFWbool _glfwRefreshContextAttribs(_GLFWwindow* window,
 
     if (window->context.client == GLFW_OPENGL_API)
     {
-        // Read back context flags (OpenGL 3.0 and above)
-        if (window->context.major >= 3)
-        {
-            GLint flags;
-            window->context.GetIntegerv(GL_CONTEXT_FLAGS, &flags);
-
-            if (flags & GL_CONTEXT_FLAG_FORWARD_COMPATIBLE_BIT)
-                window->context.forward = GLFW_TRUE;
-
-            if (flags & GL_CONTEXT_FLAG_DEBUG_BIT)
-                window->context.debug = GLFW_TRUE;
-            else if (glfwExtensionSupported("GL_ARB_debug_output") &&
-                     ctxconfig->debug)
-            {
-                // HACK: This is a workaround for older drivers (pre KHR_debug)
-                //       not setting the debug bit in the context flags for
-                //       debug contexts
-                window->context.debug = GLFW_TRUE;
-            }
-
-            if (flags & GL_CONTEXT_FLAG_NO_ERROR_BIT_KHR)
-                window->context.noerror = GLFW_TRUE;
-        }
-
         // Read back OpenGL context profile (OpenGL 3.2 and above)
         if (window->context.major >= 4 ||
             (window->context.major == 3 && window->context.minor >= 2))
@@ -486,18 +431,8 @@ GLFWbool _glfwRefreshContextAttribs(_GLFWwindow* window,
             GLint mask;
             window->context.GetIntegerv(GL_CONTEXT_PROFILE_MASK, &mask);
 
-            if (mask & GL_CONTEXT_COMPATIBILITY_PROFILE_BIT)
-                window->context.profile = GLFW_OPENGL_COMPAT_PROFILE;
-            else if (mask & GL_CONTEXT_CORE_PROFILE_BIT)
+            if (mask & GL_CONTEXT_CORE_PROFILE_BIT)
                 window->context.profile = GLFW_OPENGL_CORE_PROFILE;
-            else if (glfwExtensionSupported("GL_ARB_compatibility"))
-            {
-                // HACK: This is a workaround for the compatibility profile bit
-                //       not being set in the context flags if an OpenGL 3.2+
-                //       context was created without having requested a specific
-                //       version
-                window->context.profile = GLFW_OPENGL_COMPAT_PROFILE;
-            }
         }
 
         // Read back robustness strategy

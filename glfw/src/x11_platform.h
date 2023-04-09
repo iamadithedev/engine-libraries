@@ -531,9 +531,6 @@ typedef struct _GLFWwindowX11
     GLFWbool        iconified;
     GLFWbool        maximized;
 
-    // Whether the visual supports framebuffer transparency
-    GLFWbool        transparent;
-
     // Cached position and size used to filter out duplicate events
     int             width, height;
     int             xpos, ypos;

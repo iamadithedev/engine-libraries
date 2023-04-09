@@ -106,40 +106,6 @@ static GLFWbool loadLibraries(void)
     _glfw.win32.user32.GetSystemMetricsForDpi_ = (PFN_GetSystemMetricsForDpi)
         _glfwPlatformGetModuleSymbol(_glfw.win32.user32.instance, "GetSystemMetricsForDpi");
 
-    _glfw.win32.dinput8.instance = _glfwPlatformLoadModule("dinput8.dll");
-    if (_glfw.win32.dinput8.instance)
-    {
-        _glfw.win32.dinput8.Create = (PFN_DirectInput8Create)
-            _glfwPlatformGetModuleSymbol(_glfw.win32.dinput8.instance, "DirectInput8Create");
-    }
-
-    {
-        int i;
-        const char* names[] =
-        {
-            "xinput1_4.dll",
-            "xinput1_3.dll",
-            "xinput9_1_0.dll",
-            "xinput1_2.dll",
-            "xinput1_1.dll",
-            NULL
-        };
-
-        for (i = 0;  names[i];  i++)
-        {
-            _glfw.win32.xinput.instance = _glfwPlatformLoadModule(names[i]);
-            if (_glfw.win32.xinput.instance)
-            {
-                _glfw.win32.xinput.GetCapabilities = (PFN_XInputGetCapabilities)
-                    _glfwPlatformGetModuleSymbol(_glfw.win32.xinput.instance, "XInputGetCapabilities");
-                _glfw.win32.xinput.GetState = (PFN_XInputGetState)
-                    _glfwPlatformGetModuleSymbol(_glfw.win32.xinput.instance, "XInputGetState");
-
-                break;
-            }
-        }
-    }
-
     _glfw.win32.dwmapi.instance = _glfwPlatformLoadModule("dwmapi.dll");
     if (_glfw.win32.dwmapi.instance)
     {
@@ -176,12 +142,6 @@ static GLFWbool loadLibraries(void)
 //
 static void freeLibraries(void)
 {
-    if (_glfw.win32.xinput.instance)
-        _glfwPlatformFreeModule(_glfw.win32.xinput.instance);
-
-    if (_glfw.win32.dinput8.instance)
-        _glfwPlatformFreeModule(_glfw.win32.dinput8.instance);
-
     if (_glfw.win32.user32.instance)
         _glfwPlatformFreeModule(_glfw.win32.user32.instance);
 
@@ -634,7 +594,6 @@ GLFWbool _glfwConnectWin32(int platformID, _GLFWplatform* platform)
         _glfwWindowVisibleWin32,
         _glfwWindowMaximizedWin32,
         _glfwWindowHoveredWin32,
-        _glfwFramebufferTransparentWin32,
         _glfwGetWindowOpacityWin32,
         _glfwSetWindowResizableWin32,
         _glfwSetWindowDecoratedWin32,
@@ -645,9 +604,6 @@ GLFWbool _glfwConnectWin32(int platformID, _GLFWplatform* platform)
         _glfwWaitEventsWin32,
         _glfwWaitEventsTimeoutWin32,
         _glfwPostEmptyEventWin32,
-        _glfwGetEGLPlatformWin32,
-        _glfwGetEGLNativeDisplayWin32,
-        _glfwGetEGLNativeWindowWin32,
         _glfwGetRequiredInstanceExtensionsWin32,
         _glfwGetPhysicalDevicePresentationSupportWin32,
         _glfwCreateWindowSurfaceWin32,
