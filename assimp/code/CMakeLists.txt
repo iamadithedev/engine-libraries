@@ -488,29 +488,6 @@ IF(3MF IN_LIST ASSIMP_EXPORTERS_LIST)
   ENDIF()
 ENDIF()
 
-# openddlparser
-IF(ASSIMP_HUNTER_ENABLED)
-  hunter_add_package(openddlparser)
-  find_package(openddlparser CONFIG REQUIRED)
-ELSE()
-  SET ( openddl_parser_SRCS
-    ../contrib/openddlparser/code/OpenDDLParser.cpp
-    ../contrib/openddlparser/code/DDLNode.cpp
-    ../contrib/openddlparser/code/OpenDDLCommon.cpp
-    ../contrib/openddlparser/code/OpenDDLExport.cpp
-    ../contrib/openddlparser/code/Value.cpp
-    ../contrib/openddlparser/code/OpenDDLStream.cpp
-    ../contrib/openddlparser/include/openddlparser/OpenDDLParser.h
-    ../contrib/openddlparser/include/openddlparser/OpenDDLParserUtils.h
-    ../contrib/openddlparser/include/openddlparser/OpenDDLCommon.h
-    ../contrib/openddlparser/include/openddlparser/OpenDDLExport.h
-    ../contrib/openddlparser/include/openddlparser/OpenDDLStream.h
-    ../contrib/openddlparser/include/openddlparser/DDLNode.h
-    ../contrib/openddlparser/include/openddlparser/Value.h
-  )
-  SOURCE_GROUP( Contrib\\openddl_parser FILES ${openddl_parser_SRCS})
-ENDIF()
-
 # stb
 IF(ASSIMP_HUNTER_ENABLED)
   hunter_add_package(stb)
@@ -584,14 +561,6 @@ SET( assimp_src
   ${PUBLIC_HEADERS}
   ${COMPILER_HEADERS}
 )
-ADD_DEFINITIONS( -DOPENDDLPARSER_BUILD )
-
-IF(NOT ASSIMP_HUNTER_ENABLED)
-  INCLUDE_DIRECTORIES(
-      ${IRRXML_INCLUDE_DIR}
-      ../contrib/openddlparser/include
-  )
-ENDIF()
 
 IF (ASSIMP_BUILD_NONFREE_C4D_IMPORTER)
   SET( assimp_src ${assimp_src} ${C4D_SRCS})
@@ -695,12 +664,9 @@ TARGET_INCLUDE_DIRECTORIES ( assimp PUBLIC
 IF(ASSIMP_HUNTER_ENABLED)
   TARGET_LINK_LIBRARIES(assimp
       PUBLIC
-      polyclipping::polyclipping
-      openddlparser::openddl_parser
       poly2tri::poly2tri
       minizip::minizip
       ZLIB::zlib
-      RapidJSON::rapidjson
       utf8cpp
       pugixml
       stb::stb
