@@ -511,59 +511,6 @@ ELSE()
   SOURCE_GROUP( Contrib\\openddl_parser FILES ${openddl_parser_SRCS})
 ENDIF()
 
-# Open3DGC
-IF(ASSIMP_HUNTER_ENABLED)
-  # Nothing to do, not available in Hunter yet.
-ELSE()
-  SET ( open3dgc_SRCS
-    ../contrib/Open3DGC/o3dgcAdjacencyInfo.h
-    ../contrib/Open3DGC/o3dgcArithmeticCodec.cpp
-    ../contrib/Open3DGC/o3dgcArithmeticCodec.h
-    ../contrib/Open3DGC/o3dgcBinaryStream.h
-    ../contrib/Open3DGC/o3dgcCommon.h
-    ../contrib/Open3DGC/o3dgcDVEncodeParams.h
-    ../contrib/Open3DGC/o3dgcDynamicVectorDecoder.cpp
-    ../contrib/Open3DGC/o3dgcDynamicVectorDecoder.h
-    ../contrib/Open3DGC/o3dgcDynamicVectorEncoder.cpp
-    ../contrib/Open3DGC/o3dgcDynamicVectorEncoder.h
-    ../contrib/Open3DGC/o3dgcDynamicVector.h
-    ../contrib/Open3DGC/o3dgcFIFO.h
-    ../contrib/Open3DGC/o3dgcIndexedFaceSet.h
-    ../contrib/Open3DGC/o3dgcIndexedFaceSet.inl
-    ../contrib/Open3DGC/o3dgcSC3DMCDecoder.h
-    ../contrib/Open3DGC/o3dgcSC3DMCDecoder.inl
-    ../contrib/Open3DGC/o3dgcSC3DMCEncodeParams.h
-    ../contrib/Open3DGC/o3dgcSC3DMCEncoder.h
-    ../contrib/Open3DGC/o3dgcSC3DMCEncoder.inl
-    ../contrib/Open3DGC/o3dgcTimer.h
-    ../contrib/Open3DGC/o3dgcTools.cpp
-    ../contrib/Open3DGC/o3dgcTriangleFans.cpp
-    ../contrib/Open3DGC/o3dgcTriangleFans.h
-    ../contrib/Open3DGC/o3dgcTriangleListDecoder.h
-    ../contrib/Open3DGC/o3dgcTriangleListDecoder.inl
-    ../contrib/Open3DGC/o3dgcTriangleListEncoder.h
-    ../contrib/Open3DGC/o3dgcTriangleListEncoder.inl
-    ../contrib/Open3DGC/o3dgcVector.h
-    ../contrib/Open3DGC/o3dgcVector.inl
-  )
-  SOURCE_GROUP( Contrib\\open3dgc FILES ${open3dgc_SRCS})
-ENDIF()
-
-# Check dependencies for glTF importer with Open3DGC-compression.
-# RT-extensions is used in "contrib/Open3DGC/o3dgcTimer.h" for collecting statistics. Pointed file
-# has implementation for different platforms: WIN32, __MACH__ and other ("else" block).
-IF (NOT WIN32)
-  FIND_PACKAGE(RT QUIET)
-ENDIF ()
-IF (NOT ASSIMP_HUNTER_ENABLED AND (RT_FOUND OR WIN32))
-  SET( ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC 1 )
-  ADD_DEFINITIONS( -DASSIMP_IMPORTER_GLTF_USE_OPEN3DGC=1 )
-ELSE ()
-  SET (open3dgc_SRCS "")
-  MESSAGE (INFO " Hunter enabled or RT-extension not found. glTF import/export will be built without Open3DGC-compression.")
-  #!TODO: off course is better to remove statistics timers from o3dgc codec. Or propose to choose what to use.
-ENDIF ()
-
 # stb
 IF(ASSIMP_HUNTER_ENABLED)
   hunter_add_package(stb)
@@ -629,7 +576,6 @@ SET( assimp_src
   ${unzip_compile_SRCS}
   ${Poly2Tri_SRCS}
   ${openddl_parser_SRCS}
-  ${open3dgc_SRCS}
   ${ziplib_SRCS}
   ${Pugixml_SRCS}
   ${stb_SRCS}
@@ -854,12 +800,6 @@ IF(NOT ASSIMP_HUNTER_ENABLED)
     INCLUDE_DIRECTORIES("../")
   endif ()
 ENDIF()
-
-# Add RT-extension library for glTF importer with Open3DGC-compression.
-IF (RT_FOUND AND ASSIMP_IMPORTER_GLTF_USE_OPEN3DGC)
-  TARGET_LINK_LIBRARIES(assimp ${RT_LIBRARY})
-ENDIF ()
-
 
 INSTALL( TARGETS assimp
   EXPORT "${TARGETS_EXPORT_NAME}"
