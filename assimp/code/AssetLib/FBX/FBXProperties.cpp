@@ -63,18 +63,6 @@ namespace FBX {
 
     namespace {
 
-    void checkTokenCount(const TokenList &tok, unsigned int expectedCount) {
-        ai_assert(expectedCount >= 2);
-        if (tok.size() < expectedCount) {
-            const std::string &s = ParseTokenAsString(*tok[1]);
-            if (tok[1]->IsBinary()) {
-                throw DeadlyImportError("Not enough tokens for property of type ", s, " at offset ", tok[1]->Offset());
-            } else {
-                throw DeadlyImportError("Not enough tokens for property of type ", s, " at line ", tok[1]->Line());
-            }
-        }
-}
-
 // ------------------------------------------------------------------------------------------------
 // read a typed property out of a FBX element. The return value is nullptr if the property cannot be read.
 Property* ReadTypedProperty(const Element& element)

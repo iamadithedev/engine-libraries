@@ -425,7 +425,6 @@ void BaseImporter::TextFileToBuffer(IOStream *stream,
     data.resize(fileSize);
     if (fileSize > 0) {
         if (fileSize != stream->Read(&data[0], 1, fileSize)) {
-            throw DeadlyImportError("File read error");
         }
 
         ConvertToUTF8(data);

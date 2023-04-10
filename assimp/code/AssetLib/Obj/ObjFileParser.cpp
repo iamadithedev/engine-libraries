@@ -302,7 +302,7 @@ size_t ObjFileParser::getNumComponentsInDataDefinition() {
 
 size_t ObjFileParser::getTexCoordVector(std::vector<aiVector3D> &point3d_array) {
     size_t numComponents = getNumComponentsInDataDefinition();
-    ai_real x, y, z;
+    ai_real x = 0.0f, y = 0.0f, z = 0.0f;
     if (2 == numComponents) {
         copyNextWord(m_buffer, Buffersize);
         x = (ai_real)fast_atof(m_buffer);

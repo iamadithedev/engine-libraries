@@ -173,12 +173,6 @@ size_t Compression::decompressBlock(const void *data, size_t in, char *out, size
     mImpl->mZSstream.next_out = (Bytef *)out;
     mImpl->mZSstream.avail_out = (uInt)availableOut;
 
-    // and decompress the data ....
-    int ret = ::inflate(&mImpl->mZSstream, Z_SYNC_FLUSH);
-    if (ret != Z_OK && ret != Z_STREAM_END) {
-        throw DeadlyImportError("X: Failed to decompress MSZIP-compressed data");
-    }
-
     ::inflateReset(&mImpl->mZSstream);
     ::inflateSetDictionary(&mImpl->mZSstream, (const Bytef *)out, (uInt)availableOut - mImpl->mZSstream.avail_out);
 
