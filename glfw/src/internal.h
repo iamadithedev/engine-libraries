@@ -33,10 +33,7 @@
 
 #if defined(GLFW_INCLUDE_GLCOREARB) || \
     defined(GLFW_INCLUDE_NONE)      || \
-    defined(GLFW_INCLUDE_GLEXT)     || \
-    defined(GLFW_INCLUDE_GLU)       || \
-    defined(GLFW_INCLUDE_VULKAN)    || \
-    defined(GLFW_DLL)
+    defined(GLFW_INCLUDE_VULKAN)
  #error "You must not define any header option macros when compiling GLFW"
 #endif
 
@@ -45,11 +42,6 @@
 
 #define _GLFW_INSERT_FIRST      0
 #define _GLFW_INSERT_LAST       1
-
-#define _GLFW_POLL_PRESENCE     0
-#define _GLFW_POLL_AXES         1
-#define _GLFW_POLL_BUTTONS      2
-#define _GLFW_POLL_ALL          (_GLFW_POLL_AXES | _GLFW_POLL_BUTTONS)
 
 #define _GLFW_MESSAGE_SIZE      1024
 

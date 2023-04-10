@@ -56,23 +56,9 @@ GLFWbool _glfwSelectPlatform(int desiredID, _GLFWplatform* platform)
         return GLFW_FALSE;
     }
 
-    else if (count == 0)
-    {
-        return GLFW_FALSE;
-    }
-
     if (desiredID == GLFW_ANY_PLATFORM)
     {
-        // If there is exactly one platform available for auto-selection, let it emit the
-        // error on failure as the platform-specific error description may be more helpful
-        if (count == 1)
-            return supportedPlatforms[0].connect(supportedPlatforms[0].ID, platform);
-
-        for (i = 0;  i < count;  i++)
-        {
-            if (supportedPlatforms[i].connect(desiredID, platform))
-                return GLFW_TRUE;
-        }
+        return supportedPlatforms[0].connect(supportedPlatforms[0].ID, platform);
     }
     else
     {

@@ -98,4 +98,3 @@ void _glfwPlatformUnlockMutex(_GLFWmutex* mutex)
 }
 
 #endif // GLFW_BUILD_WIN32_THREAD
-

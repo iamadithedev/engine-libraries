@@ -27,35 +27,12 @@
 
 #if defined(GLFW_BUILD_WIN32_TIMER) || \
     defined(GLFW_BUILD_WIN32_MODULE) || \
-    defined(GLFW_BUILD_WIN32_THREAD) || \
-    defined(GLFW_BUILD_COCOA_TIMER) || \
-    defined(GLFW_BUILD_POSIX_TIMER) || \
-    defined(GLFW_BUILD_POSIX_MODULE) || \
-    defined(GLFW_BUILD_POSIX_THREAD) || \
-    defined(GLFW_BUILD_POSIX_POLL)
+    defined(GLFW_BUILD_WIN32_THREAD)
  #error "You must not define these; define zero or more _GLFW_<platform> macros instead"
 #endif
 
 #if defined(_GLFW_WIN32)
  #include "win32_platform.h"
-#else
- #define GLFW_WIN32_WINDOW_STATE
- #define GLFW_WIN32_MONITOR_STATE
- #define GLFW_WIN32_CURSOR_STATE
- #define GLFW_WIN32_LIBRARY_WINDOW_STATE
- #define GLFW_WGL_CONTEXT_STATE
- #define GLFW_WGL_LIBRARY_CONTEXT_STATE
-#endif
-
-#if defined(_GLFW_COCOA)
- #include "cocoa_platform.h"
-#else
- #define GLFW_COCOA_WINDOW_STATE
- #define GLFW_COCOA_MONITOR_STATE
- #define GLFW_COCOA_CURSOR_STATE
- #define GLFW_COCOA_LIBRARY_WINDOW_STATE
- #define GLFW_NSGL_CONTEXT_STATE
- #define GLFW_NSGL_LIBRARY_CONTEXT_STATE
 #endif
 
 #define GLFW_PLATFORM_WINDOW_STATE \
@@ -78,26 +55,16 @@
 
 #if defined(_WIN32)
  #define GLFW_BUILD_WIN32_THREAD
-#else
- #define GLFW_BUILD_POSIX_THREAD
 #endif
 
 #if defined(GLFW_BUILD_WIN32_THREAD)
  #include "win32_thread.h"
  #define GLFW_PLATFORM_TLS_STATE    GLFW_WIN32_TLS_STATE
  #define GLFW_PLATFORM_MUTEX_STATE  GLFW_WIN32_MUTEX_STATE
-#elif defined(GLFW_BUILD_POSIX_THREAD)
- #include "posix_thread.h"
- #define GLFW_PLATFORM_TLS_STATE    GLFW_POSIX_TLS_STATE
- #define GLFW_PLATFORM_MUTEX_STATE  GLFW_POSIX_MUTEX_STATE
 #endif
 
 #if defined(_WIN32)
  #define GLFW_BUILD_WIN32_TIMER
-#elif defined(__APPLE__)
- #define GLFW_BUILD_COCOA_TIMER
-#else
- #define GLFW_BUILD_POSIX_TIMER
 #endif
 
 #if defined(_WIN32)

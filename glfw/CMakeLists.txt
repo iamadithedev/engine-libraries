@@ -53,15 +53,6 @@ find_package(Threads REQUIRED)
 if (GLFW_BUILD_WIN32)
     message(STATUS "Including Win32 support")
 endif()
-if (GLFW_BUILD_COCOA)
-    message(STATUS "Including Cocoa support")
-endif()
-if (GLFW_BUILD_WAYLAND)
-    message(STATUS "Including Wayland support")
-endif()
-if (GLFW_BUILD_X11)
-    message(STATUS "Including X11 support")
-endif()
 
 #--------------------------------------------------------------------
 # Apply Microsoft C runtime library option

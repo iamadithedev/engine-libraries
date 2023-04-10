@@ -92,14 +92,6 @@ if (GLFW_BUILD_WIN32)
     target_compile_definitions(glfw PRIVATE UNICODE _UNICODE)
 endif()
 
-# HACK: When building on MinGW, WINVER and UNICODE need to be defined before
-# the inclusion of stddef.h (by glfw3.h), which is itself included before
-# win32_platform.h.  We define them here until a saner solution can be found
-# NOTE: MinGW-w64 and Visual C++ do /not/ need this hack.
-if (MINGW)
-    target_compile_definitions(glfw PRIVATE WINVER=0x0501)
-endif()
-
 # Workaround for the MS CRT deprecating parts of the standard library
 if (MSVC OR CMAKE_C_SIMULATE_ID STREQUAL "MSVC")
     target_compile_definitions(glfw PRIVATE _CRT_SECURE_NO_WARNINGS)

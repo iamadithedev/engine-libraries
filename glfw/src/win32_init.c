@@ -38,37 +38,6 @@ static const GUID _glfw_GUID_DEVINTERFACE_HID =
 
 #define GUID_DEVINTERFACE_HID _glfw_GUID_DEVINTERFACE_HID
 
-#if defined(_GLFW_USE_HYBRID_HPG) || defined(_GLFW_USE_OPTIMUS_HPG)
-
-#if defined(_GLFW_BUILD_DLL)
- #pragma message("These symbols must be exported by the executable and have no effect in a DLL")
-#endif
-
-// Executables (but not DLLs) exporting this symbol with this value will be
-// automatically directed to the high-performance GPU on Nvidia Optimus systems
-// with up-to-date drivers
-//
-__declspec(dllexport) DWORD NvOptimusEnablement = 1;
-
-// Executables (but not DLLs) exporting this symbol with this value will be
-// automatically directed to the high-performance GPU on AMD PowerXpress systems
-// with up-to-date drivers
-//
-__declspec(dllexport) int AmdPowerXpressRequestHighPerformance = 1;
-
-#endif // _GLFW_USE_HYBRID_HPG
-
-#if defined(_GLFW_BUILD_DLL)
-
-// GLFW DLL entry point
-//
-BOOL WINAPI DllMain(HINSTANCE instance, DWORD reason, LPVOID reserved)
-{
-    return TRUE;
-}
-
-#endif // _GLFW_BUILD_DLL
-
 // Load necessary libraries (DLLs)
 //
 static GLFWbool loadLibraries(void)
@@ -226,30 +195,6 @@ static void createKeyTables(void)
     _glfw.win32.keycodes[0x03A] = GLFW_KEY_CAPS_LOCK;
     _glfw.win32.keycodes[0x145] = GLFW_KEY_NUM_LOCK;
     _glfw.win32.keycodes[0x046] = GLFW_KEY_SCROLL_LOCK;
-    _glfw.win32.keycodes[0x03B] = GLFW_KEY_F1;
-    _glfw.win32.keycodes[0x03C] = GLFW_KEY_F2;
-    _glfw.win32.keycodes[0x03D] = GLFW_KEY_F3;
-    _glfw.win32.keycodes[0x03E] = GLFW_KEY_F4;
-    _glfw.win32.keycodes[0x03F] = GLFW_KEY_F5;
-    _glfw.win32.keycodes[0x040] = GLFW_KEY_F6;
-    _glfw.win32.keycodes[0x041] = GLFW_KEY_F7;
-    _glfw.win32.keycodes[0x042] = GLFW_KEY_F8;
-    _glfw.win32.keycodes[0x043] = GLFW_KEY_F9;
-    _glfw.win32.keycodes[0x044] = GLFW_KEY_F10;
-    _glfw.win32.keycodes[0x057] = GLFW_KEY_F11;
-    _glfw.win32.keycodes[0x058] = GLFW_KEY_F12;
-    _glfw.win32.keycodes[0x064] = GLFW_KEY_F13;
-    _glfw.win32.keycodes[0x065] = GLFW_KEY_F14;
-    _glfw.win32.keycodes[0x066] = GLFW_KEY_F15;
-    _glfw.win32.keycodes[0x067] = GLFW_KEY_F16;
-    _glfw.win32.keycodes[0x068] = GLFW_KEY_F17;
-    _glfw.win32.keycodes[0x069] = GLFW_KEY_F18;
-    _glfw.win32.keycodes[0x06A] = GLFW_KEY_F19;
-    _glfw.win32.keycodes[0x06B] = GLFW_KEY_F20;
-    _glfw.win32.keycodes[0x06C] = GLFW_KEY_F21;
-    _glfw.win32.keycodes[0x06D] = GLFW_KEY_F22;
-    _glfw.win32.keycodes[0x06E] = GLFW_KEY_F23;
-    _glfw.win32.keycodes[0x076] = GLFW_KEY_F24;
     _glfw.win32.keycodes[0x038] = GLFW_KEY_LEFT_ALT;
     _glfw.win32.keycodes[0x01D] = GLFW_KEY_LEFT_CONTROL;
     _glfw.win32.keycodes[0x02A] = GLFW_KEY_LEFT_SHIFT;
