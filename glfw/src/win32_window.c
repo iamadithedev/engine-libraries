@@ -597,10 +597,7 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                 // User trying to access application menu using ALT?
                 case SC_KEYMENU:
                 {
-                    if (!window->win32.keymenu)
-                        return 0;
-
-                    break;
+                    return 0;
                 }
             }
             break;
@@ -643,7 +640,7 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                 _glfwInputChar(window, codepoint, getKeyMods(), uMsg != WM_SYSCHAR);
             }
 
-            if (uMsg == WM_SYSCHAR && window->win32.keymenu)
+            if (uMsg == WM_SYSCHAR)
                 break;
 
             return 0;
@@ -1327,7 +1324,6 @@ static int createNativeWindow(_GLFWwindow* window,
     }
 
     window->win32.scaleToMonitor = wndconfig->scaleToMonitor;
-    window->win32.keymenu = wndconfig->win32.keymenu;
 
     if (!window->monitor)
     {

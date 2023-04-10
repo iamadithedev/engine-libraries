@@ -32,11 +32,6 @@
 #endif
 
 #if defined(GLFW_INCLUDE_GLCOREARB) || \
-    defined(GLFW_INCLUDE_ES1)       || \
-    defined(GLFW_INCLUDE_ES2)       || \
-    defined(GLFW_INCLUDE_ES3)       || \
-    defined(GLFW_INCLUDE_ES31)      || \
-    defined(GLFW_INCLUDE_ES32)      || \
     defined(GLFW_INCLUDE_NONE)      || \
     defined(GLFW_INCLUDE_GLEXT)     || \
     defined(GLFW_INCLUDE_GLU)       || \
@@ -210,16 +205,6 @@ struct _GLFWinitconfig
 {
     int           platformID;
     PFN_vkGetInstanceProcAddr vulkanLoader;
-    struct {
-        GLFWbool  menubar;
-        GLFWbool  chdir;
-    } ns;
-    struct {
-        GLFWbool  xcbVulkanSurface;
-    } x11;
-    struct {
-        int       libdecorMode;
-    } wl;
 };
 
 // Window configuration
@@ -246,20 +231,6 @@ struct _GLFWwndconfig
     GLFWbool      focusOnShow;
     GLFWbool      mousePassthrough;
     GLFWbool      scaleToMonitor;
-    struct {
-        GLFWbool  retina;
-        char      frameName[256];
-    } ns;
-    struct {
-        char      className[256];
-        char      instanceName[256];
-    } x11;
-    struct {
-        GLFWbool  keymenu;
-    } win32;
-    struct {
-        char      appId[256];
-    } wl;
 };
 
 // Context configuration
@@ -277,10 +248,6 @@ struct _GLFWctxconfig
     int           profile;
     int           robustness;
     int           release;
-
-    struct {
-        GLFWbool  offline;
-    } nsgl;
 };
 
 // Framebuffer configuration

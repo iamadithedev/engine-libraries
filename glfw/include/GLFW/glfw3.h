@@ -976,33 +976,6 @@ extern "C" {
  *  [window hint](@ref GLFW_SCALE_TO_MONITOR).
  */
 #define GLFW_SCALE_TO_MONITOR       0x0002200C
-/*! @brief macOS specific
- *  [window hint](@ref GLFW_COCOA_RETINA_FRAMEBUFFER_hint).
- */
-#define GLFW_COCOA_RETINA_FRAMEBUFFER 0x00023001
-/*! @brief macOS specific
- *  [window hint](@ref GLFW_COCOA_FRAME_NAME_hint).
- */
-#define GLFW_COCOA_FRAME_NAME         0x00023002
-/*! @brief macOS specific
- *  [window hint](@ref GLFW_COCOA_GRAPHICS_SWITCHING_hint).
- */
-#define GLFW_COCOA_GRAPHICS_SWITCHING 0x00023003
-/*! @brief X11 specific
- *  [window hint](@ref GLFW_X11_CLASS_NAME_hint).
- */
-#define GLFW_X11_CLASS_NAME         0x00024001
-/*! @brief X11 specific
- *  [window hint](@ref GLFW_X11_CLASS_NAME_hint).
- */
-#define GLFW_X11_INSTANCE_NAME      0x00024002
-#define GLFW_WIN32_KEYBOARD_MENU    0x00025001
-/*! @brief Wayland specific
- *  [window hint](@ref GLFW_WAYLAND_APP_ID_hint).
- *  
- *  Allows specification of the Wayland app_id.
- */
-#define GLFW_WAYLAND_APP_ID         0x00026001
 /*! @} */
 
 #define GLFW_NO_API                          0
@@ -1150,26 +1123,6 @@ extern "C" {
  *  Platform selection [init hint](@ref GLFW_PLATFORM).
  */
 #define GLFW_PLATFORM               0x00050003
-/*! @brief macOS specific init hint.
- *
- *  macOS specific [init hint](@ref GLFW_COCOA_CHDIR_RESOURCES_hint).
- */
-#define GLFW_COCOA_CHDIR_RESOURCES  0x00051001
-/*! @brief macOS specific init hint.
- *
- *  macOS specific [init hint](@ref GLFW_COCOA_MENUBAR_hint).
- */
-#define GLFW_COCOA_MENUBAR          0x00051002
-/*! @brief X11 specific init hint.
- *
- *  X11 specific [init hint](@ref GLFW_X11_XCB_VULKAN_SURFACE_hint).
- */
-#define GLFW_X11_XCB_VULKAN_SURFACE 0x00052001
-/*! @brief Wayland specific init hint.
- *
- *  Wayland specific [init hint](@ref GLFW_WAYLAND_LIBDECOR_hint).
- */
-#define GLFW_WAYLAND_LIBDECOR       0x00053001
 /*! @} */
 
 /*! @addtogroup init
@@ -2682,7 +2635,6 @@ GLFWAPI void glfwSetGammaRamp(GLFWmonitor* monitor, const GLFWgammaramp* ramp);
  *
  *  @sa @ref window_hints
  *  @sa @ref glfwWindowHint
- *  @sa @ref glfwWindowHintString
  *
  *  @since Added in version 3.0.
  *
@@ -2696,8 +2648,6 @@ GLFWAPI void glfwDefaultWindowHints(void);
  *  hints, once set, retain their values until changed by a call to this
  *  function or @ref glfwDefaultWindowHints, or until the library is terminated.
  *
- *  Only integer value hints can be set with this function.  String value hints
- *  are set with @ref glfwWindowHintString.
  *
  *  This function does not check whether the specified hint values are valid.
  *  If you set hints to invalid values this will instead be reported by the next
@@ -2716,7 +2666,6 @@ GLFWAPI void glfwDefaultWindowHints(void);
  *  @thread_safety This function must only be called from the main thread.
  *
  *  @sa @ref window_hints
- *  @sa @ref glfwWindowHintString
  *  @sa @ref glfwDefaultWindowHints
  *
  *  @since Added in version 3.0.  Replaces `glfwOpenWindowHint`.
@@ -2724,44 +2673,6 @@ GLFWAPI void glfwDefaultWindowHints(void);
  *  @ingroup window
  */
 GLFWAPI void glfwWindowHint(int hint, int value);
-
-/*! @brief Sets the specified window hint to the desired value.
- *
- *  This function sets hints for the next call to @ref glfwCreateWindow.  The
- *  hints, once set, retain their values until changed by a call to this
- *  function or @ref glfwDefaultWindowHints, or until the library is terminated.
- *
- *  Only string type hints can be set with this function.  Integer value hints
- *  are set with @ref glfwWindowHint.
- *
- *  This function does not check whether the specified hint values are valid.
- *  If you set hints to invalid values this will instead be reported by the next
- *  call to @ref glfwCreateWindow.
- *
- *  Some hints are platform specific.  These may be set on any platform but they
- *  will only affect their specific platform.  Other platforms will ignore them.
- *  Setting these hints requires no platform specific headers or functions.
- *
- *  @param[in] hint The [window hint](@ref window_hints) to set.
- *  @param[in] value The new value of the window hint.
- *
- *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED and @ref
- *  GLFW_INVALID_ENUM.
- *
- *  @pointer_lifetime The specified string is copied before this function
- *  returns.
- *
- *  @thread_safety This function must only be called from the main thread.
- *
- *  @sa @ref window_hints
- *  @sa @ref glfwWindowHint
- *  @sa @ref glfwDefaultWindowHints
- *
- *  @since Added in version 3.3.
- *
- *  @ingroup window
- */
-GLFWAPI void glfwWindowHintString(int hint, const char* value);
 
 /*! @brief Creates a window and its associated context.
  *

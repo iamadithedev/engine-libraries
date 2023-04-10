@@ -33,8 +33,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include <assert.h>
-
 
 // NOTE: The global variables below comprise all mutable global data in GLFW
 //       Any other mutable global variable is a bug
@@ -51,17 +49,7 @@ static GLFWallocator _glfwInitAllocator;
 static _GLFWinitconfig _glfwInitHints =
 {
     GLFW_ANY_PLATFORM, // preferred platform
-    NULL,           // vkGetInstanceProcAddr function
-    {
-        GLFW_TRUE,  // macOS menu bar
-        GLFW_TRUE   // macOS bundle chdir
-    },
-    {
-        GLFW_TRUE,  // X11 XCB Vulkan surface
-    },
-    {
-        GLFW_WAYLAND_PREFER_LIBDECOR // Wayland libdecor mode
-    },
+    NULL            // vkGetInstanceProcAddr function
 };
 
 // The allocation function used when no custom allocator is set
@@ -450,18 +438,6 @@ GLFWAPI void glfwInitHint(int hint, int value)
     {
         case GLFW_PLATFORM:
             _glfwInitHints.platformID = value;
-            return;
-        case GLFW_COCOA_CHDIR_RESOURCES:
-            _glfwInitHints.ns.chdir = value;
-            return;
-        case GLFW_COCOA_MENUBAR:
-            _glfwInitHints.ns.menubar = value;
-            return;
-        case GLFW_X11_XCB_VULKAN_SURFACE:
-            _glfwInitHints.x11.xcbVulkanSurface = value;
-            return;
-        case GLFW_WAYLAND_LIBDECOR:
-            _glfwInitHints.wl.libdecorMode = value;
             return;
     }
 
