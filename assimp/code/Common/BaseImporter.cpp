@@ -49,9 +49,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/ByteSwapper.h>
 #include <assimp/ParsingUtils.h>
 #include <assimp/importerdesc.h>
-#include <assimp/postprocess.h>
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
+#include <assimp/DefaultIOStream.h>
+#include <stdexcept>
 
 #include <cctype>
 #include <ios>
@@ -329,10 +330,6 @@ std::string BaseImporter::GetExtension(const std::string &file) {
 // ------------------------------------------------------------------------------------------------
 // Convert to UTF8 data
 void BaseImporter::ConvertToUTF8(std::vector<char> &data) {
-    //ConversionResult result;
-    if (data.size() < 8) {
-        throw DeadlyImportError("File is too small");
-    }
 
     // UTF 8 with BOM
     if ((uint8_t)data[0] == 0xEF && (uint8_t)data[1] == 0xBB && (uint8_t)data[2] == 0xBF) {
@@ -422,9 +419,6 @@ void BaseImporter::TextFileToBuffer(IOStream *stream,
 
     const size_t fileSize = stream->FileSize();
     if (mode == FORBID_EMPTY) {
-        if (!fileSize) {
-            throw DeadlyImportError("File is empty");
-        }
     }
 
     data.reserve(fileSize + 1);

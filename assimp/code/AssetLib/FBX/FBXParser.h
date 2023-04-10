@@ -53,6 +53,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "FBXCompileConfig.h"
 #include "FBXTokenizer.h"
+#include "assimp/vector3.h"
+#include "assimp/color4.h"
+#include "assimp/matrix4x4.h"
+#include "assimp/types.h"
 
 namespace Assimp {
 namespace FBX {
@@ -186,7 +190,6 @@ private:
 
     const bool is_binary;
 };
-
 
 /* token parsing - this happens when building the DOM out of the parse-tree*/
 uint64_t ParseTokenAsID(const Token& t, const char*& err_out);

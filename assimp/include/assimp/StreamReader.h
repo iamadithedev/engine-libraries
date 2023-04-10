@@ -51,7 +51,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <assimp/ByteSwapper.h>
-#include <assimp/Exceptional.h>
 #include <assimp/IOStream.hpp>
 
 #include <memory>

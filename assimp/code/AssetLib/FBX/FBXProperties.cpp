@@ -48,16 +48,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "FBXTokenizer.h"
 #include "FBXParser.h"
-#include "FBXDocument.h"
-#include "FBXDocumentUtil.h"
 #include "FBXProperties.h"
 
 #include <utility>
 
 namespace Assimp {
 namespace FBX {
-
-    using namespace Util;
 
 // ------------------------------------------------------------------------------------------------
     Property::Property() = default;
@@ -93,23 +89,18 @@ Property* ReadTypedProperty(const Element& element)
     const std::string& s = ParseTokenAsString(*tok[1]);
     const char* const cs = s.c_str();
     if (!strcmp(cs,"KString")) {
-        checkTokenCount(tok, 5);
         return new TypedProperty<std::string>(ParseTokenAsString(*tok[4]));
     }
     else if (!strcmp(cs,"bool") || !strcmp(cs,"Bool")) {
-        checkTokenCount(tok, 5);
         return new TypedProperty<bool>(ParseTokenAsInt(*tok[4]) != 0);
     }
     else if (!strcmp(cs, "int") || !strcmp(cs, "Int") || !strcmp(cs, "enum") || !strcmp(cs, "Enum") || !strcmp(cs, "Integer")) {
-        checkTokenCount(tok, 5);
         return new TypedProperty<int>(ParseTokenAsInt(*tok[4]));
     }
     else if (!strcmp(cs, "ULongLong")) {
-        checkTokenCount(tok, 5);
         return new TypedProperty<uint64_t>(ParseTokenAsID(*tok[4]));
     }
     else if (!strcmp(cs, "KTime")) {
-        checkTokenCount(tok, 5);
         return new TypedProperty<int64_t>(ParseTokenAsInt64(*tok[4]));
     }
     else if (!strcmp(cs,"Vector3D") ||
@@ -120,7 +111,7 @@ Property* ReadTypedProperty(const Element& element)
         !strcmp(cs,"Lcl Rotation") ||
         !strcmp(cs,"Lcl Scaling")
         ) {
-        checkTokenCount(tok, 7);
+
         return new TypedProperty<aiVector3D>(aiVector3D(
             ParseTokenAsFloat(*tok[4]),
             ParseTokenAsFloat(*tok[5]),
@@ -128,11 +119,11 @@ Property* ReadTypedProperty(const Element& element)
         );
     }
     else if (!strcmp(cs,"double") || !strcmp(cs,"Number") || !strcmp(cs,"float") || !strcmp(cs,"Float") || !strcmp(cs,"FieldOfView") || !strcmp( cs, "UnitScaleFactor" ) ) {
-        checkTokenCount(tok, 5);
+
         return new TypedProperty<float>(ParseTokenAsFloat(*tok[4]));
     }
     else if (!strcmp(cs, "ColorAndAlpha")) {
-        checkTokenCount(tok, 8);
+
         return new TypedProperty<aiColor4D>(aiColor4D(
             ParseTokenAsFloat(*tok[4]),
             ParseTokenAsFloat(*tok[5]),

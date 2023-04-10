@@ -317,9 +317,6 @@ protected:
 template <typename Type>
 const Type &ColladaParser::ResolveLibraryReference(const std::map<std::string, Type> &pLibrary, const std::string &pURL) const {
     typename std::map<std::string, Type>::const_iterator it = pLibrary.find(pURL);
-    if (it == pLibrary.end()) {
-        throw DeadlyImportError("Unable to resolve library reference \"", pURL, "\".");
-    }
     return it->second;
 }
 

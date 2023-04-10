@@ -107,21 +107,9 @@ void ObjFileImporter::InternReadFile(const std::string &file, aiScene *pScene, I
         pIOHandler->Close(pStream);
     };
     std::unique_ptr<IOStream, decltype(streamCloser)> fileStream(pIOHandler->Open(file, mode), streamCloser);
-    if (!fileStream) {
-        throw DeadlyImportError("Failed to open file ", file, ".");
-    }
-
-    // Get the file-size and validate it, throwing an exception when fails
-    size_t fileSize = fileStream->FileSize();
-    if (fileSize < ObjMinSize) {
-        throw DeadlyImportError("OBJ-file is too small.");
-    }
 
     IOStreamBuffer<char> streamedBuffer;
     streamedBuffer.open(fileStream.get());
-
-    // Allocate buffer and read file into it
-    //TextFileToBuffer( fileStream.get(),m_Buffer);
 
     // Get the model name
     std::string modelName, folderName;
@@ -219,9 +207,6 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model *pModel, aiScene
 
         if (!pModel->mNormals.empty()) {
             mesh->mNormals = new aiVector3D[n];
-            if (pModel->mNormals.size() < n) {
-                throw DeadlyImportError("OBJ: vertex normal index out of range");
-            }
             memcpy(mesh->mNormals, pModel->mNormals.data(), n * sizeof(aiVector3D));
         }
 
@@ -401,11 +386,6 @@ void ObjFileImporter::createVertexArray(const ObjFile::Model *pModel,
 
     // Copy vertices of this mesh instance
     pMesh->mNumVertices = numIndices;
-    if (pMesh->mNumVertices == 0) {
-        throw DeadlyImportError("OBJ: no vertices");
-    } else if (pMesh->mNumVertices > AI_MAX_VERTICES) {
-        throw DeadlyImportError("OBJ: Too many vertices");
-    }
     pMesh->mVertices = new aiVector3D[pMesh->mNumVertices];
 
     // Allocate buffer for normal vectors
@@ -425,13 +405,6 @@ void ObjFileImporter::createVertexArray(const ObjFile::Model *pModel,
         // Copy all index arrays
         for (size_t vertexIndex = 0, outVertexIndex = 0; vertexIndex < sourceFace->m_vertices.size(); vertexIndex++) {
             const unsigned int vertex = sourceFace->m_vertices.at(vertexIndex);
-            if (vertex >= pModel->mVertices.size()) {
-                throw DeadlyImportError("OBJ: vertex index out of range");
-            }
-
-            if (pMesh->mNumVertices <= newIndex) {
-                throw DeadlyImportError("OBJ: bad vertex index");
-            }
 
             pMesh->mVertices[newIndex] = pModel->mVertices[vertex];
 

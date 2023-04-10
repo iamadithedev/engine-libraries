@@ -52,6 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXImporter.h"
 #include "FBXImportSettings.h"
 #include "FBXDocumentUtil.h"
+#include "FBXParser.h"
 
 namespace Assimp {
 namespace FBX {

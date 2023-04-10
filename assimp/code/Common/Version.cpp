@@ -88,9 +88,6 @@ ASSIMP_API unsigned int aiGetCompileFlags() {
 #ifdef ASSIMP_BUILD_BOOST_WORKAROUND
     flags |= ASSIMP_CFLAGS_NOBOOST;
 #endif
-#ifdef ASSIMP_BUILD_DEBUG
-    flags |= ASSIMP_CFLAGS_DEBUG;
-#endif
 #ifdef ASSIMP_BUILD_DLL_EXPORT
     flags |= ASSIMP_CFLAGS_SHARED;
 #endif

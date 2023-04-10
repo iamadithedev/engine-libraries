@@ -53,6 +53,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXProperties.h"
 #include <assimp/ByteSwapper.h>
 #include <assimp/ParsingUtils.h>
+#include <stdexcept>
 
 #include "FBXUtil.h"
 
@@ -350,7 +351,7 @@ Video::Video(uint64_t id, const Element &element, const Document &doc, const std
                 content = new uint8_t[len];
                 ::memcpy(content, data + 5, len);
             }
-        } catch (const runtime_error&) {
+        } catch (const std::runtime_error&) {
             //we don't need the content data for contents that has already been loaded
         }
     }

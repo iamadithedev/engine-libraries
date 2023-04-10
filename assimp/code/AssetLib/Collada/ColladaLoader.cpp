@@ -147,10 +147,6 @@ void ColladaLoader::InternReadFile(const std::string &pFile, aiScene *pScene, IO
     // parse the input file
     ColladaParser parser(pIOHandler, pFile);
 
-    if (!parser.mRootNode) {
-        throw DeadlyImportError("Collada: File came out empty. Something is wrong here.");
-    }
-
     // reserve some storage to avoid unnecessary reallocs
     newMats.reserve(parser.mMaterialLibrary.size() * 2u);
     mMeshes.reserve(parser.mMeshLibrary.size() * 2u);
@@ -531,21 +527,12 @@ aiMesh *ColladaLoader::CreateMesh(const ColladaParser &pParser, const Mesh *pSrc
             // take method
             method = c.mMethod;
 
-            if (!targetData.mIsStringArray) {
-                throw DeadlyImportError("target data must contain id. ");
-            }
-            if (weightData.mIsStringArray) {
-                throw DeadlyImportError("target weight data must not be textual ");
-            }
-
             for (const auto & mString : targetData.mStrings) {
                 const Mesh *targetMesh = pParser.ResolveLibraryReference(pParser.mMeshLibrary, mString);
 
                 aiMesh *aimesh = findMesh(useColladaName ? targetMesh->mName : targetMesh->mId);
                 if (!aimesh) {
-                    if (targetMesh->mSubMeshes.size() > 1) {
-                        throw DeadlyImportError("Morphing target mesh must be a single");
-                    }
+
                     aimesh = CreateMesh(pParser, targetMesh, targetMesh->mSubMeshes.at(0), nullptr, 0, 0);
                     mTargetMeshes.push_back(aimesh);
                 }
@@ -582,21 +569,12 @@ aiMesh *ColladaLoader::CreateMesh(const ColladaParser &pParser, const Mesh *pSrc
         // joint offset matrices
         const Collada::Accessor &jointMatrixAcc = pParser.ResolveLibraryReference(pParser.mAccessorLibrary, pSrcController->mJointOffsetMatrixSource);
         const Collada::Data &jointMatrices = pParser.ResolveLibraryReference(pParser.mDataLibrary, jointMatrixAcc.mSource);
-        // joint vertex_weight name list - should refer to the same list as the joint names above. If not, report and reconsider
-        const Collada::Accessor &weightNamesAcc = pParser.ResolveLibraryReference(pParser.mAccessorLibrary, pSrcController->mWeightInputJoints.mAccessor);
-        if (&weightNamesAcc != &jointNamesAcc)
-            throw DeadlyImportError("Temporary implementational laziness. If you read this, please report to the author.");
+
         // vertex weights
         const Collada::Accessor &weightsAcc = pParser.ResolveLibraryReference(pParser.mAccessorLibrary, pSrcController->mWeightInputWeights.mAccessor);
         const Collada::Data &weights = pParser.ResolveLibraryReference(pParser.mDataLibrary, weightsAcc.mSource);
 
-        if (!jointNames.mIsStringArray || jointMatrices.mIsStringArray || weights.mIsStringArray) {
-            throw DeadlyImportError("Data type mismatch while resolving mesh joints");
-        }
         // sanity check: we rely on the vertex weights always coming as pairs of BoneIndex-WeightIndex
-        if (pSrcController->mWeightInputJoints.mOffset != 0 || pSrcController->mWeightInputWeights.mOffset != 1) {
-            throw DeadlyImportError("Unsupported vertex_weight addressing scheme. ");
-        }
 
         // create containers to collect the weights for each bone
         size_t numBones = jointNames.mStrings.size();
@@ -1059,11 +1037,6 @@ void ColladaLoader::CreateAnimation(aiScene *pScene, const ColladaParser &pParse
             e.mTimeData = &pParser.ResolveLibraryReference(pParser.mDataLibrary, e.mTimeAccessor->mSource);
             e.mValueAccessor = &pParser.ResolveLibraryReference(pParser.mAccessorLibrary, e.mChannel->mSourceValues);
             e.mValueData = &pParser.ResolveLibraryReference(pParser.mDataLibrary, e.mValueAccessor->mSource);
-
-            // time count and value count must match
-            if (e.mTimeAccessor->mCount != e.mValueAccessor->mCount) {
-                throw DeadlyImportError("Time count / value count mismatch in animation channel \"", e.mChannel->mTarget, "\".");
-            }
 
             if (e.mTimeAccessor->mCount > 0) {
                 // find bounding times
@@ -1532,10 +1505,6 @@ aiString ColladaLoader::FindFilenameForEffectTexture(const ColladaParser &pParse
         // and add this texture to the list
         mTextures.push_back(tex);
         return result;
-    }
-
-    if (imIt->second.mFileName.empty()) {
-        throw DeadlyImportError("Collada: Invalid texture, no data or file reference given");
     }
 
     result.Set(imIt->second.mFileName);

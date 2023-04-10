@@ -41,7 +41,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "Compression.h"
 #include <assimp/ai_assert.h>
-#include <assimp/Exceptional.h>
 
 namespace Assimp {
 
@@ -143,9 +142,6 @@ size_t Compression::decompress(const void *data, size_t in, std::vector<char> &u
         mImpl->mZSstream.next_out = reinterpret_cast<Bytef *>(&*uncompressed.begin());
         ret = inflate(&mImpl->mZSstream, Z_FINISH);
 
-        if (ret != Z_STREAM_END && ret != Z_OK) {
-            throw DeadlyImportError("Compression", "Failure decompressing this file using gzip.");
-        }
         total = mImpl->mZSstream.avail_out;
     } else {
         do {
@@ -155,9 +151,6 @@ size_t Compression::decompress(const void *data, size_t in, std::vector<char> &u
 
             ret = inflate(&mImpl->mZSstream, flushMode);
 
-            if (ret != Z_STREAM_END && ret != Z_OK) {
-                throw DeadlyImportError("Compression", "Failure decompressing this file using gzip.");
-            }
             const size_t have = MYBLOCK - mImpl->mZSstream.avail_out;
             total += have;
             uncompressed.resize(total);

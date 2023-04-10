@@ -48,7 +48,6 @@ SET( HEADER_PATH ../include/assimp )
 SET( COMPILER_HEADERS
   ${HEADER_PATH}/Compiler/pushpack1.h
   ${HEADER_PATH}/Compiler/poppack1.h
-  ${HEADER_PATH}/Compiler/pstdint.h
 )
 SOURCE_GROUP( Compiler FILES ${COMPILER_HEADERS})
 
@@ -122,7 +121,6 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/CreateAnimMesh.h
   ${HEADER_PATH}/XmlParser.h
   ${HEADER_PATH}/MathFunctions.h
-  ${HEADER_PATH}/Exceptional.h
   ${HEADER_PATH}/ByteSwapper.h
   ${HEADER_PATH}/Base64.hpp
 )
