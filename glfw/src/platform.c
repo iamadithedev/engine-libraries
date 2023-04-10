@@ -69,13 +69,11 @@ GLFWbool _glfwSelectPlatform(int desiredID, _GLFWplatform* platform)
         desiredID != GLFW_PLATFORM_X11 &&
         desiredID != GLFW_PLATFORM_NULL)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, "Invalid platform ID 0x%08X", desiredID);
         return GLFW_FALSE;
     }
 
     else if (count == 0)
     {
-        _glfwInputError(GLFW_PLATFORM_UNAVAILABLE, "This binary only supports the Null platform");
         return GLFW_FALSE;
     }
 
@@ -91,8 +89,6 @@ GLFWbool _glfwSelectPlatform(int desiredID, _GLFWplatform* platform)
             if (supportedPlatforms[i].connect(desiredID, platform))
                 return GLFW_TRUE;
         }
-
-        _glfwInputError(GLFW_PLATFORM_UNAVAILABLE, "Failed to detect any supported platform");
     }
     else
     {
@@ -101,8 +97,6 @@ GLFWbool _glfwSelectPlatform(int desiredID, _GLFWplatform* platform)
             if (supportedPlatforms[i].ID == desiredID)
                 return supportedPlatforms[i].connect(desiredID, platform);
         }
-
-        _glfwInputError(GLFW_PLATFORM_UNAVAILABLE, "The requested platform is not supported");
     }
 
     return GLFW_FALSE;
@@ -114,7 +108,6 @@ GLFWbool _glfwSelectPlatform(int desiredID, _GLFWplatform* platform)
 
 GLFWAPI int glfwGetPlatform(void)
 {
-    _GLFW_REQUIRE_INIT_OR_RETURN(0);
     return _glfw.platform.platformID;
 }
 
@@ -129,7 +122,6 @@ GLFWAPI int glfwPlatformSupported(int platformID)
         platformID != GLFW_PLATFORM_X11 &&
         platformID != GLFW_PLATFORM_NULL)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, "Invalid platform ID 0x%08X", platformID);
         return GLFW_FALSE;
     }
 

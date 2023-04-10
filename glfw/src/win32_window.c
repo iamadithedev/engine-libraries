@@ -133,16 +133,12 @@ static HICON createIcon(const GLFWimage* image, int xhot, int yhot, GLFWbool ico
 
     if (!color)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to create RGBA bitmap");
         return NULL;
     }
 
     mask = CreateBitmap(image->width, image->height, 1, 1, NULL);
     if (!mask)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to create mask bitmap");
         DeleteObject(color);
         return NULL;
     }
@@ -168,20 +164,6 @@ static HICON createIcon(const GLFWimage* image, int xhot, int yhot, GLFWbool ico
 
     DeleteObject(color);
     DeleteObject(mask);
-
-    if (!handle)
-    {
-        if (icon)
-        {
-            _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                                 "Win32: Failed to create icon");
-        }
-        else
-        {
-            _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                                 "Win32: Failed to create cursor");
-        }
-    }
 
     return handle;
 }
@@ -265,8 +247,6 @@ static void enableRawMouseMotion(_GLFWwindow* window)
 
     if (!RegisterRawInputDevices(&rid, 1, sizeof(rid)))
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to register raw input device");
     }
 }
 
@@ -278,8 +258,6 @@ static void disableRawMouseMotion(_GLFWwindow* window)
 
     if (!RegisterRawInputDevices(&rid, 1, sizeof(rid)))
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to remove raw input device");
     }
 }
 
@@ -878,8 +856,6 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
                                 _glfw.win32.rawInput, &size,
                                 sizeof(RAWINPUTHEADER)) == (UINT) -1)
             {
-                _glfwInputError(GLFW_PLATFORM_ERROR,
-                                "Win32: Failed to retrieve raw input data");
                 break;
             }
 
@@ -1243,8 +1219,6 @@ static int createNativeWindow(_GLFWwindow* window,
         _glfw.win32.mainWindowClass = RegisterClassExW(&wc);
         if (!_glfw.win32.mainWindowClass)
         {
-            _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                                 "Win32: Failed to register window class");
             return GLFW_FALSE;
         }
     }
@@ -1306,8 +1280,6 @@ static int createNativeWindow(_GLFWwindow* window,
 
     if (!window->win32.handle)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to create window");
         return GLFW_FALSE;
     }
 
@@ -2112,7 +2084,6 @@ const char* _glfwGetScancodeNameWin32(int scancode)
     if (scancode < 0 || scancode > (KF_EXTENDED | 0xff) ||
         _glfw.win32.keycodes[scancode] == GLFW_KEY_UNKNOWN)
     {
-        _glfwInputError(GLFW_INVALID_VALUE, "Invalid scancode %i", scancode);
         return NULL;
     }
 
@@ -2172,7 +2143,6 @@ GLFWbool _glfwCreateStandardCursorWin32(_GLFWcursor* cursor, int shape)
             id = OCR_NO;
             break;
         default:
-            _glfwInputError(GLFW_PLATFORM_ERROR, "Win32: Unknown standard cursor");
             return GLFW_FALSE;
     }
 
@@ -2181,8 +2151,6 @@ GLFWbool _glfwCreateStandardCursorWin32(_GLFWcursor* cursor, int shape)
                                       LR_DEFAULTSIZE | LR_SHARED);
     if (!cursor->win32.handle)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to create standard cursor");
         return GLFW_FALSE;
     }
 
@@ -2214,16 +2182,12 @@ void _glfwSetClipboardStringWin32(const char* string)
     object = GlobalAlloc(GMEM_MOVEABLE, characterCount * sizeof(WCHAR));
     if (!object)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to allocate global handle for clipboard");
         return;
     }
 
     buffer = GlobalLock(object);
     if (!buffer)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to lock global handle");
         GlobalFree(object);
         return;
     }
@@ -2233,8 +2197,6 @@ void _glfwSetClipboardStringWin32(const char* string)
 
     if (!OpenClipboard(_glfw.win32.helperWindowHandle))
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to open clipboard");
         GlobalFree(object);
         return;
     }
@@ -2251,16 +2213,12 @@ const char* _glfwGetClipboardStringWin32(void)
 
     if (!OpenClipboard(_glfw.win32.helperWindowHandle))
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to open clipboard");
         return NULL;
     }
 
     object = GetClipboardData(CF_UNICODETEXT);
     if (!object)
     {
-        _glfwInputErrorWin32(GLFW_FORMAT_UNAVAILABLE,
-                             "Win32: Failed to convert clipboard to string");
         CloseClipboard();
         return NULL;
     }
@@ -2268,8 +2226,6 @@ const char* _glfwGetClipboardStringWin32(void)
     buffer = GlobalLock(object);
     if (!buffer)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to lock global handle");
         CloseClipboard();
         return NULL;
     }
@@ -2302,8 +2258,6 @@ GLFWbool _glfwGetPhysicalDevicePresentationSupportWin32(VkInstance instance,
         vkGetInstanceProcAddr(instance, "vkGetPhysicalDeviceWin32PresentationSupportKHR");
     if (!vkGetPhysicalDeviceWin32PresentationSupportKHR)
     {
-        _glfwInputError(GLFW_API_UNAVAILABLE,
-                        "Win32: Vulkan instance missing VK_KHR_win32_surface extension");
         return GLFW_FALSE;
     }
 
@@ -2323,8 +2277,6 @@ VkResult _glfwCreateWindowSurfaceWin32(VkInstance instance,
         vkGetInstanceProcAddr(instance, "vkCreateWin32SurfaceKHR");
     if (!vkCreateWin32SurfaceKHR)
     {
-        _glfwInputError(GLFW_API_UNAVAILABLE,
-                        "Win32: Vulkan instance missing VK_KHR_win32_surface extension");
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
 
@@ -2334,12 +2286,6 @@ VkResult _glfwCreateWindowSurfaceWin32(VkInstance instance,
     sci.hwnd = window->win32.handle;
 
     err = vkCreateWin32SurfaceKHR(instance, &sci, allocator, surface);
-    if (err)
-    {
-        _glfwInputError(GLFW_PLATFORM_ERROR,
-                        "Win32: Failed to create Vulkan surface: %s",
-                        _glfwGetVulkanResultString(err));
-    }
 
     return err;
 }
@@ -2347,12 +2293,9 @@ VkResult _glfwCreateWindowSurfaceWin32(VkInstance instance,
 GLFWAPI HWND glfwGetWin32Window(GLFWwindow* handle)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL)
 
     if (_glfw.platform.platformID != GLFW_PLATFORM_WIN32)
     {
-        _glfwInputError(GLFW_PLATFORM_UNAVAILABLE,
-                        "Win32: Platform not initialized");
         return NULL;
     }
 

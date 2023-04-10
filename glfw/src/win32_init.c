@@ -78,16 +78,12 @@ static GLFWbool loadLibraries(void)
                             (const WCHAR*) &_glfw,
                             (HMODULE*) &_glfw.win32.instance))
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to retrieve own module handle");
         return GLFW_FALSE;
     }
 
     _glfw.win32.user32.instance = _glfwPlatformLoadModule("user32.dll");
     if (!_glfw.win32.user32.instance)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to load user32.dll");
         return GLFW_FALSE;
     }
 
@@ -322,8 +318,6 @@ static GLFWbool createHelperWindow(void)
     _glfw.win32.helperWindowClass = RegisterClassExW(&wc);
     if (!_glfw.win32.helperWindowClass)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to register helper window class");
         return GLFW_FALSE;
     }
 
@@ -339,8 +333,6 @@ static GLFWbool createHelperWindow(void)
 
     if (!_glfw.win32.helperWindowHandle)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to create helper window");
         return GLFW_FALSE;
     }
 
@@ -386,8 +378,6 @@ WCHAR* _glfwCreateWideStringFromUTF8Win32(const char* source)
     count = MultiByteToWideChar(CP_UTF8, 0, source, -1, NULL, 0);
     if (!count)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to convert string from UTF-8");
         return NULL;
     }
 
@@ -395,8 +385,6 @@ WCHAR* _glfwCreateWideStringFromUTF8Win32(const char* source)
 
     if (!MultiByteToWideChar(CP_UTF8, 0, source, -1, target, count))
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to convert string from UTF-8");
         _glfw_free(target);
         return NULL;
     }
@@ -414,8 +402,6 @@ char* _glfwCreateUTF8FromWideStringWin32(const WCHAR* source)
     size = WideCharToMultiByte(CP_UTF8, 0, source, -1, NULL, 0, NULL, NULL);
     if (!size)
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to convert string to UTF-8");
         return NULL;
     }
 
@@ -423,34 +409,11 @@ char* _glfwCreateUTF8FromWideStringWin32(const WCHAR* source)
 
     if (!WideCharToMultiByte(CP_UTF8, 0, source, -1, target, size, NULL, NULL))
     {
-        _glfwInputErrorWin32(GLFW_PLATFORM_ERROR,
-                             "Win32: Failed to convert string to UTF-8");
         _glfw_free(target);
         return NULL;
     }
 
     return target;
-}
-
-// Reports the specified error, appending information about the last Win32 error
-//
-void _glfwInputErrorWin32(int error, const char* description)
-{
-    WCHAR buffer[_GLFW_MESSAGE_SIZE] = L"";
-    char message[_GLFW_MESSAGE_SIZE] = "";
-
-    FormatMessageW(FORMAT_MESSAGE_FROM_SYSTEM |
-                       FORMAT_MESSAGE_IGNORE_INSERTS |
-                       FORMAT_MESSAGE_MAX_WIDTH_MASK,
-                   NULL,
-                   GetLastError() & 0xffff,
-                   MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-                   buffer,
-                   sizeof(buffer) / sizeof(WCHAR),
-                   NULL);
-    WideCharToMultiByte(CP_UTF8, 0, buffer, -1, message, sizeof(message), NULL, NULL);
-
-    _glfwInputError(error, "%s: %s", description, message);
 }
 
 // Updates key names according to the current keyboard layout

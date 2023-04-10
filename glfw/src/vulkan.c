@@ -69,9 +69,6 @@ GLFWbool _glfwInitVulkan(int mode)
 #endif
         if (!_glfw.vk.handle)
         {
-            if (mode == _GLFW_REQUIRE_LOADER)
-                _glfwInputError(GLFW_API_UNAVAILABLE, "Vulkan: Loader not found");
-
             return GLFW_FALSE;
         }
 
@@ -79,9 +76,6 @@ GLFWbool _glfwInitVulkan(int mode)
             _glfwPlatformGetModuleSymbol(_glfw.vk.handle, "vkGetInstanceProcAddr");
         if (!_glfw.vk.GetInstanceProcAddr)
         {
-            _glfwInputError(GLFW_API_UNAVAILABLE,
-                            "Vulkan: Loader does not export vkGetInstanceProcAddr");
-
             _glfwTerminateVulkan();
             return GLFW_FALSE;
         }
@@ -91,9 +85,6 @@ GLFWbool _glfwInitVulkan(int mode)
         vkGetInstanceProcAddr(NULL, "vkEnumerateInstanceExtensionProperties");
     if (!vkEnumerateInstanceExtensionProperties)
     {
-        _glfwInputError(GLFW_API_UNAVAILABLE,
-                        "Vulkan: Failed to retrieve vkEnumerateInstanceExtensionProperties");
-
         _glfwTerminateVulkan();
         return GLFW_FALSE;
     }
@@ -101,14 +92,6 @@ GLFWbool _glfwInitVulkan(int mode)
     err = vkEnumerateInstanceExtensionProperties(NULL, &count, NULL);
     if (err)
     {
-        // NOTE: This happens on systems with a loader but without any Vulkan ICD
-        if (mode == _GLFW_REQUIRE_LOADER)
-        {
-            _glfwInputError(GLFW_API_UNAVAILABLE,
-                            "Vulkan: Failed to query instance extension count: %s",
-                            _glfwGetVulkanResultString(err));
-        }
-
         _glfwTerminateVulkan();
         return GLFW_FALSE;
     }
@@ -118,10 +101,6 @@ GLFWbool _glfwInitVulkan(int mode)
     err = vkEnumerateInstanceExtensionProperties(NULL, &count, ep);
     if (err)
     {
-        _glfwInputError(GLFW_API_UNAVAILABLE,
-                        "Vulkan: Failed to query instance extensions: %s",
-                        _glfwGetVulkanResultString(err));
-
         _glfw_free(ep);
         _glfwTerminateVulkan();
         return GLFW_FALSE;
@@ -222,7 +201,6 @@ const char* _glfwGetVulkanResultString(VkResult result)
 
 GLFWAPI int glfwVulkanSupported(void)
 {
-    _GLFW_REQUIRE_INIT_OR_RETURN(GLFW_FALSE);
     return _glfwInitVulkan(_GLFW_FIND_LOADER);
 }
 
@@ -231,8 +209,6 @@ GLFWAPI const char** glfwGetRequiredInstanceExtensions(uint32_t* count)
     assert(count != NULL);
 
     *count = 0;
-
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
     if (!_glfwInitVulkan(_GLFW_REQUIRE_LOADER))
         return NULL;
@@ -249,8 +225,6 @@ GLFWAPI GLFWvkproc glfwGetInstanceProcAddress(VkInstance instance,
 {
     GLFWvkproc proc;
     assert(procname != NULL);
-
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
 
     if (!_glfwInitVulkan(_GLFW_REQUIRE_LOADER))
         return NULL;
@@ -276,15 +250,11 @@ GLFWAPI int glfwGetPhysicalDevicePresentationSupport(VkInstance instance,
     assert(instance != VK_NULL_HANDLE);
     assert(device != VK_NULL_HANDLE);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(GLFW_FALSE);
-
     if (!_glfwInitVulkan(_GLFW_REQUIRE_LOADER))
         return GLFW_FALSE;
 
     if (!_glfw.vk.extensions[0])
     {
-        _glfwInputError(GLFW_API_UNAVAILABLE,
-                        "Vulkan: Window surface creation extensions not found");
         return GLFW_FALSE;
     }
 
@@ -305,22 +275,16 @@ GLFWAPI VkResult glfwCreateWindowSurface(VkInstance instance,
 
     *surface = VK_NULL_HANDLE;
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(VK_ERROR_INITIALIZATION_FAILED);
-
     if (!_glfwInitVulkan(_GLFW_REQUIRE_LOADER))
         return VK_ERROR_INITIALIZATION_FAILED;
 
     if (!_glfw.vk.extensions[0])
     {
-        _glfwInputError(GLFW_API_UNAVAILABLE,
-                        "Vulkan: Window surface creation extensions not found");
         return VK_ERROR_EXTENSION_NOT_PRESENT;
     }
 
     if (window->context.client != GLFW_NO_API)
     {
-        _glfwInputError(GLFW_INVALID_VALUE,
-                        "Vulkan: Window surface creation requires the window to have the client API set to GLFW_NO_API");
         return VK_ERROR_NATIVE_WINDOW_IN_USE_KHR;
     }
 

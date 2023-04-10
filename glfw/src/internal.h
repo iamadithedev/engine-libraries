@@ -165,20 +165,6 @@ typedef VkResult (APIENTRY * PFN_vkEnumerateInstanceExtensionProperties)(const c
 
 #include "platform.h"
 
-// Checks for whether the library has been initialized
-#define _GLFW_REQUIRE_INIT()                         \
-    if (!_glfw.initialized)                          \
-    {                                                \
-        _glfwInputError(GLFW_NOT_INITIALIZED, NULL); \
-        return;                                      \
-    }
-#define _GLFW_REQUIRE_INIT_OR_RETURN(x)              \
-    if (!_glfw.initialized)                          \
-    {                                                \
-        _glfwInputError(GLFW_NOT_INITIALIZED, NULL); \
-        return x;                                    \
-    }
-
 // Swaps the provided pointers
 #define _GLFW_SWAP(type, x, y) \
     {                          \
@@ -187,15 +173,6 @@ typedef VkResult (APIENTRY * PFN_vkEnumerateInstanceExtensionProperties)(const c
         x = y;                 \
         y = t;                 \
     }
-
-// Per-thread error structure
-//
-struct _GLFWerror
-{
-    _GLFWerror*     next;
-    int             code;
-    char            description[_GLFW_MESSAGE_SIZE];
-};
 
 // Initialization configuration
 //
@@ -504,16 +481,13 @@ struct _GLFWlibrary
         int             refreshRate;
     } hints;
 
-    _GLFWerror*         errorListHead;
     _GLFWcursor*        cursorListHead;
     _GLFWwindow*        windowListHead;
 
     _GLFWmonitor**      monitors;
     int                 monitorCount;
 
-    _GLFWtls            errorSlot;
     _GLFWtls            contextSlot;
-    _GLFWmutex          errorLock;
 
     struct {
         GLFWbool        available;
@@ -590,14 +564,6 @@ void _glfwInputDrop(_GLFWwindow* window, int count, const char** names);
 
 void _glfwInputMonitor(_GLFWmonitor* monitor, int action, int placement);
 void _glfwInputMonitorWindow(_GLFWmonitor* monitor, _GLFWwindow* window);
-
-#if defined(__GNUC__)
-void _glfwInputError(int code, const char* format, ...)
-    __attribute__((format(printf, 2, 3)));
-#else
-void _glfwInputError(int code, const char* format, ...);
-#endif
-
 
 //////////////////////////////////////////////////////////////////////////
 //////                       GLFW internal API                      //////

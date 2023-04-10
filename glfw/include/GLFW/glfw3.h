@@ -2101,37 +2101,6 @@ GLFWAPI void glfwGetVersion(int* major, int* minor, int* rev);
  */
 GLFWAPI const char* glfwGetVersionString(void);
 
-/*! @brief Returns and clears the last error for the calling thread.
- *
- *  This function returns and clears the [error code](@ref errors) of the last
- *  error that occurred on the calling thread, and optionally a UTF-8 encoded
- *  human-readable description of it.  If no error has occurred since the last
- *  call, it returns @ref GLFW_NO_ERROR (zero) and the description pointer is
- *  set to `NULL`.
- *
- *  @param[in] description Where to store the error description pointer, or `NULL`.
- *  @return The last error code for the calling thread, or @ref GLFW_NO_ERROR
- *  (zero).
- *
- *  @errors None.
- *
- *  @pointer_lifetime The returned string is allocated and freed by GLFW.  You
- *  should not free it yourself.  It is guaranteed to be valid only until the
- *  next error occurs or the library is terminated.
- *
- *  @remark This function may be called before @ref glfwInit.
- *
- *  @thread_safety This function may be called from any thread.
- *
- *  @sa @ref error_handling
- *  @sa @ref glfwSetErrorCallback
- *
- *  @since Added in version 3.3.
- *
- *  @ingroup init
- */
-GLFWAPI int glfwGetError(const char** description);
-
 /*! @brief Returns the currently selected platform.
  *
  *  This function returns the platform that was selected during initialization.  The

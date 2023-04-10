@@ -215,8 +215,6 @@ GLFWAPI int glfwGetInputMode(GLFWwindow* handle, int mode)
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(0)
-
     switch (mode)
     {
         case GLFW_CURSOR:
@@ -231,7 +229,6 @@ GLFWAPI int glfwGetInputMode(GLFWwindow* handle, int mode)
             return window->rawMouseMotion;
     }
 
-    _glfwInputError(GLFW_INVALID_ENUM, "Invalid input mode 0x%08X", mode);
     return 0;
 }
 
@@ -239,8 +236,6 @@ GLFWAPI void glfwSetInputMode(GLFWwindow* handle, int mode, int value)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
-
-    _GLFW_REQUIRE_INIT();
 
     switch (mode)
     {
@@ -251,9 +246,6 @@ GLFWAPI void glfwSetInputMode(GLFWwindow* handle, int mode, int value)
                 value != GLFW_CURSOR_DISABLED &&
                 value != GLFW_CURSOR_CAPTURED)
             {
-                _glfwInputError(GLFW_INVALID_ENUM,
-                                "Invalid cursor mode 0x%08X",
-                                value);
                 return;
             }
 
@@ -323,8 +315,6 @@ GLFWAPI void glfwSetInputMode(GLFWwindow* handle, int mode, int value)
         {
             if (!_glfw.platform.rawMouseMotionSupported())
             {
-                _glfwInputError(GLFW_PLATFORM_ERROR,
-                                "Raw mouse motion is not supported on this system");
                 return;
             }
 
@@ -337,20 +327,15 @@ GLFWAPI void glfwSetInputMode(GLFWwindow* handle, int mode, int value)
             return;
         }
     }
-
-    _glfwInputError(GLFW_INVALID_ENUM, "Invalid input mode 0x%08X", mode);
 }
 
 GLFWAPI int glfwRawMouseMotionSupported(void)
 {
-    _GLFW_REQUIRE_INIT_OR_RETURN(GLFW_FALSE);
     return _glfw.platform.rawMouseMotionSupported();
 }
 
 GLFWAPI const char* glfwGetKeyName(int key, int scancode)
 {
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
-
     if (key != GLFW_KEY_UNKNOWN)
     {
         if (key != GLFW_KEY_KP_EQUAL &&
@@ -368,11 +353,8 @@ GLFWAPI const char* glfwGetKeyName(int key, int scancode)
 
 GLFWAPI int glfwGetKeyScancode(int key)
 {
-    _GLFW_REQUIRE_INIT_OR_RETURN(-1);
-
     if (key < GLFW_KEY_SPACE || key > GLFW_KEY_LAST)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, "Invalid key %i", key);
         return GLFW_RELEASE;
     }
 
@@ -384,11 +366,8 @@ GLFWAPI int glfwGetKey(GLFWwindow* handle, int key)
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(GLFW_RELEASE);
-
     if (key < GLFW_KEY_SPACE || key > GLFW_KEY_LAST)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, "Invalid key %i", key);
         return GLFW_RELEASE;
     }
 
@@ -407,11 +386,8 @@ GLFWAPI int glfwGetMouseButton(GLFWwindow* handle, int button)
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(GLFW_RELEASE);
-
     if (button < GLFW_MOUSE_BUTTON_1 || button > GLFW_MOUSE_BUTTON_LAST)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, "Invalid mouse button %i", button);
         return GLFW_RELEASE;
     }
 
@@ -435,8 +411,6 @@ GLFWAPI void glfwGetCursorPos(GLFWwindow* handle, double* xpos, double* ypos)
     if (ypos)
         *ypos = 0;
 
-    _GLFW_REQUIRE_INIT();
-
     if (window->cursorMode == GLFW_CURSOR_DISABLED)
     {
         if (xpos)
@@ -453,14 +427,9 @@ GLFWAPI void glfwSetCursorPos(GLFWwindow* handle, double xpos, double ypos)
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT();
-
     if (xpos != xpos || xpos < -DBL_MAX || xpos > DBL_MAX ||
         ypos != ypos || ypos < -DBL_MAX || ypos > DBL_MAX)
     {
-        _glfwInputError(GLFW_INVALID_VALUE,
-                        "Invalid cursor position %f %f",
-                        xpos, ypos);
         return;
     }
 
@@ -487,11 +456,8 @@ GLFWAPI GLFWcursor* glfwCreateCursor(const GLFWimage* image, int xhot, int yhot)
     assert(image != NULL);
     assert(image->pixels != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
-
     if (image->width <= 0 || image->height <= 0)
     {
-        _glfwInputError(GLFW_INVALID_VALUE, "Invalid image dimensions for cursor");
         return NULL;
     }
 
@@ -512,8 +478,6 @@ GLFWAPI GLFWcursor* glfwCreateStandardCursor(int shape)
 {
     _GLFWcursor* cursor;
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
-
     if (shape != GLFW_ARROW_CURSOR &&
         shape != GLFW_IBEAM_CURSOR &&
         shape != GLFW_CROSSHAIR_CURSOR &&
@@ -525,7 +489,6 @@ GLFWAPI GLFWcursor* glfwCreateStandardCursor(int shape)
         shape != GLFW_RESIZE_ALL_CURSOR &&
         shape != GLFW_NOT_ALLOWED_CURSOR)
     {
-        _glfwInputError(GLFW_INVALID_ENUM, "Invalid standard cursor 0x%08X", shape);
         return NULL;
     }
 
@@ -545,8 +508,6 @@ GLFWAPI GLFWcursor* glfwCreateStandardCursor(int shape)
 GLFWAPI void glfwDestroyCursor(GLFWcursor* handle)
 {
     _GLFWcursor* cursor = (_GLFWcursor*) handle;
-
-    _GLFW_REQUIRE_INIT();
 
     if (cursor == NULL)
         return;
@@ -583,8 +544,6 @@ GLFWAPI void glfwSetCursor(GLFWwindow* windowHandle, GLFWcursor* cursorHandle)
     _GLFWcursor* cursor = (_GLFWcursor*) cursorHandle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT();
-
     window->cursor = cursor;
 
     _glfw.platform.setCursor(window, cursor);
@@ -595,7 +554,6 @@ GLFWAPI GLFWkeyfun glfwSetKeyCallback(GLFWwindow* handle, GLFWkeyfun cbfun)
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP(GLFWkeyfun, window->callbacks.key, cbfun);
     return cbfun;
 }
@@ -605,7 +563,6 @@ GLFWAPI GLFWcharfun glfwSetCharCallback(GLFWwindow* handle, GLFWcharfun cbfun)
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP(GLFWcharfun, window->callbacks.character, cbfun);
     return cbfun;
 }
@@ -615,7 +572,6 @@ GLFWAPI GLFWcharmodsfun glfwSetCharModsCallback(GLFWwindow* handle, GLFWcharmods
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP(GLFWcharmodsfun, window->callbacks.charmods, cbfun);
     return cbfun;
 }
@@ -626,7 +582,6 @@ GLFWAPI GLFWmousebuttonfun glfwSetMouseButtonCallback(GLFWwindow* handle,
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP(GLFWmousebuttonfun, window->callbacks.mouseButton, cbfun);
     return cbfun;
 }
@@ -637,7 +592,6 @@ GLFWAPI GLFWcursorposfun glfwSetCursorPosCallback(GLFWwindow* handle,
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP(GLFWcursorposfun, window->callbacks.cursorPos, cbfun);
     return cbfun;
 }
@@ -648,7 +602,6 @@ GLFWAPI GLFWcursorenterfun glfwSetCursorEnterCallback(GLFWwindow* handle,
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP(GLFWcursorenterfun, window->callbacks.cursorEnter, cbfun);
     return cbfun;
 }
@@ -659,7 +612,6 @@ GLFWAPI GLFWscrollfun glfwSetScrollCallback(GLFWwindow* handle,
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP(GLFWscrollfun, window->callbacks.scroll, cbfun);
     return cbfun;
 }
@@ -669,7 +621,6 @@ GLFWAPI GLFWdropfun glfwSetDropCallback(GLFWwindow* handle, GLFWdropfun cbfun)
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     _GLFW_SWAP(GLFWdropfun, window->callbacks.drop, cbfun);
     return cbfun;
 }
@@ -678,12 +629,10 @@ GLFWAPI void glfwSetClipboardString(GLFWwindow* handle, const char* string)
 {
     assert(string != NULL);
 
-    _GLFW_REQUIRE_INIT();
     _glfw.platform.setClipboardString(string);
 }
 
 GLFWAPI const char* glfwGetClipboardString(GLFWwindow* handle)
 {
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     return _glfw.platform.getClipboardString();
 }

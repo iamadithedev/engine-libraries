@@ -293,10 +293,6 @@ void _glfwSetVideoModeWin32(_GLFWmonitor* monitor, const GLFWvidmode* desired)
             description = "Failed to write to registry";
         else if (result == DISP_CHANGE_RESTART)
             description = "Computer restart required";
-
-        _glfwInputError(GLFW_PLATFORM_ERROR,
-                        "Win32: Failed to set video mode: %s",
-                        description);
     }
 }
 
@@ -325,7 +321,6 @@ void _glfwGetHMONITORContentScaleWin32(HMONITOR handle, float* xscale, float* ys
     {
         if (GetDpiForMonitor(handle, MDT_EFFECTIVE_DPI, &xdpi, &ydpi) != S_OK)
         {
-            _glfwInputError(GLFW_PLATFORM_ERROR, "Win32: Failed to query monitor DPI");
             return;
         }
     }
@@ -511,8 +506,6 @@ void _glfwSetGammaRampWin32(_GLFWmonitor* monitor, const GLFWgammaramp* ramp)
 
     if (ramp->size != 256)
     {
-        _glfwInputError(GLFW_PLATFORM_ERROR,
-                        "Win32: Gamma ramp size must be 256");
         return;
     }
 
@@ -533,14 +526,12 @@ void _glfwSetGammaRampWin32(_GLFWmonitor* monitor, const GLFWgammaramp* ramp)
 GLFWAPI const char* glfwGetWin32Adapter(GLFWmonitor* handle)
 {
     _GLFWmonitor* monitor = (_GLFWmonitor*) handle;
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     return monitor->win32.publicAdapterName;
 }
 
 GLFWAPI const char* glfwGetWin32Monitor(GLFWmonitor* handle)
 {
     _GLFWmonitor* monitor = (_GLFWmonitor*) handle;
-    _GLFW_REQUIRE_INIT_OR_RETURN(NULL);
     return monitor->win32.publicDisplayName;
 }
 
