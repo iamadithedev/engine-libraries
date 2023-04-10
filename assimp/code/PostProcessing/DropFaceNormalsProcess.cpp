@@ -49,7 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "DropFaceNormalsProcess.h"
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <assimp/Exceptional.h>
 
 using namespace Assimp;
 
@@ -62,11 +61,6 @@ bool DropFaceNormalsProcess::IsActive( unsigned int pFlags) const {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void DropFaceNormalsProcess::Execute( aiScene* pScene) {
-
-    if (pScene->mFlags & AI_SCENE_FLAGS_NON_VERBOSE_FORMAT) {
-        throw DeadlyImportError("Post-processing order mismatch: expecting pseudo-indexed (\"verbose\") vertices here");
-    }
-
     bool bHas = false;
     for( unsigned int a = 0; a < pScene->mNumMeshes; a++) {
         bHas |= this->DropMeshFaceNormals( pScene->mMeshes[a]);
@@ -76,7 +70,6 @@ void DropFaceNormalsProcess::Execute( aiScene* pScene) {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 bool DropFaceNormalsProcess::DropMeshFaceNormals (aiMesh* mesh) {
-    ai_assert(nullptr != mesh);
 
     if (nullptr == mesh->mNormals) {
         return false;

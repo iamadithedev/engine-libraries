@@ -77,7 +77,6 @@ inline void PrefixString(aiString &string, const char *prefix, unsigned int len)
         return;
 
     if (len + string.length >= MAXLEN - 1) {
-        ai_assert(false);
         return;
     }
 
@@ -107,8 +106,6 @@ void SceneCombiner::AddNodeHashes(aiNode *node, std::set<unsigned int> &hashes) 
 // ------------------------------------------------------------------------------------------------
 // Add a name prefix to all nodes in a hierarchy
 void SceneCombiner::AddNodePrefixes(aiNode *node, const char *prefix, unsigned int len) {
-    ai_assert(nullptr != prefix);
-
     PrefixString(node->mName, prefix, len);
 
     // Process all children recursively
@@ -135,7 +132,6 @@ bool SceneCombiner::FindNameMatch(const aiString &name, std::vector<SceneHelper>
 // Add a name prefix to all nodes in a hierarchy if a hash match is found
 void SceneCombiner::AddNodePrefixesChecked(aiNode *node, const char *prefix, unsigned int len,
         std::vector<SceneHelper> &input, unsigned int cur) {
-    ai_assert(nullptr != prefix);
 
     const unsigned int hash = SuperFastHash(node->mName.data, static_cast<uint32_t>(node->mName.length));
 
@@ -241,8 +237,6 @@ void SceneCombiner::AttachToGraph(aiNode *attach, std::vector<NodeAttachmentInfo
 
 // ------------------------------------------------------------------------------------------------
 void SceneCombiner::AttachToGraph(aiScene *master, std::vector<NodeAttachmentInfo> &src) {
-    ai_assert(nullptr != master);
-
     AttachToGraph(master->mRootNode, src);
 }
 
@@ -931,7 +925,6 @@ void SceneCombiner::CopyScene(aiScene **_dest, const aiScene *src, bool allocate
         *_dest = new aiScene();
     }
     aiScene *dest = *_dest;
-    ai_assert(nullptr != dest);
 
     // copy metadata
     if (nullptr != src->mMetaData) {
@@ -1167,8 +1160,6 @@ void SceneCombiner::Copy(aiBone **_dest, const aiBone *src) {
 
 // ------------------------------------------------------------------------------------------------
 void SceneCombiner::Copy(aiNode **_dest, const aiNode *src) {
-    ai_assert(nullptr != _dest);
-    ai_assert(nullptr != src);
 
     aiNode *dest = *_dest = new aiNode();
 
@@ -1229,7 +1220,6 @@ void SceneCombiner::Copy(aiMetadata **_dest, const aiMetadata *src) {
             out.mData = new aiVector3D(*static_cast<aiVector3D *>(in.mData));
             break;
         default:
-            ai_assert(false);
             break;
         }
     }

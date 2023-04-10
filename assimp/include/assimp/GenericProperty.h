@@ -48,7 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <assimp/Hash.h>
-#include <assimp/ai_assert.h>
 #include <assimp/Importer.hpp>
 
 #include <map>
@@ -57,7 +56,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 template <class T>
 inline bool SetGenericProperty(std::map<unsigned int, T> &list,
         const char *szName, const T &value) {
-    ai_assert(nullptr != szName);
+
     const uint32_t hash = SuperFastHash(szName);
 
     typename std::map<unsigned int, T>::iterator it = list.find(hash);
@@ -74,7 +73,7 @@ inline bool SetGenericProperty(std::map<unsigned int, T> &list,
 template <class T>
 inline const T &GetGenericProperty(const std::map<unsigned int, T> &list,
         const char *szName, const T &errorReturn) {
-    ai_assert(nullptr != szName);
+
     const uint32_t hash = SuperFastHash(szName);
 
     typename std::map<unsigned int, T>::const_iterator it = list.find(hash);
@@ -91,7 +90,6 @@ inline const T &GetGenericProperty(const std::map<unsigned int, T> &list,
 template <class T>
 inline void SetGenericPropertyPtr(std::map<unsigned int, T *> &list,
         const char *szName, T *value, bool *bWasExisting = nullptr) {
-    ai_assert(nullptr != szName);
     const uint32_t hash = SuperFastHash(szName);
 
     typename std::map<unsigned int, T *>::iterator it = list.find(hash);

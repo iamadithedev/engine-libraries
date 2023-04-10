@@ -40,7 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 #pragma once
 
-#include <assimp/ai_assert.h>
 #include <utility>
 
 namespace Assimp {
@@ -77,7 +76,6 @@ struct Maybe {
     /// @brief  Will return the value when it is valid.
     /// @return The value.
     const T &Get() const {
-        ai_assert(_valid);
         return _val;
     }
 

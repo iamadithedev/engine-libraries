@@ -58,7 +58,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endif
 
 #include <assimp/StringComparison.h>
-#include <assimp/ai_assert.h>
 #include <assimp/defs.h>
 
 #include <cstdint>
@@ -79,7 +78,6 @@ namespace Assimp {
  * @return Length of the output string, excluding the '\0'
  */
 inline unsigned int ASSIMP_itoa10(char *out, unsigned int max, int32_t number) {
-    ai_assert(nullptr != out);
 
     // write the unary minus to indicate we have a negative number
     unsigned int written = 1u;
@@ -137,9 +135,6 @@ inline unsigned int ASSIMP_itoa10(char (&out)[length], int32_t number) {
  *  @return 0 if the given strings are identical
  */
 inline int ASSIMP_stricmp(const char *s1, const char *s2) {
-    ai_assert(nullptr != s1);
-    ai_assert(nullptr != s2);
-
 #if (defined _MSC_VER)
 
     return ::_stricmp(s1, s2);
@@ -178,8 +173,6 @@ inline int ASSIMP_stricmp(const std::string &a, const std::string &b) {
  *  @return 0 if the given strings are identical
  */
 inline int ASSIMP_strincmp(const char *s1, const char *s2, unsigned int n) {
-    ai_assert(nullptr != s1);
-    ai_assert(nullptr != s2);
     if (!n) {
         return 0;
     }

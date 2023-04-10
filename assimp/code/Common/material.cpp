@@ -95,6 +95,6 @@ const char *aiTextureTypeToString(aiTextureType in) {
     default:
         break;
     }
-    ai_assert(false);
+
     return "BUG";
 }

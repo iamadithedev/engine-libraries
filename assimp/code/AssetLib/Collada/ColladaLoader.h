@@ -60,7 +60,6 @@ struct ColladaMeshIndex {
     std::string mMaterial;
     ColladaMeshIndex(const std::string &pMeshID, size_t pSubMesh, const std::string &pMaterial) :
             mMeshID(pMeshID), mSubMesh(pSubMesh), mMaterial(pMaterial) {
-        ai_assert(!pMeshID.empty());
     }
 
     bool operator<(const ColladaMeshIndex &p) const {

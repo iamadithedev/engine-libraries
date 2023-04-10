@@ -168,7 +168,6 @@ public:
     virtual ~NodeAttribute() = default;
 
     const PropertyTable& Props() const {
-        ai_assert(props.get());
         return *props;
     }
 
@@ -188,8 +187,6 @@ private:
     type name() const { \
         const int ival = PropertyGet<int>(Props(), fbx_stringize(name), static_cast<int>(default_value)); \
         if (ival < 0 || ival >= AI_CONCAT(type, _MAX)) { \
-            ai_assert(static_cast<int>(default_value) >= 0); \
-            ai_assert(static_cast<int>(default_value) < AI_CONCAT(type, _MAX)); \
             return static_cast<type>(default_value); \
         } \
         return static_cast<type>(ival); \
@@ -322,7 +319,6 @@ public:
     }
 
     const PropertyTable& Props() const {
-        ai_assert(props.get());
         return *props;
     }
 
@@ -393,7 +389,6 @@ public:
     }
 
     const PropertyTable& Props() const {
-        ai_assert(props.get());
         return *props;
     }
 
@@ -508,12 +503,10 @@ public:
     }
 
     const PropertyTable& Props() const {
-        ai_assert(props.get());
         return *props;
     }
 
     const uint8_t* Content() const {
-        ai_assert(content);
         return content;
     }
 
@@ -553,7 +546,6 @@ public:
     }
 
     const PropertyTable& Props() const {
-        ai_assert(props.get());
         return *props;
     }
 
@@ -625,7 +617,6 @@ public:
     virtual ~AnimationCurveNode() = default;
 
     const PropertyTable& Props() const {
-        ai_assert(props.get());
         return *props;
     }
 
@@ -670,7 +661,6 @@ public:
     virtual ~AnimationLayer() = default;
 
     const PropertyTable& Props() const {
-        ai_assert(props.get());
         return *props;
     }
 
@@ -698,7 +688,6 @@ public:
     fbx_simple_property(ReferenceStop, int64_t, 0L)
 
     const PropertyTable& Props() const {
-        ai_assert(props.get());
         return *props;
     }
 
@@ -719,7 +708,6 @@ public:
     virtual ~Deformer();
 
     const PropertyTable& Props() const {
-        ai_assert(props.get());
         return *props;
     }
 
@@ -864,7 +852,6 @@ public:
     }
 
     int CompareTo(const Connection* c) const {
-        ai_assert( nullptr != c );
 
         // note: can't subtract because this would overflow uint64_t
         if(InsertionOrder() > c->InsertionOrder()) {
@@ -877,8 +864,6 @@ public:
     }
 
     bool Compare(const Connection* c) const {
-        ai_assert( nullptr != c );
-
         return InsertionOrder() < c->InsertionOrder();
     }
 
@@ -908,7 +893,6 @@ public:
     ~FileGlobalSettings() = default;
 
     const PropertyTable& Props() const {
-        ai_assert(props.get());
         return *props;
     }
 
@@ -987,7 +971,6 @@ public:
     }
 
     const FileGlobalSettings& GlobalSettings() const {
-        ai_assert(globals.get());
         return *globals;
     }
 

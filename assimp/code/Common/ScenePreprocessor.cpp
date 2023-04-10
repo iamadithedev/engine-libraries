@@ -40,15 +40,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "ScenePreprocessor.h"
-#include <assimp/ai_assert.h>
 #include <assimp/scene.h>
 
 using namespace Assimp;
 
 // ---------------------------------------------------------------------------------------------
 void ScenePreprocessor::ProcessScene() {
-    ai_assert(scene != nullptr);
-
     // Process all meshes
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i) {
         if (nullptr == scene->mMeshes[i]) {
@@ -138,7 +135,6 @@ void ScenePreprocessor::ProcessMesh(aiMesh *mesh) {
     // If the information which primitive types are there in the
     // mesh is currently not available, compute it.
     if (!mesh->mPrimitiveTypes) {
-        ai_assert(mesh->mFaces != nullptr);
         for (unsigned int a = 0; a < mesh->mNumFaces; ++a) {
             aiFace &face = mesh->mFaces[a];
             switch (face.mNumIndices) {
@@ -222,16 +218,12 @@ void ScenePreprocessor::ProcessAnimation(aiAnimation *anim) {
                         delete[] channel->mRotationKeys;
                         channel->mRotationKeys = nullptr;
                     }
-                    ai_assert(!channel->mRotationKeys);
                     channel->mNumRotationKeys = 1;
                     channel->mRotationKeys = new aiQuatKey[1];
                     aiQuatKey &q = channel->mRotationKeys[0];
 
                     q.mTime = 0.;
                     q.mValue = rotation;
-
-                } else {
-                    ai_assert(channel->mRotationKeys);
                 }
 
                 // No scaling keys? Generate a dummy track
@@ -240,7 +232,6 @@ void ScenePreprocessor::ProcessAnimation(aiAnimation *anim) {
                         delete[] channel->mScalingKeys;
                         channel->mScalingKeys = nullptr;
                     }
-                    ai_assert(!channel->mScalingKeys);
                     channel->mNumScalingKeys = 1;
                     channel->mScalingKeys = new aiVectorKey[1];
                     aiVectorKey &q = channel->mScalingKeys[0];
@@ -248,8 +239,6 @@ void ScenePreprocessor::ProcessAnimation(aiAnimation *anim) {
                     q.mTime = 0.;
                     q.mValue = scaling;
 
-                } else {
-                    ai_assert(channel->mScalingKeys);
                 }
 
                 // No position keys? Generate a dummy track
@@ -258,7 +247,7 @@ void ScenePreprocessor::ProcessAnimation(aiAnimation *anim) {
                         delete[] channel->mPositionKeys;
                         channel->mPositionKeys = nullptr;
                     }
-                    ai_assert(!channel->mPositionKeys);
+
                     channel->mNumPositionKeys = 1;
                     channel->mPositionKeys = new aiVectorKey[1];
                     aiVectorKey &q = channel->mPositionKeys[0];
@@ -266,8 +255,6 @@ void ScenePreprocessor::ProcessAnimation(aiAnimation *anim) {
                     q.mTime = 0.;
                     q.mValue = position;
 
-                } else {
-                    ai_assert(channel->mPositionKeys);
                 }
             }
         }

@@ -57,7 +57,7 @@ namespace Assimp {
 // ---------------------------------------------------------------------------
 /** The GenFaceNormalsProcess computes vertex normals for all vertices
 */
-class ASSIMP_API GenVertexNormalsProcess : public BaseProcess {
+class GenVertexNormalsProcess : public BaseProcess {
 public:
     // -------------------------------------------------------------------
     /// The default class constructor / destructor.

@@ -66,7 +66,7 @@ namespace Assimp {
  *  and removes the whole graph. The output is a list of meshes, one for
  *  each material.
 */
-class ASSIMP_API PretransformVertices : public BaseProcess {
+class PretransformVertices : public BaseProcess {
 public:
     // -------------------------------------------------------------------
     /// The default class constructor / destructor.

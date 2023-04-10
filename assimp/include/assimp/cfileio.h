@@ -60,15 +60,15 @@ struct aiFileIO;
 struct aiFile;
 
 // aiFile callbacks
-typedef size_t          (*aiFileWriteProc) (C_STRUCT aiFile*,   const char*, size_t, size_t);
-typedef size_t          (*aiFileReadProc)  (C_STRUCT aiFile*,   char*, size_t,size_t);
-typedef size_t          (*aiFileTellProc)  (C_STRUCT aiFile*);
-typedef void            (*aiFileFlushProc) (C_STRUCT aiFile*);
-typedef C_ENUM aiReturn (*aiFileSeek)      (C_STRUCT aiFile*, size_t, C_ENUM aiOrigin);
+typedef size_t          (*aiFileWriteProc) (aiFile*,   const char*, size_t, size_t);
+typedef size_t          (*aiFileReadProc)  (aiFile*,   char*, size_t,size_t);
+typedef size_t          (*aiFileTellProc)  (aiFile*);
+typedef void            (*aiFileFlushProc) (aiFile*);
+typedef aiReturn (*aiFileSeek)      (aiFile*, size_t, aiOrigin);
 
 // aiFileIO callbacks
-typedef C_STRUCT aiFile* (*aiFileOpenProc)  (C_STRUCT aiFileIO*, const char*, const char*);
-typedef void             (*aiFileCloseProc) (C_STRUCT aiFileIO*, C_STRUCT aiFile*);
+typedef aiFile* (*aiFileOpenProc)  (aiFileIO*, const char*, const char*);
+typedef void             (*aiFileCloseProc) (aiFileIO*, aiFile*);
 
 // Represents user-defined data
 typedef char* aiUserData;

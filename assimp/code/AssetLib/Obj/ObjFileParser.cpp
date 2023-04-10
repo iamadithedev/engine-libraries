@@ -255,7 +255,6 @@ void ObjFileParser::copyNextWord(char *pBuffer, size_t length) {
         ++m_DataIt;
     }
 
-    ai_assert(index < length);
     pBuffer[index] = '\0';
 }
 
@@ -774,7 +773,6 @@ void ObjFileParser::getObjectName() {
 // -------------------------------------------------------------------
 //  Creates a new object instance
 void ObjFileParser::createObject(const std::string &objName) {
-    ai_assert(nullptr != m_pModel);
 
     m_pModel->mCurrentObject = new ObjFile::Object;
     m_pModel->mCurrentObject->m_strObjName = objName;
@@ -791,7 +789,6 @@ void ObjFileParser::createObject(const std::string &objName) {
 // -------------------------------------------------------------------
 //  Creates a new mesh
 void ObjFileParser::createMesh(const std::string &meshName) {
-    ai_assert(nullptr != m_pModel);
 
     m_pModel->mCurrentMesh = new ObjFile::Mesh(meshName);
     m_pModel->mMeshes.push_back(m_pModel->mCurrentMesh);

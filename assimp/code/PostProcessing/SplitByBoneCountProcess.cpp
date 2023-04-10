@@ -49,7 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <limits>
 #include <assimp/TinyFormatter.h>
-#include <assimp/Exceptional.h>
 #include <set>
 
 using namespace Assimp;
@@ -147,9 +146,6 @@ void SplitByBoneCountProcess::SplitMesh( const aiMesh* pMesh, std::vector<aiMesh
             if (bone->mWeights[b].mWeight > 0.0f) {
                 int vertexId = bone->mWeights[b].mVertexId;
                 vertexBones[vertexId].emplace_back(a, bone->mWeights[b].mWeight);
-                if (vertexBones[vertexId].size() > mMaxBoneCount) {
-                    throw DeadlyImportError("SplitByBoneCountProcess: Single face requires more bones than specified max bone count!");
-                }
             }
         }
     }
@@ -272,8 +268,6 @@ void SplitByBoneCountProcess::SplitMesh( const aiMesh* pMesh, std::vector<aiMesh
             }
         }
 
-        ai_assert( nvi == numSubMeshVertices );
-
         // Create the bones for the new submesh: first create the bone array
         newMesh->mNumBones = 0;
         newMesh->mBones = new aiBone*[numBones];
@@ -294,8 +288,6 @@ void SplitByBoneCountProcess::SplitMesh( const aiMesh* pMesh, std::vector<aiMesh
             dstBone->mNumWeights = 0;
         }
 
-        ai_assert( newMesh->mNumBones == numBones );
-
         // iterate over all new vertices and count which bones affected its old vertex in the source mesh
         for( unsigned int a = 0; a < numSubMeshVertices; ++a ) {
             unsigned int oldIndex = previousVertexIndices[a];
@@ -312,7 +304,6 @@ void SplitByBoneCountProcess::SplitMesh( const aiMesh* pMesh, std::vector<aiMesh
         // allocate all bone weight arrays accordingly
         for( unsigned int a = 0; a < newMesh->mNumBones; ++a ) {
             aiBone* bone = newMesh->mBones[a];
-            ai_assert( bone->mNumWeights > 0 );
             bone->mWeights = new aiVertexWeight[bone->mNumWeights];
             bone->mNumWeights = 0; // for counting up in the next step
         }
@@ -327,7 +318,6 @@ void SplitByBoneCountProcess::SplitMesh( const aiMesh* pMesh, std::vector<aiMesh
             // the face it comprises shouldn't be present
             for( unsigned int b = 0; b < bonesOnThisVertex.size(); ++b) {
                 unsigned int newBoneIndex = mappedBoneIndex[ bonesOnThisVertex[b].first ];
-                ai_assert( newBoneIndex != std::numeric_limits<unsigned int>::max() );
                 aiVertexWeight* dstWeight = newMesh->mBones[newBoneIndex]->mWeights + newMesh->mBones[newBoneIndex]->mNumWeights;
                 newMesh->mBones[newBoneIndex]->mNumWeights++;
 

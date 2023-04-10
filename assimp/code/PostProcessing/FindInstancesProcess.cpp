@@ -232,7 +232,6 @@ void FindInstancesProcess::Execute( aiScene* pScene)
                 remapping[i] = numMeshesOut++;
             }
         }
-        ai_assert(0 != numMeshesOut);
         if (numMeshesOut != pScene->mNumMeshes) {
 
             // Collapse the meshes array by removing all nullptr entries

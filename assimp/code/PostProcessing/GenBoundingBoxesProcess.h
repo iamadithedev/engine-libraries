@@ -58,7 +58,7 @@ namespace Assimp {
  * @brief Post-processing process to find axis-aligned bounding volumes for amm meshes
  *        used in a scene.
  */
-class ASSIMP_API GenBoundingBoxesProcess : public BaseProcess {
+class GenBoundingBoxesProcess : public BaseProcess {
 public:
     // -------------------------------------------------------------------
     /// The default class constructor / destructor.

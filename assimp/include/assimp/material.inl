@@ -64,7 +64,7 @@ AI_FORCE_INLINE aiPropertyTypeInfo ai_real_to_property_type_info(double) {
 // ---------------------------------------------------------------------------
 AI_FORCE_INLINE aiReturn aiMaterial::GetTexture( aiTextureType type,
        unsigned int  index,
-       C_STRUCT aiString* path,
+       aiString* path,
        aiTextureMapping* mapping    /*= NULL*/,
        unsigned int* uvindex        /*= NULL*/,
        ai_real* blend               /*= NULL*/,

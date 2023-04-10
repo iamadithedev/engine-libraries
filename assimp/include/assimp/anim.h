@@ -66,7 +66,7 @@ struct aiVectorKey {
     double mTime;
 
     /** The value of this key */
-    C_STRUCT aiVector3D mValue;
+    aiVector3D mValue;
 
 #ifdef __cplusplus
 
@@ -113,7 +113,7 @@ struct aiQuatKey {
     double mTime;
 
     /** The value of this key */
-    C_STRUCT aiQuaternion mValue;
+    aiQuaternion mValue;
 
 #ifdef __cplusplus
     aiQuatKey() AI_NO_EXCEPT
@@ -270,7 +270,7 @@ enum aiAnimBehaviour {
 struct aiNodeAnim {
     /** The name of the node affected by this animation. The node
      *  must exist and it must be unique.*/
-    C_STRUCT aiString mNodeName;
+    aiString mNodeName;
 
     /** The number of position keys */
     unsigned int mNumPositionKeys;
@@ -280,7 +280,7 @@ struct aiNodeAnim {
      *
      * If there are position keys, there will also be at least one
      * scaling and one rotation key.*/
-    C_STRUCT aiVectorKey *mPositionKeys;
+    aiVectorKey *mPositionKeys;
 
     /** The number of rotation keys */
     unsigned int mNumRotationKeys;
@@ -291,7 +291,7 @@ struct aiNodeAnim {
      *
      * If there are rotation keys, there will also be at least one
      * scaling and one position key. */
-    C_STRUCT aiQuatKey *mRotationKeys;
+    aiQuatKey *mRotationKeys;
 
     /** The number of scaling keys */
     unsigned int mNumScalingKeys;
@@ -301,21 +301,21 @@ struct aiNodeAnim {
      *
      * If there are scaling keys, there will also be at least one
      * position and one rotation key.*/
-    C_STRUCT aiVectorKey *mScalingKeys;
+    aiVectorKey *mScalingKeys;
 
     /** Defines how the animation behaves before the first
      *  key is encountered.
      *
      *  The default value is aiAnimBehaviour_DEFAULT (the original
      *  transformation matrix of the affected node is used).*/
-    C_ENUM aiAnimBehaviour mPreState;
+    aiAnimBehaviour mPreState;
 
     /** Defines how the animation behaves after the last
      *  key was processed.
      *
      *  The default value is aiAnimBehaviour_DEFAULT (the original
      *  transformation matrix of the affected node is taken).*/
-    C_ENUM aiAnimBehaviour mPostState;
+    aiAnimBehaviour mPostState;
 
 #ifdef __cplusplus
     aiNodeAnim() AI_NO_EXCEPT
@@ -349,13 +349,13 @@ struct aiMeshAnim {
      *  animated meshes need to be named (not necessarily uniquely,
      *  the name can basically serve as wild-card to select a group
      *  of meshes with similar animation setup)*/
-    C_STRUCT aiString mName;
+    aiString mName;
 
     /** Size of the #mKeys array. Must be 1, at least. */
     unsigned int mNumKeys;
 
     /** Key frames of the animation. May not be nullptr. */
-    C_STRUCT aiMeshKey *mKeys;
+    aiMeshKey *mKeys;
 
 #ifdef __cplusplus
 
@@ -377,13 +377,13 @@ struct aiMeshMorphAnim {
      *  animated meshes need to be named (not necessarily uniquely,
      *  the name can basically serve as wildcard to select a group
      *  of meshes with similar animation setup)*/
-    C_STRUCT aiString mName;
+    aiString mName;
 
     /** Size of the #mKeys array. Must be 1, at least. */
     unsigned int mNumKeys;
 
     /** Key frames of the animation. May not be nullptr. */
-    C_STRUCT aiMeshMorphKey *mKeys;
+    aiMeshMorphKey *mKeys;
 
 #ifdef __cplusplus
 
@@ -405,7 +405,7 @@ struct aiAnimation {
     /** The name of the animation. If the modeling package this data was
      *  exported from does support only a single animation channel, this
      *  name is usually empty (length is zero). */
-    C_STRUCT aiString mName;
+    aiString mName;
 
     /** Duration of the animation in ticks.  */
     double mDuration;
@@ -419,7 +419,7 @@ struct aiAnimation {
 
     /** The node animation channels. Each channel affects a single node.
      *  The array is mNumChannels in size. */
-    C_STRUCT aiNodeAnim **mChannels;
+    aiNodeAnim **mChannels;
 
     /** The number of mesh animation channels. Each channel affects
      *  a single mesh and defines vertex-based animation. */
@@ -427,7 +427,7 @@ struct aiAnimation {
 
     /** The mesh animation channels. Each channel affects a single mesh.
      *  The array is mNumMeshChannels in size. */
-    C_STRUCT aiMeshAnim **mMeshChannels;
+    aiMeshAnim **mMeshChannels;
 
     /** The number of mesh animation channels. Each channel affects
      *  a single mesh and defines morphing animation. */
@@ -435,7 +435,7 @@ struct aiAnimation {
 
     /** The morph mesh animation channels. Each channel affects a single mesh.
      *  The array is mNumMorphMeshChannels in size. */
-    C_STRUCT aiMeshMorphAnim **mMorphMeshChannels;
+    aiMeshMorphAnim **mMorphMeshChannels;
 
 #ifdef __cplusplus
     aiAnimation() AI_NO_EXCEPT

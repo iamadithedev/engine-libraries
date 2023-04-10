@@ -156,7 +156,7 @@ struct BatchData;
  *  could, this has not yet been implemented at the moment).
  *
  *  @note The class may not be used by more than one thread*/
-class ASSIMP_API BatchLoader {
+class BatchLoader {
 public:
     //! @cond never
     // -------------------------------------------------------------------

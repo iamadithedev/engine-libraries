@@ -145,7 +145,7 @@ Will return a nullptr if no assigned importer desc. was found for the given exte
     \param  extension   [in] The extension to look for
     \return A pointer showing to the ImporterDesc, \see aiImporterDesc.
 */
-ASSIMP_API const C_STRUCT aiImporterDesc *aiGetImporterDesc(const char *extension);
+const aiImporterDesc *aiGetImporterDesc(const char *extension);
 
 #ifdef __cplusplus
 } // end of extern "C"

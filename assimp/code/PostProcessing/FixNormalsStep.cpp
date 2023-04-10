@@ -76,8 +76,6 @@ void FixInfacingNormalsProcess::Execute( aiScene* pScene) {
 // Apply the step to the mesh
 bool FixInfacingNormalsProcess::ProcessMesh( aiMesh* pcMesh)
 {
-    ai_assert(nullptr != pcMesh);
-
     // Nothing to do if there are no model normals
     if (!pcMesh->HasNormals()) {
         return false;

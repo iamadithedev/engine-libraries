@@ -62,7 +62,6 @@ namespace Assimp {
  *  @return Hash.
  */
 inline uint64_t GetMeshHash(aiMesh* in) {
-    ai_assert(nullptr != in);
 
     // ... get an unique value representing the vertex format of the mesh
     const unsigned int fhash = GetMeshVFormatUnique(in);

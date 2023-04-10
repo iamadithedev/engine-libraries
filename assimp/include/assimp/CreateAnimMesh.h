@@ -64,7 +64,7 @@ namespace Assimp {
  *  @param  needTexCoords   If true, texCoords will be copied from.
  *  @return The new created animated mesh.
  */
-ASSIMP_API aiAnimMesh *aiCreateAnimMesh(const aiMesh *mesh,
+aiAnimMesh *aiCreateAnimMesh(const aiMesh *mesh,
                                         bool needPositions = true,
                                         bool needNormals = true,
                                         bool needTangents = true,

@@ -47,8 +47,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FindDegenerates.h"
 #include "Geometry/GeometryUtils.h"
 
-#include <assimp/Exceptional.h>
-
 #include <unordered_map>
 
 using namespace Assimp;

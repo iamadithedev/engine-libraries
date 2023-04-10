@@ -45,7 +45,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "ComputeUVMappingProcess.h"
 #include "ProcessHelper.h"
-#include <assimp/Exceptional.h>
 
 using namespace Assimp;
 
@@ -369,9 +368,6 @@ void ComputeUVMappingProcess::ComputePlaneMapping(aiMesh* mesh,const aiVector3D&
 // ------------------------------------------------------------------------------------------------
 void ComputeUVMappingProcess::Execute( aiScene* pScene)
 {
-    if (pScene->mFlags & AI_SCENE_FLAGS_NON_VERBOSE_FORMAT)
-        throw DeadlyImportError("Post-processing order mismatch: expecting pseudo-indexed (\"verbose\") vertices here");
-
     std::list<MappingInfo> mappingStack;
 
     /*  Iterate through all materials and search for non-UV mapped textures
@@ -446,8 +442,6 @@ void ComputeUVMappingProcess::Execute( aiScene* pScene)
                                 break;
                             case aiTextureMapping_BOX:
                                 break;
-                            default:
-                                ai_assert(false);
                             }
                             idx = outIdx;
                         }

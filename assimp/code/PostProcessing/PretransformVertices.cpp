@@ -48,7 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "PretransformVertices.h"
 #include "ConvertToLHProcess.h"
 #include "ProcessHelper.h"
-#include <assimp/Exceptional.h>
 #include <assimp/SceneCombiner.h>
 
 using namespace Assimp;
@@ -145,7 +144,6 @@ void PretransformVertices::CollectData(const aiScene *pcScene, const aiNode *pcN
 		if (iMat == pcMesh->mMaterialIndex && iVFormat == GetMeshVFormat(pcMesh)) {
 			// Decrement mesh reference counter
 			unsigned int &num_ref = num_refs[pcNode->mMeshes[i]];
-			ai_assert(0 != num_ref);
 			--num_ref;
 			// Save the name of the last mesh
 			if (num_ref == 0) {
@@ -509,40 +507,34 @@ void PretransformVertices::Execute(aiScene *pScene) {
 			}
 		}
 
-		// If no meshes are referenced in the node graph it is possible that we get no output meshes.
-		if (apcOutMeshes.empty()) {
+        // now delete all meshes in the scene and build a new mesh list
+        for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
+            aiMesh *mesh = pScene->mMeshes[i];
+            mesh->mNumBones = 0;
+            mesh->mBones = nullptr;
 
-			throw DeadlyImportError("No output meshes: all meshes are orphaned and are not referenced by any nodes");
-		} else {
-			// now delete all meshes in the scene and build a new mesh list
-			for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
-				aiMesh *mesh = pScene->mMeshes[i];
-				mesh->mNumBones = 0;
-                mesh->mBones = nullptr;
+            // we're reusing the face index arrays. avoid destruction
+            for (unsigned int a = 0; a < mesh->mNumFaces; ++a) {
+                mesh->mFaces[a].mNumIndices = 0;
+                mesh->mFaces[a].mIndices = nullptr;
+            }
 
-				// we're reusing the face index arrays. avoid destruction
-				for (unsigned int a = 0; a < mesh->mNumFaces; ++a) {
-					mesh->mFaces[a].mNumIndices = 0;
-                    mesh->mFaces[a].mIndices = nullptr;
-				}
+            delete mesh;
 
-				delete mesh;
+            // Invalidate the contents of the old mesh array. We will most
+            // likely have less output meshes now, so the last entries of
+            // the mesh array are not overridden. We set them to nullptr to
+            // make sure the developer gets notified when his application
+            // attempts to access these fields ...
+            mesh = nullptr;
+        }
 
-				// Invalidate the contents of the old mesh array. We will most
-				// likely have less output meshes now, so the last entries of
-				// the mesh array are not overridden. We set them to nullptr to
-				// make sure the developer gets notified when his application
-				// attempts to access these fields ...
-                mesh = nullptr;
-			}
-
-			// It is impossible that we have more output meshes than
-			// input meshes, so we can easily reuse the old mesh array
-			pScene->mNumMeshes = (unsigned int)apcOutMeshes.size();
-			for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
-				pScene->mMeshes[i] = apcOutMeshes[i];
-			}
-		}
+        // It is impossible that we have more output meshes than
+        // input meshes, so we can easily reuse the old mesh array
+        pScene->mNumMeshes = (unsigned int)apcOutMeshes.size();
+        for (unsigned int i = 0; i < pScene->mNumMeshes; ++i) {
+            pScene->mMeshes[i] = apcOutMeshes[i];
+        }
 	}
 
 	// remove all animations from the scene

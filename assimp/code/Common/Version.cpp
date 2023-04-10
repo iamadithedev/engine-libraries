@@ -57,31 +57,31 @@ static const char *LEGAL_INFORMATION =
 
 // ------------------------------------------------------------------------------------------------
 // Get legal string
-ASSIMP_API const char *aiGetLegalString() {
+const char *aiGetLegalString() {
     return LEGAL_INFORMATION;
 }
 
 // ------------------------------------------------------------------------------------------------
 // Get Assimp patch version
-ASSIMP_API unsigned int aiGetVersionPatch() {
+unsigned int aiGetVersionPatch() {
     return VER_PATCH;
 }
 
 // ------------------------------------------------------------------------------------------------
 // Get Assimp minor version
-ASSIMP_API unsigned int aiGetVersionMinor() {
+unsigned int aiGetVersionMinor() {
     return VER_MINOR;
 }
 
 // ------------------------------------------------------------------------------------------------
 // Get Assimp major version
-ASSIMP_API unsigned int aiGetVersionMajor() {
+unsigned int aiGetVersionMajor() {
     return VER_MAJOR;
 }
 
 // ------------------------------------------------------------------------------------------------
 // Get flags used for compilation
-ASSIMP_API unsigned int aiGetCompileFlags() {
+unsigned int aiGetCompileFlags() {
 
     unsigned int flags = 0;
 
@@ -102,17 +102,17 @@ ASSIMP_API unsigned int aiGetCompileFlags() {
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API unsigned int aiGetVersionRevision() {
+unsigned int aiGetVersionRevision() {
     return GitVersion;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API const char *aiGetBranchName() {
+const char *aiGetBranchName() {
     return GitBranch;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API aiScene::aiScene() :
+aiScene::aiScene() :
         mFlags(0),
         mRootNode(nullptr),
         mNumMeshes(0),
@@ -132,7 +132,7 @@ ASSIMP_API aiScene::aiScene() :
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API aiScene::~aiScene() {
+aiScene::~aiScene() {
     // delete all sub-objects recursively
     delete mRootNode;
 

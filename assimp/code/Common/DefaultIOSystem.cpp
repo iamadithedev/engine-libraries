@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assimp/DefaultIOStream.h>
 #include <assimp/DefaultIOSystem.h>
-#include <assimp/ai_assert.h>
 #include <stdlib.h>
 
 #ifdef __unix__
@@ -112,8 +111,7 @@ bool DefaultIOSystem::Exists(const char *pFile) const {
 // ------------------------------------------------------------------------------------------------
 // Open a new file with a given path.
 IOStream *DefaultIOSystem::Open(const char *strFile, const char *strMode) {
-    ai_assert(strFile != nullptr);
-    ai_assert(strMode != nullptr);
+
     FILE *file;
 #ifdef _WIN32
     std::wstring name = Utf8ToWide(strFile);
@@ -157,7 +155,6 @@ bool IOSystem::ComparePaths(const char *one, const char *second) const {
 // ------------------------------------------------------------------------------------------------
 // Convert a relative path into an absolute path
 inline static std::string MakeAbsolutePath(const char *in) {
-    ai_assert(in);
     std::string out;
 #ifdef _WIN32
     wchar_t *ret = ::_wfullpath(nullptr, Utf8ToWide(in).c_str(), 0);

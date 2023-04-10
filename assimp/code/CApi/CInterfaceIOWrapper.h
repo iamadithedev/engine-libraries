@@ -47,7 +47,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/cfileio.h>
 #include <assimp/IOStream.hpp>
 #include <assimp/IOSystem.hpp>
-#include <assimp/ai_assert.h>
 
 namespace Assimp {
 
@@ -75,7 +74,6 @@ private:
 inline CIOStreamWrapper::CIOStreamWrapper(aiFile *pFile, CIOSystemWrapper *io) :
         mFile(pFile),
         mIO(io) {
-    ai_assert(io != nullptr);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -97,7 +95,6 @@ private:
 };
 
 inline CIOSystemWrapper::CIOSystemWrapper(aiFileIO *pFile) : mFileSystem(pFile) {
-    ai_assert(pFile != nullptr);
 }
 
 } // namespace Assimp

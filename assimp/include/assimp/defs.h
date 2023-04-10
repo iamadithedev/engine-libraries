@@ -98,51 +98,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SIZE_MAX (~((size_t)0))
 #endif
 
-/*#if (!defined UINT_MAX)
-#define UINT_MAX (~((unsigned int)0))
-#endif*/
-
-//////////////////////////////////////////////////////////////////////////
-/* Define ASSIMP_BUILD_NO_XX_PROCESS to disable a specific
- * post processing step. This is the current list of process names ('XX'):
- * CALCTANGENTS
- * JOINVERTICES
- * TRIANGULATE
- * DROPFACENORMALS
- * GENFACENORMALS
- * GENVERTEXNORMALS
- * REMOVEVC
- * SPLITLARGEMESHES
- * PRETRANSFORMVERTICES
- * LIMITBONEWEIGHTS
- * VALIDATEDS
- * IMPROVECACHELOCALITY
- * FIXINFACINGNORMALS
- * REMOVE_REDUNDANTMATERIALS
- * OPTIMIZEGRAPH
- * SORTBYPTYPE
- * FINDINVALIDDATA
- * TRANSFORMTEXCOORDS
- * GENUVCOORDS
- * ENTITYMESHBUILDER
- * EMBEDTEXTURES
- * MAKELEFTHANDED
- * FLIPUVS
- * FLIPWINDINGORDER
- * OPTIMIZEMESHES
- * OPTIMIZEANIMS
- * OPTIMIZEGRAPH
- * GENENTITYMESHES
- * FIXTEXTUREPATHS
- * GENBOUNDINGBOXES */
-//////////////////////////////////////////////////////////////////////////
-
-#ifdef _WIN32
-#undef ASSIMP_API
-#define ASSIMP_API
-#define ASSIMP_API_WINONLY
-#endif // _WIN32
-
 #ifdef _MSC_VER
     #pragma warning(disable : 4521 4512 4714 4127 4351 4510)
     #ifdef ASSIMP_BUILD_DLL_EXPORT
@@ -165,48 +120,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #   define AI_WONT_RETURN_SUFFIX __attribute__((noreturn))
 #else
 #   define AI_WONT_RETURN_SUFFIX
-#endif // (defined __clang__)
-
-#ifdef __cplusplus
-/* No explicit 'struct' and 'enum' tags for C++, this keeps showing up
- * in doxydocs.
- */
-#define C_STRUCT
-#define C_ENUM
-#else
-//////////////////////////////////////////////////////////////////////////
-/* To build the documentation, make sure ASSIMP_DOXYGEN_BUILD
-     * is defined by Doxygen's preprocessor. The corresponding
-     * entries in the DOXYFILE are: */
-//////////////////////////////////////////////////////////////////////////
-#if 0
-    ENABLE_PREPROCESSING   = YES
-    MACRO_EXPANSION        = YES
-    EXPAND_ONLY_PREDEF     = YES
-    SEARCH_INCLUDES        = YES
-    INCLUDE_PATH           =
-    INCLUDE_FILE_PATTERNS  =
-    PREDEFINED             = ASSIMP_DOXYGEN_BUILD=1
-    EXPAND_AS_DEFINED      = C_STRUCT C_ENUM
-    SKIP_FUNCTION_MACROS   = YES
-#endif
-//////////////////////////////////////////////////////////////////////////
-/* Doxygen gets confused if we use c-struct typedefs to avoid
-     * the explicit 'struct' notation. This trick here has the same
-     * effect as the TYPEDEF_HIDES_STRUCT option, but we don't need
-     * to typedef all structs/enums. */
-//////////////////////////////////////////////////////////////////////////
-#if (defined ASSIMP_DOXYGEN_BUILD)
-#define C_STRUCT
-#define C_ENUM
-#else
-#define C_STRUCT struct
-#define C_ENUM enum
-#endif
-#endif
-
-#if (defined(__BORLANDC__) || defined(__BCPLUSPLUS__))
-#error Currently, Borland is unsupported. Feel free to port Assimp.
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -216,10 +129,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //////////////////////////////////////////////////////////////////////////
 #ifndef ASSIMP_BUILD_SINGLETHREADED
 #define ASSIMP_BUILD_SINGLETHREADED
-#endif
-
-#if defined(_DEBUG) || !defined(NDEBUG)
-#define ASSIMP_BUILD_DEBUG
 #endif
 
 //////////////////////////////////////////////////////////////////////////

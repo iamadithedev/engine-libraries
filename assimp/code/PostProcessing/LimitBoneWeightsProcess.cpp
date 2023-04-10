@@ -65,8 +65,6 @@ bool LimitBoneWeightsProcess::IsActive( unsigned int pFlags) const {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void LimitBoneWeightsProcess::Execute( aiScene* pScene) {
-    ai_assert(pScene != nullptr);
-
     for (unsigned int m = 0; m < pScene->mNumMeshes; ++m) {
         ProcessMesh(pScene->mMeshes[m]);
     }
@@ -80,8 +78,6 @@ void LimitBoneWeightsProcess::SetupProperties(const Importer* pImp) {
 
 // ------------------------------------------------------------------------------------------------
 static unsigned int removeEmptyBones(aiMesh *pMesh) {
-    ai_assert(pMesh != nullptr);
-    
     unsigned int writeBone = 0;
     for (unsigned int readBone = 0; readBone< pMesh->mNumBones; ++readBone) {
         aiBone* bone = pMesh->mBones[readBone];

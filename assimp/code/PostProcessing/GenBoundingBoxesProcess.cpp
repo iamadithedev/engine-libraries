@@ -53,7 +53,6 @@ bool GenBoundingBoxesProcess::IsActive(unsigned int pFlags) const {
 }
 
 void checkMesh(aiMesh* mesh, aiVector3D& min, aiVector3D& max) {
-    ai_assert(nullptr != mesh);
 
     if (0 == mesh->mNumVertices) {
         return;

@@ -77,7 +77,7 @@ extern "C" {
  * the imported scene does consist of only a single root node without children.
  */
 // -------------------------------------------------------------------------------
-struct ASSIMP_API aiNode {
+struct aiNode {
     /** The name of the node.
      *
      * The name might be empty (length of zero) but all nodes which
@@ -98,19 +98,19 @@ struct ASSIMP_API aiNode {
      * surrounded by @verbatim <> @endverbatim e.g.
      *  @verbatim<DummyRootNode> @endverbatim.
      */
-    C_STRUCT aiString mName;
+    aiString mName;
 
     /** The transformation relative to the node's parent. */
-    C_STRUCT aiMatrix4x4 mTransformation;
+    aiMatrix4x4 mTransformation;
 
     /** Parent node. nullptr if this node is the root node. */
-    C_STRUCT aiNode* mParent;
+    aiNode* mParent;
 
     /** The number of child nodes of this node. */
     unsigned int mNumChildren;
 
     /** The child nodes of this node. nullptr if mNumChildren is 0. */
-    C_STRUCT aiNode** mChildren;
+    aiNode** mChildren;
 
     /** The number of meshes of this node. */
     unsigned int mNumMeshes;
@@ -125,7 +125,7 @@ struct ASSIMP_API aiNode {
       * @link importer_notes @endlink page for more information on every source file
       * format. Importers that don't document any metadata don't write any.
       */
-    C_STRUCT aiMetadata* mMetaData;
+    aiMetadata* mMetaData;
 
 #ifdef __cplusplus
     /** Constructor */
@@ -252,7 +252,7 @@ struct aiScene
     * Presence of further nodes depends on the format and content
     * of the imported file.
     */
-    C_STRUCT aiNode* mRootNode;
+    aiNode* mRootNode;
 
     /** The number of meshes in the scene. */
     unsigned int mNumMeshes;
@@ -264,7 +264,7 @@ struct aiScene
     * AI_SCENE_FLAGS_INCOMPLETE flag is not set there will always
     * be at least ONE material.
     */
-    C_STRUCT aiMesh** mMeshes;
+    aiMesh** mMeshes;
 
     /** The number of materials in the scene. */
     unsigned int mNumMaterials;
@@ -276,7 +276,7 @@ struct aiScene
     * AI_SCENE_FLAGS_INCOMPLETE flag is not set there will always
     * be at least ONE material.
     */
-    C_STRUCT aiMaterial** mMaterials;
+    aiMaterial** mMaterials;
 
     /** The number of animations in the scene. */
     unsigned int mNumAnimations;
@@ -286,7 +286,7 @@ struct aiScene
     * All animations imported from the given file are listed here.
     * The array is mNumAnimations in size.
     */
-    C_STRUCT aiAnimation** mAnimations;
+    aiAnimation** mAnimations;
 
     /** The number of textures embedded into the file */
     unsigned int mNumTextures;
@@ -297,7 +297,7 @@ struct aiScene
     * An example is Quake's MDL format (which is also used by
     * some GameStudio versions)
     */
-    C_STRUCT aiTexture** mTextures;
+    aiTexture** mTextures;
 
     /**
      *  @brief  The global metadata assigned to the scene itself.
@@ -306,11 +306,11 @@ struct aiScene
      *  unit-conversions, versions, vendors or other model-specific data. This
      *  can be used to store format-specific metadata as well.
      */
-    C_STRUCT aiMetadata* mMetaData;
+    aiMetadata* mMetaData;
 
     /** The name of the scene itself.
      */
-    C_STRUCT aiString mName;
+    aiString mName;
 
     /**
      *
@@ -320,15 +320,15 @@ struct aiScene
     /**
      *
      */
-    C_STRUCT aiSkeleton **mSkeletons;
+    aiSkeleton **mSkeletons;
 
 #ifdef __cplusplus
 
     //! Default constructor - set everything to 0/nullptr
-    ASSIMP_API aiScene();
+    aiScene();
 
     //! Destructor
-    ASSIMP_API ~aiScene();
+    ~aiScene();
 
     //! Check whether the scene contains meshes
     //! Unless no special scene flags are set this will always be true.

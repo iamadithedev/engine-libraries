@@ -53,7 +53,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "FBXTokenizer.h"
 #include "FBXUtil.h"
-#include <assimp/Exceptional.h>
 
 namespace Assimp {
 namespace FBX {
@@ -61,20 +60,12 @@ namespace FBX {
 // ------------------------------------------------------------------------------------------------
 Token::Token(const char* sbegin, const char* send, TokenType type, unsigned int line, unsigned int column)
     :
-#ifdef DEBUG
-    contents(sbegin, static_cast<size_t>(send-sbegin)),
-#endif
     sbegin(sbegin)
     , send(send)
     , type(type)
     , line(line)
     , column(column)
 {
-    ai_assert(sbegin);
-    ai_assert(send);
-
-    // tokens must be of non-zero length
-    ai_assert(static_cast<size_t>(send-sbegin) > 0);
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -82,22 +73,13 @@ Token::Token(const char* sbegin, const char* send, TokenType type, unsigned int 
 
 namespace {
 
-// ------------------------------------------------------------------------------------------------
-// signal tokenization error, this is always unrecoverable. Throws DeadlyImportError.
-AI_WONT_RETURN void TokenizeError(const std::string& message, unsigned int line, unsigned int column) AI_WONT_RETURN_SUFFIX;
-AI_WONT_RETURN void TokenizeError(const std::string& message, unsigned int line, unsigned int column)
-{
-    throw DeadlyImportError("FBX-Tokenize", Util::GetLineAndColumnText(line,column), message);
-}
-
-
 // process a potential data token up to 'cur', adding it to 'output_tokens'.
 // ------------------------------------------------------------------------------------------------
 void ProcessDataToken( TokenList& output_tokens, const char*& start, const char*& end,
                       unsigned int line,
                       unsigned int column,
                       TokenType type = TokenType_DATA,
-                      bool must_have_token = false)
+                      bool = false)
 {
     if (start && end) {
         // sanity check:
@@ -108,20 +90,9 @@ void ProcessDataToken( TokenList& output_tokens, const char*& start, const char*
             if (*c == '\"') {
                 in_double_quotes = !in_double_quotes;
             }
-
-            if (!in_double_quotes && IsSpaceOrNewLine(*c)) {
-                TokenizeError("unexpected whitespace in token", line, column);
-            }
-        }
-
-        if (in_double_quotes) {
-            TokenizeError("non-terminated double quotes", line, column);
         }
 
         output_tokens.push_back(new_Token(start,end + 1,type,line,column));
-    }
-    else if (must_have_token) {
-        TokenizeError("unexpected character, expected data token", line, column);
     }
 
     start = end = nullptr;
@@ -132,8 +103,6 @@ void ProcessDataToken( TokenList& output_tokens, const char*& start, const char*
 // ------------------------------------------------------------------------------------------------
 void Tokenize(TokenList& output_tokens, const char* input)
 {
-	ai_assert(input);
-
     // line and column numbers numbers are one-based
     unsigned int line = 1;
     unsigned int column = 1;
@@ -171,9 +140,6 @@ void Tokenize(TokenList& output_tokens, const char* input)
         switch(c)
         {
         case '\"':
-            if (token_begin) {
-                TokenizeError("unexpected double-quote", line, column);
-            }
             token_begin = cur;
             in_double_quotes = true;
             continue;
@@ -203,9 +169,6 @@ void Tokenize(TokenList& output_tokens, const char* input)
         case ':':
             if (pending_data_token) {
                 ProcessDataToken(output_tokens,token_begin,token_end,line,column,TokenType_KEY,true);
-            }
-            else {
-                TokenizeError("unexpected colon", line, column);
             }
             continue;
         }

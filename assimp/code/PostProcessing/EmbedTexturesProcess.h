@@ -59,7 +59,7 @@ namespace Assimp {
  *  it will check if a file with the same name exists at the root folder
  *  of the imported model. And if so, it uses that.
  */
-class ASSIMP_API EmbedTexturesProcess : public BaseProcess {
+class EmbedTexturesProcess : public BaseProcess {
 public:
     /// The default class constructor.
     EmbedTexturesProcess() = default;

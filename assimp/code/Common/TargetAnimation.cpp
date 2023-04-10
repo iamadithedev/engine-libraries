@@ -41,7 +41,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "TargetAnimation.h"
-#include <assimp/ai_assert.h>
 #include <algorithm>
 
 using namespace Assimp;
@@ -159,16 +158,12 @@ void KeyIterator::operator++() {
 // ------------------------------------------------------------------------------------------------
 void TargetAnimationHelper::SetTargetAnimationChannel(
         const std::vector<aiVectorKey> *_targetPositions) {
-    ai_assert(nullptr != _targetPositions);
-
     targetPositions = _targetPositions;
 }
 
 // ------------------------------------------------------------------------------------------------
 void TargetAnimationHelper::SetMainAnimationChannel(
         const std::vector<aiVectorKey> *_objectPositions) {
-    ai_assert(nullptr != _objectPositions);
-
     objectPositions = _objectPositions;
 }
 
@@ -181,9 +176,6 @@ void TargetAnimationHelper::SetFixedMainAnimationChannel(
 
 // ------------------------------------------------------------------------------------------------
 void TargetAnimationHelper::Process(std::vector<aiVectorKey> *distanceTrack) {
-    ai_assert(nullptr != targetPositions);
-    ai_assert(nullptr != distanceTrack);
-
     // TODO: in most cases we won't need the extra array
     std::vector<aiVectorKey> real;
 

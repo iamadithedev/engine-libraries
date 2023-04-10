@@ -67,7 +67,6 @@ namespace {
         // Actual size validation happens during Tokenization so
         // this is valid as an assertion.
         (void)(end);
-        ai_assert(static_cast<size_t>(end - data) >= sizeof(T));
         T result = static_cast<T>(0);
         ::memcpy(&result, data, sizeof(T));
         return result;
@@ -102,7 +101,6 @@ Element::Element(const Token& key_token, Parser& parser) : key_token(key_token) 
 
             // current token should be a TOK_CLOSE_BRACKET
             n = parser.CurrentToken();
-            ai_assert(n);
 
             parser.AdvanceToNextToken();
             return;
@@ -200,7 +198,6 @@ uint64_t ParseTokenAsID(const Token& t, const char*& err_out)
 
     // XXX: should use size_t here
     unsigned int length = static_cast<unsigned int>(t.end() - t.begin());
-    ai_assert(length > 0);
 
     const char* out = nullptr;
     const uint64_t id = strtoul10_64(t.begin(),&out,&length);
@@ -325,8 +322,6 @@ int ParseTokenAsInt(const Token& t, const char*& err_out)
         return static_cast<int>(ival);
     }
 
-    ai_assert(static_cast<size_t>(t.end() - t.begin()) > 0);
-
     const char* out;
     const int intval = strtol10(t.begin(),&out);
     if (out != t.end()) {
@@ -363,7 +358,6 @@ int64_t ParseTokenAsInt64(const Token& t, const char*& err_out)
 
     // XXX: should use size_t here
     unsigned int length = static_cast<unsigned int>(t.end() - t.begin());
-    ai_assert(length > 0);
 
     const char* out = nullptr;
     const int64_t id = strtol10_64(t.begin(), &out, &length);
@@ -397,7 +391,6 @@ std::string ParseTokenAsString(const Token& t, const char*& err_out)
         BE_NCONST int32_t len = SafeParse<int32_t>(data+1, t.end());
         AI_SWAP4(len);
 
-        ai_assert(t.end() - data == 5 + len);
         return std::string(data + 5, len);
     }
 
@@ -449,8 +442,6 @@ void ReadBinaryDataArray(char type, uint32_t count, const char*& data, const cha
     AI_SWAP4(comp_len);
     data += 4;
 
-    ai_assert(data + comp_len == end);
-
     // determine the length of the uncompressed data by looking at the type signature
     uint32_t stride = 0;
     switch(type)
@@ -464,17 +455,12 @@ void ReadBinaryDataArray(char type, uint32_t count, const char*& data, const cha
         case 'l':
             stride = 8;
             break;
-
-        default:
-            ai_assert(false);
     };
 
     const uint32_t full_length = stride * count;
     buff.resize(full_length);
 
     if(encmode == 0) {
-        ai_assert(full_length == comp_len);
-
         // plain data, no compression
         std::copy(data, end, buff.begin());
     }
@@ -487,15 +473,8 @@ void ReadBinaryDataArray(char type, uint32_t count, const char*& data, const cha
             compress.close();
         }
     }
-#ifdef ASSIMP_BUILD_DEBUG
-    else {
-        // runtime check for this happens at tokenization stage
-        ai_assert(false);
-    }
-#endif
 
     data += comp_len;
-    ai_assert(data == end);
 }
 
 } // !anon
@@ -522,8 +501,6 @@ void ParseVectorDataArray(std::vector<aiVector3D>& out, const Element& el)
 
         std::vector<char> buff;
         ReadBinaryDataArray(type, count, data, end, buff, el);
-
-        ai_assert(data == end);
 
         const uint32_t count3 = count / 3;
         out.reserve(count3);
@@ -594,8 +571,6 @@ void ParseVectorDataArray(std::vector<aiColor4D>& out, const Element& el)
         std::vector<char> buff;
         ReadBinaryDataArray(type, count, data, end, buff, el);
 
-        ai_assert(data == end);
-
         const uint32_t count4 = count / 4;
         out.reserve(count4);
 
@@ -657,8 +632,6 @@ void ParseVectorDataArray(std::vector<aiVector2D>& out, const Element& el) {
         std::vector<char> buff;
         ReadBinaryDataArray(type, count, data, end, buff, el);
 
-        ai_assert(data == end);
-
         const uint32_t count2 = count / 2;
         out.reserve(count2);
 
@@ -716,8 +689,6 @@ void ParseVectorDataArray(std::vector<int>& out, const Element& el) {
         std::vector<char> buff;
         ReadBinaryDataArray(type, count, data, end, buff, el);
 
-        ai_assert(data == end);
-
         out.reserve(count);
 
         const int32_t* ip = reinterpret_cast<const int32_t*>(&buff[0]);
@@ -765,8 +736,6 @@ void ParseVectorDataArray(std::vector<float>& out, const Element& el)
 
         std::vector<char> buff;
         ReadBinaryDataArray(type, count, data, end, buff, el);
-
-        ai_assert(data == end);
 
         if (type == 'd') {
             const double* d = reinterpret_cast<const double*>(&buff[0]);
@@ -818,8 +787,6 @@ void ParseVectorDataArray(std::vector<unsigned int>& out, const Element& el) {
         std::vector<char> buff;
         ReadBinaryDataArray(type, count, data, end, buff, el);
 
-        ai_assert(data == end);
-
         out.reserve(count);
 
         const int32_t* ip = reinterpret_cast<const int32_t*>(&buff[0]);
@@ -870,8 +837,6 @@ void ParseVectorDataArray(std::vector<uint64_t>& out, const Element& el)
         std::vector<char> buff;
         ReadBinaryDataArray(type, count, data, end, buff, el);
 
-        ai_assert(data == end);
-
         out.reserve(count);
 
         const uint64_t* ip = reinterpret_cast<const uint64_t*>(&buff[0]);
@@ -919,8 +884,6 @@ void ParseVectorDataArray(std::vector<int64_t>& out, const Element& el)
 
         std::vector<char> buff;
         ReadBinaryDataArray(type, count, data, end, buff, el);
-
-        ai_assert(data == end);
 
         out.reserve(count);
 

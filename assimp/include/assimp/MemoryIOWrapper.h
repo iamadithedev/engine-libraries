@@ -51,7 +51,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assimp/IOStream.hpp>
 #include <assimp/IOSystem.hpp>
-#include <assimp/ai_assert.h>
 
 #include <stdint.h>
 
@@ -80,9 +79,6 @@ public:
     }
 
     size_t Read(void* pvBuffer, size_t pSize, size_t pCount) override {
-        ai_assert(nullptr != pvBuffer);
-        ai_assert(0 != pSize);
-
         const size_t cnt = std::min( pCount, (length-pos) / pSize);
         const size_t ofs = pSize * cnt;
 
@@ -93,7 +89,6 @@ public:
     }
 
     size_t Write(const void*, size_t, size_t ) override {
-        ai_assert(false); // won't be needed
         return 0;
     }
 
@@ -126,7 +121,6 @@ public:
     }
 
     void Flush() override{
-        ai_assert(false); // won't be needed
     }
 
 private:

@@ -96,11 +96,6 @@ static std::mutex gLogStreamMutex;
 #endif
 
 // ------------------------------------------------------------------------------------------------
-void ReportSceneNotFoundError() {
-    ai_assert(false);
-}
-
-// ------------------------------------------------------------------------------------------------
 // Reads the given file and returns its content.
 const aiScene *aiImportFile(const char *pFile, unsigned int pFlags) {
     return aiImportFileEx(pFile, pFlags, nullptr);
@@ -114,7 +109,6 @@ const aiScene *aiImportFileEx(const char *pFile, unsigned int pFlags, aiFileIO *
 // ------------------------------------------------------------------------------------------------
 const aiScene *aiImportFileExWithProperties(const char *pFile, unsigned int pFlags,
         aiFileIO *pFS, const aiPropertyStore *props) {
-    ai_assert(nullptr != pFile);
 
     // create an Importer for this file
     Assimp::Importer *imp = new Assimp::Importer();
@@ -165,8 +159,6 @@ const aiScene *aiImportFileFromMemoryWithProperties(
         unsigned int pFlags,
         const char *pHint,
         const aiPropertyStore *props) {
-    ai_assert(nullptr != pBuffer);
-    ai_assert(0 != pLength);
 
     const aiScene *scene = nullptr;
 
@@ -220,14 +212,13 @@ void aiReleaseImport(const aiScene *pScene) {
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API const aiScene *aiApplyPostProcessing(const aiScene *pScene,
+const aiScene *aiApplyPostProcessing(const aiScene *pScene,
         unsigned int pFlags) {
     const aiScene *sc = nullptr;
 
     // find the importer associated with this data
     const ScenePrivateData *priv = ScenePriv(pScene);
     if (!priv || !priv->mOrigImporter) {
-        ReportSceneNotFoundError();
         return nullptr;
     }
 
@@ -242,14 +233,13 @@ ASSIMP_API const aiScene *aiApplyPostProcessing(const aiScene *pScene,
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API const aiScene *aiApplyCustomizedPostProcessing(const aiScene *scene,
+const aiScene *aiApplyCustomizedPostProcessing(const aiScene *scene,
         BaseProcess *process) {
     const aiScene *sc(nullptr);
 
     // find the importer associated with this data
     const ScenePrivateData *priv = ScenePriv(scene);
     if (nullptr == priv || nullptr == priv->mOrigImporter) {
-        ReportSceneNotFoundError();
         return nullptr;
     }
 
@@ -284,7 +274,6 @@ size_t aiGetImportFormatCount(void) {
 // ------------------------------------------------------------------------------------------------
 // Returns the error text of the last failed import process.
 aiBool aiIsExtensionSupported(const char *szExtension) {
-    ai_assert(nullptr != szExtension);
     aiBool candoit = AI_FALSE;
 
     // FIXME: no need to create a temporary Importer instance just for that ..
@@ -297,8 +286,6 @@ aiBool aiIsExtensionSupported(const char *szExtension) {
 // ------------------------------------------------------------------------------------------------
 // Get a list of all file extensions supported by ASSIMP
 void aiGetExtensionList(aiString *szOut) {
-    ai_assert(nullptr != szOut);
-
     // FIXME: no need to create a temporary Importer instance just for that ..
     Assimp::Importer tmp;
     tmp.GetExtensionList(*szOut);
@@ -306,13 +293,12 @@ void aiGetExtensionList(aiString *szOut) {
 
 // ------------------------------------------------------------------------------------------------
 // Get the memory requirements for a particular import.
-void aiGetMemoryRequirements(const C_STRUCT aiScene *pIn,
-        C_STRUCT aiMemoryInfo *in) {
+void aiGetMemoryRequirements(const aiScene *pIn,
+        aiMemoryInfo *in) {
 
     // find the importer associated with this data
     const ScenePrivateData *priv = ScenePriv(pIn);
     if (!priv || !priv->mOrigImporter) {
-        ReportSceneNotFoundError();
         return;
     }
 
@@ -320,33 +306,33 @@ void aiGetMemoryRequirements(const C_STRUCT aiScene *pIn,
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API aiPropertyStore *aiCreatePropertyStore(void) {
+aiPropertyStore *aiCreatePropertyStore(void) {
     return reinterpret_cast<aiPropertyStore *>(new PropertyMap());
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiReleasePropertyStore(aiPropertyStore *p) {
+void aiReleasePropertyStore(aiPropertyStore *p) {
     delete reinterpret_cast<PropertyMap *>(p);
 }
 
 // ------------------------------------------------------------------------------------------------
 // Importer::SetPropertyInteger
-ASSIMP_API void aiSetImportPropertyInteger(aiPropertyStore *p, const char *szName, int value) {
+void aiSetImportPropertyInteger(aiPropertyStore *p, const char *szName, int value) {
     PropertyMap *pp = reinterpret_cast<PropertyMap *>(p);
     SetGenericProperty<int>(pp->ints, szName, value);
 }
 
 // ------------------------------------------------------------------------------------------------
 // Importer::SetPropertyFloat
-ASSIMP_API void aiSetImportPropertyFloat(aiPropertyStore *p, const char *szName, ai_real value) {
+void aiSetImportPropertyFloat(aiPropertyStore *p, const char *szName, ai_real value) {
     PropertyMap *pp = reinterpret_cast<PropertyMap *>(p);
     SetGenericProperty<ai_real>(pp->floats, szName, value);
 }
 
 // ------------------------------------------------------------------------------------------------
 // Importer::SetPropertyString
-ASSIMP_API void aiSetImportPropertyString(aiPropertyStore *p, const char *szName,
-        const C_STRUCT aiString *st) {
+void aiSetImportPropertyString(aiPropertyStore *p, const char *szName,
+        const aiString *st) {
     if (!st) {
         return;
     }
@@ -356,8 +342,8 @@ ASSIMP_API void aiSetImportPropertyString(aiPropertyStore *p, const char *szName
 
 // ------------------------------------------------------------------------------------------------
 // Importer::SetPropertyMatrix
-ASSIMP_API void aiSetImportPropertyMatrix(aiPropertyStore *p, const char *szName,
-        const C_STRUCT aiMatrix4x4 *mat) {
+void aiSetImportPropertyMatrix(aiPropertyStore *p, const char *szName,
+        const aiMatrix4x4 *mat) {
     if (!mat) {
         return;
     }
@@ -367,91 +353,72 @@ ASSIMP_API void aiSetImportPropertyMatrix(aiPropertyStore *p, const char *szName
 
 // ------------------------------------------------------------------------------------------------
 // Rotation matrix to quaternion
-ASSIMP_API void aiCreateQuaternionFromMatrix(aiQuaternion *quat, const aiMatrix3x3 *mat) {
-    ai_assert(nullptr != quat);
-    ai_assert(nullptr != mat);
+void aiCreateQuaternionFromMatrix(aiQuaternion *quat, const aiMatrix3x3 *mat) {
     *quat = aiQuaternion(*mat);
 }
 
 // ------------------------------------------------------------------------------------------------
 // Matrix decomposition
-ASSIMP_API void aiDecomposeMatrix(const aiMatrix4x4 *mat, aiVector3D *scaling,
+void aiDecomposeMatrix(const aiMatrix4x4 *mat, aiVector3D *scaling,
         aiQuaternion *rotation,
         aiVector3D *position) {
-    ai_assert(nullptr != rotation);
-    ai_assert(nullptr != position);
-    ai_assert(nullptr != scaling);
-    ai_assert(nullptr != mat);
     mat->Decompose(*scaling, *rotation, *position);
 }
 
 // ------------------------------------------------------------------------------------------------
 // Matrix transpose
-ASSIMP_API void aiTransposeMatrix3(aiMatrix3x3 *mat) {
-    ai_assert(nullptr != mat);
+void aiTransposeMatrix3(aiMatrix3x3 *mat) {
     mat->Transpose();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiTransposeMatrix4(aiMatrix4x4 *mat) {
-    ai_assert(nullptr != mat);
+void aiTransposeMatrix4(aiMatrix4x4 *mat) {
     mat->Transpose();
 }
 
 // ------------------------------------------------------------------------------------------------
 // Vector transformation
-ASSIMP_API void aiTransformVecByMatrix3(aiVector3D *vec,
+void aiTransformVecByMatrix3(aiVector3D *vec,
         const aiMatrix3x3 *mat) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != vec);
     *vec *= (*mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiTransformVecByMatrix4(aiVector3D *vec,
+void aiTransformVecByMatrix4(aiVector3D *vec,
         const aiMatrix4x4 *mat) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != vec);
-
     *vec *= (*mat);
 }
 
 // ------------------------------------------------------------------------------------------------
 // Matrix multiplication
-ASSIMP_API void aiMultiplyMatrix4(
+void aiMultiplyMatrix4(
         aiMatrix4x4 *dst,
         const aiMatrix4x4 *src) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != src);
     *dst = (*dst) * (*src);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMultiplyMatrix3(
+void aiMultiplyMatrix3(
         aiMatrix3x3 *dst,
         const aiMatrix3x3 *src) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != src);
     *dst = (*dst) * (*src);
 }
 
 // ------------------------------------------------------------------------------------------------
 // Matrix identity
-ASSIMP_API void aiIdentityMatrix3(
+void aiIdentityMatrix3(
         aiMatrix3x3 *mat) {
-    ai_assert(nullptr != mat);
     *mat = aiMatrix3x3();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiIdentityMatrix4(
+void aiIdentityMatrix4(
         aiMatrix4x4 *mat) {
-    ai_assert(nullptr != mat);
     *mat = aiMatrix4x4();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API C_STRUCT const aiImporterDesc *aiGetImporterDesc(const char *extension) {
+const aiImporterDesc *aiGetImporterDesc(const char *extension) {
     if (nullptr == extension) {
         return nullptr;
     }
@@ -471,599 +438,477 @@ ASSIMP_API C_STRUCT const aiImporterDesc *aiGetImporterDesc(const char *extensio
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiVector2AreEqual(
-        const C_STRUCT aiVector2D *a,
-        const C_STRUCT aiVector2D *b) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
+int aiVector2AreEqual(
+        const aiVector2D *a,
+        const aiVector2D *b) {
     return *a == *b;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiVector2AreEqualEpsilon(
-        const C_STRUCT aiVector2D *a,
-        const C_STRUCT aiVector2D *b,
+int aiVector2AreEqualEpsilon(
+        const aiVector2D *a,
+        const aiVector2D *b,
         const float epsilon) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
     return a->Equal(*b, epsilon);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector2Add(
-        C_STRUCT aiVector2D *dst,
-        const C_STRUCT aiVector2D *src) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != src);
+void aiVector2Add(
+        aiVector2D *dst,
+        const aiVector2D *src) {
     *dst = *dst + *src;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector2Subtract(
-        C_STRUCT aiVector2D *dst,
-        const C_STRUCT aiVector2D *src) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != src);
+void aiVector2Subtract(
+        aiVector2D *dst,
+        const aiVector2D *src) {
     *dst = *dst - *src;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector2Scale(
-        C_STRUCT aiVector2D *dst,
+void aiVector2Scale(
+        aiVector2D *dst,
         const float s) {
-    ai_assert(nullptr != dst);
     *dst *= s;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector2SymMul(
-        C_STRUCT aiVector2D *dst,
-        const C_STRUCT aiVector2D *other) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != other);
+void aiVector2SymMul(
+        aiVector2D *dst,
+        const aiVector2D *other) {
     *dst = dst->SymMul(*other);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector2DivideByScalar(
-        C_STRUCT aiVector2D *dst,
+void aiVector2DivideByScalar(
+        aiVector2D *dst,
         const float s) {
-    ai_assert(nullptr != dst);
     *dst /= s;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector2DivideByVector(
-        C_STRUCT aiVector2D *dst,
-        C_STRUCT aiVector2D *v) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != v);
+void aiVector2DivideByVector(
+        aiVector2D *dst,
+        aiVector2D *v) {
     *dst = *dst / *v;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API float aiVector2Length(
-        const C_STRUCT aiVector2D *v) {
-    ai_assert(nullptr != v);
+float aiVector2Length(
+        const aiVector2D *v) {
     return v->Length();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API float aiVector2SquareLength(
-        const C_STRUCT aiVector2D *v) {
-    ai_assert(nullptr != v);
+float aiVector2SquareLength(
+        const aiVector2D *v) {
     return v->SquareLength();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector2Negate(
-        C_STRUCT aiVector2D *dst) {
-    ai_assert(nullptr != dst);
+void aiVector2Negate(
+        aiVector2D *dst) {
     *dst = -(*dst);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API float aiVector2DotProduct(
-        const C_STRUCT aiVector2D *a,
-        const C_STRUCT aiVector2D *b) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
+float aiVector2DotProduct(
+        const aiVector2D *a,
+        const aiVector2D *b) {
     return (*a) * (*b);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector2Normalize(
-        C_STRUCT aiVector2D *v) {
-    ai_assert(nullptr != v);
+void aiVector2Normalize(
+        aiVector2D *v) {
     v->Normalize();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiVector3AreEqual(
-        const C_STRUCT aiVector3D *a,
-        const C_STRUCT aiVector3D *b) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
+int aiVector3AreEqual(
+        const aiVector3D *a,
+        const aiVector3D *b) {
     return *a == *b;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiVector3AreEqualEpsilon(
-        const C_STRUCT aiVector3D *a,
-        const C_STRUCT aiVector3D *b,
+int aiVector3AreEqualEpsilon(
+        const aiVector3D *a,
+        const aiVector3D *b,
         const float epsilon) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
     return a->Equal(*b, epsilon);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiVector3LessThan(
-        const C_STRUCT aiVector3D *a,
-        const C_STRUCT aiVector3D *b) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
+int aiVector3LessThan(
+        const aiVector3D *a,
+        const aiVector3D *b) {
     return *a < *b;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3Add(
-        C_STRUCT aiVector3D *dst,
-        const C_STRUCT aiVector3D *src) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != src);
+void aiVector3Add(
+        aiVector3D *dst,
+        const aiVector3D *src) {
     *dst = *dst + *src;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3Subtract(
-        C_STRUCT aiVector3D *dst,
-        const C_STRUCT aiVector3D *src) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != src);
+void aiVector3Subtract(
+        aiVector3D *dst,
+        const aiVector3D *src) {
     *dst = *dst - *src;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3Scale(
-        C_STRUCT aiVector3D *dst,
+void aiVector3Scale(
+        aiVector3D *dst,
         const float s) {
-    ai_assert(nullptr != dst);
     *dst *= s;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3SymMul(
-        C_STRUCT aiVector3D *dst,
-        const C_STRUCT aiVector3D *other) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != other);
+void aiVector3SymMul(
+        aiVector3D *dst,
+        const aiVector3D *other) {
     *dst = dst->SymMul(*other);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3DivideByScalar(
-        C_STRUCT aiVector3D *dst, const float s) {
-    ai_assert(nullptr != dst);
+void aiVector3DivideByScalar(
+        aiVector3D *dst, const float s) {
     *dst /= s;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3DivideByVector(
-        C_STRUCT aiVector3D *dst,
-        C_STRUCT aiVector3D *v) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != v);
+void aiVector3DivideByVector(
+        aiVector3D *dst,
+        aiVector3D *v) {
     *dst = *dst / *v;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API float aiVector3Length(
-        const C_STRUCT aiVector3D *v) {
-    ai_assert(nullptr != v);
+float aiVector3Length(
+        const aiVector3D *v) {
     return v->Length();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API float aiVector3SquareLength(
-        const C_STRUCT aiVector3D *v) {
-    ai_assert(nullptr != v);
+float aiVector3SquareLength(
+        const aiVector3D *v) {
     return v->SquareLength();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3Negate(
-        C_STRUCT aiVector3D *dst) {
-    ai_assert(nullptr != dst);
+void aiVector3Negate(
+        aiVector3D *dst) {
     *dst = -(*dst);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API float aiVector3DotProduct(
-        const C_STRUCT aiVector3D *a,
-        const C_STRUCT aiVector3D *b) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
+float aiVector3DotProduct(
+        const aiVector3D *a,
+        const aiVector3D *b) {
     return (*a) * (*b);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3CrossProduct(
-        C_STRUCT aiVector3D *dst,
-        const C_STRUCT aiVector3D *a,
-        const C_STRUCT aiVector3D *b) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
+void aiVector3CrossProduct(
+        aiVector3D *dst,
+        const aiVector3D *a,
+        const aiVector3D *b) {
     *dst = *a ^ *b;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3Normalize(
-        C_STRUCT aiVector3D *v) {
-    ai_assert(nullptr != v);
+void aiVector3Normalize(
+        aiVector3D *v) {
     v->Normalize();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3NormalizeSafe(
-        C_STRUCT aiVector3D *v) {
-    ai_assert(nullptr != v);
+void aiVector3NormalizeSafe(
+        aiVector3D *v) {
     v->NormalizeSafe();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiVector3RotateByQuaternion(
-        C_STRUCT aiVector3D *v,
-        const C_STRUCT aiQuaternion *q) {
-    ai_assert(nullptr != v);
-    ai_assert(nullptr != q);
+void aiVector3RotateByQuaternion(
+        aiVector3D *v,
+        const aiQuaternion *q) {
     *v = q->Rotate(*v);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix3FromMatrix4(
-        C_STRUCT aiMatrix3x3 *dst,
-        const C_STRUCT aiMatrix4x4 *mat) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != mat);
+void aiMatrix3FromMatrix4(
+        aiMatrix3x3 *dst,
+        const aiMatrix4x4 *mat) {
     *dst = aiMatrix3x3(*mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix3FromQuaternion(
-        C_STRUCT aiMatrix3x3 *mat,
-        const C_STRUCT aiQuaternion *q) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != q);
+void aiMatrix3FromQuaternion(
+        aiMatrix3x3 *mat,
+        const aiQuaternion *q) {
     *mat = q->GetMatrix();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiMatrix3AreEqual(
-        const C_STRUCT aiMatrix3x3 *a,
-        const C_STRUCT aiMatrix3x3 *b) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
+int aiMatrix3AreEqual(
+        const aiMatrix3x3 *a,
+        const aiMatrix3x3 *b) {
     return *a == *b;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiMatrix3AreEqualEpsilon(
-        const C_STRUCT aiMatrix3x3 *a,
-        const C_STRUCT aiMatrix3x3 *b,
+int aiMatrix3AreEqualEpsilon(
+        const aiMatrix3x3 *a,
+        const aiMatrix3x3 *b,
         const float epsilon) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
     return a->Equal(*b, epsilon);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix3Inverse(C_STRUCT aiMatrix3x3 *mat) {
-    ai_assert(nullptr != mat);
+void aiMatrix3Inverse(aiMatrix3x3 *mat) {
     mat->Inverse();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API float aiMatrix3Determinant(const C_STRUCT aiMatrix3x3 *mat) {
-    ai_assert(nullptr != mat);
+float aiMatrix3Determinant(const aiMatrix3x3 *mat) {
     return mat->Determinant();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix3RotationZ(
-        C_STRUCT aiMatrix3x3 *mat,
+void aiMatrix3RotationZ(
+        aiMatrix3x3 *mat,
         const float angle) {
-    ai_assert(nullptr != mat);
     aiMatrix3x3::RotationZ(angle, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix3FromRotationAroundAxis(
-        C_STRUCT aiMatrix3x3 *mat,
-        const C_STRUCT aiVector3D *axis,
+void aiMatrix3FromRotationAroundAxis(
+        aiMatrix3x3 *mat,
+        const aiVector3D *axis,
         const float angle) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != axis);
     aiMatrix3x3::Rotation(angle, *axis, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix3Translation(
-        C_STRUCT aiMatrix3x3 *mat,
-        const C_STRUCT aiVector2D *translation) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != translation);
+void aiMatrix3Translation(
+        aiMatrix3x3 *mat,
+        const aiVector2D *translation) {
     aiMatrix3x3::Translation(*translation, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix3FromTo(
-        C_STRUCT aiMatrix3x3 *mat,
-        const C_STRUCT aiVector3D *from,
-        const C_STRUCT aiVector3D *to) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != from);
-    ai_assert(nullptr != to);
+void aiMatrix3FromTo(
+        aiMatrix3x3 *mat,
+        const aiVector3D *from,
+        const aiVector3D *to) {
     aiMatrix3x3::FromToMatrix(*from, *to, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4FromMatrix3(
-        C_STRUCT aiMatrix4x4 *dst,
-        const C_STRUCT aiMatrix3x3 *mat) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != mat);
+void aiMatrix4FromMatrix3(
+        aiMatrix4x4 *dst,
+        const aiMatrix3x3 *mat) {
     *dst = aiMatrix4x4(*mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4FromScalingQuaternionPosition(
-        C_STRUCT aiMatrix4x4 *mat,
-        const C_STRUCT aiVector3D *scaling,
-        const C_STRUCT aiQuaternion *rotation,
-        const C_STRUCT aiVector3D *position) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != scaling);
-    ai_assert(nullptr != rotation);
-    ai_assert(nullptr != position);
+void aiMatrix4FromScalingQuaternionPosition(
+        aiMatrix4x4 *mat,
+        const aiVector3D *scaling,
+        const aiQuaternion *rotation,
+        const aiVector3D *position) {
     *mat = aiMatrix4x4(*scaling, *rotation, *position);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4Add(
-        C_STRUCT aiMatrix4x4 *dst,
-        const C_STRUCT aiMatrix4x4 *src) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != src);
+void aiMatrix4Add(
+        aiMatrix4x4 *dst,
+        const aiMatrix4x4 *src) {
     *dst = *dst + *src;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiMatrix4AreEqual(
-        const C_STRUCT aiMatrix4x4 *a,
-        const C_STRUCT aiMatrix4x4 *b) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
+int aiMatrix4AreEqual(
+        const aiMatrix4x4 *a,
+        const aiMatrix4x4 *b) {
     return *a == *b;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiMatrix4AreEqualEpsilon(
-        const C_STRUCT aiMatrix4x4 *a,
-        const C_STRUCT aiMatrix4x4 *b,
+int aiMatrix4AreEqualEpsilon(
+        const aiMatrix4x4 *a,
+        const aiMatrix4x4 *b,
         const float epsilon) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
     return a->Equal(*b, epsilon);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4Inverse(C_STRUCT aiMatrix4x4 *mat) {
-    ai_assert(nullptr != mat);
+void aiMatrix4Inverse(aiMatrix4x4 *mat) {
     mat->Inverse();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API float aiMatrix4Determinant(const C_STRUCT aiMatrix4x4 *mat) {
-    ai_assert(nullptr != mat);
+float aiMatrix4Determinant(const aiMatrix4x4 *mat) {
     return mat->Determinant();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiMatrix4IsIdentity(const C_STRUCT aiMatrix4x4 *mat) {
-    ai_assert(nullptr != mat);
+int aiMatrix4IsIdentity(const aiMatrix4x4 *mat) {
     return mat->IsIdentity();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4DecomposeIntoScalingEulerAnglesPosition(
-        const C_STRUCT aiMatrix4x4 *mat,
-        C_STRUCT aiVector3D *scaling,
-        C_STRUCT aiVector3D *rotation,
-        C_STRUCT aiVector3D *position) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != scaling);
-    ai_assert(nullptr != rotation);
-    ai_assert(nullptr != position);
+void aiMatrix4DecomposeIntoScalingEulerAnglesPosition(
+        const aiMatrix4x4 *mat,
+        aiVector3D *scaling,
+        aiVector3D *rotation,
+        aiVector3D *position) {
     mat->Decompose(*scaling, *rotation, *position);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4DecomposeIntoScalingAxisAnglePosition(
-        const C_STRUCT aiMatrix4x4 *mat,
-        C_STRUCT aiVector3D *scaling,
-        C_STRUCT aiVector3D *axis,
+void aiMatrix4DecomposeIntoScalingAxisAnglePosition(
+        const aiMatrix4x4 *mat,
+        aiVector3D *scaling,
+        aiVector3D *axis,
         ai_real *angle,
-        C_STRUCT aiVector3D *position) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != scaling);
-    ai_assert(nullptr != axis);
-    ai_assert(nullptr != angle);
-    ai_assert(nullptr != position);
+        aiVector3D *position) {
     mat->Decompose(*scaling, *axis, *angle, *position);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4DecomposeNoScaling(
-        const C_STRUCT aiMatrix4x4 *mat,
-        C_STRUCT aiQuaternion *rotation,
-        C_STRUCT aiVector3D *position) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != rotation);
-    ai_assert(nullptr != position);
+void aiMatrix4DecomposeNoScaling(
+        const aiMatrix4x4 *mat,
+        aiQuaternion *rotation,
+        aiVector3D *position) {
     mat->DecomposeNoScaling(*rotation, *position);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4FromEulerAngles(
-        C_STRUCT aiMatrix4x4 *mat,
+void aiMatrix4FromEulerAngles(
+        aiMatrix4x4 *mat,
         float x, float y, float z) {
-    ai_assert(nullptr != mat);
     mat->FromEulerAnglesXYZ(x, y, z);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4RotationX(
-        C_STRUCT aiMatrix4x4 *mat,
+void aiMatrix4RotationX(
+        aiMatrix4x4 *mat,
         const float angle) {
-    ai_assert(nullptr != mat);
     aiMatrix4x4::RotationX(angle, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4RotationY(
-        C_STRUCT aiMatrix4x4 *mat,
+void aiMatrix4RotationY(
+        aiMatrix4x4 *mat,
         const float angle) {
-    ai_assert(nullptr != mat);
     aiMatrix4x4::RotationY(angle, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4RotationZ(
-        C_STRUCT aiMatrix4x4 *mat,
+void aiMatrix4RotationZ(
+        aiMatrix4x4 *mat,
         const float angle) {
-    ai_assert(nullptr != mat);
     aiMatrix4x4::RotationZ(angle, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4FromRotationAroundAxis(
-        C_STRUCT aiMatrix4x4 *mat,
-        const C_STRUCT aiVector3D *axis,
+void aiMatrix4FromRotationAroundAxis(
+        aiMatrix4x4 *mat,
+        const aiVector3D *axis,
         const float angle) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != axis);
     aiMatrix4x4::Rotation(angle, *axis, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4Translation(
-        C_STRUCT aiMatrix4x4 *mat,
-        const C_STRUCT aiVector3D *translation) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != translation);
+void aiMatrix4Translation(
+        aiMatrix4x4 *mat,
+        const aiVector3D *translation) {
     aiMatrix4x4::Translation(*translation, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4Scaling(
-        C_STRUCT aiMatrix4x4 *mat,
-        const C_STRUCT aiVector3D *scaling) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != scaling);
+void aiMatrix4Scaling(
+        aiMatrix4x4 *mat,
+        const aiVector3D *scaling) {
     aiMatrix4x4::Scaling(*scaling, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiMatrix4FromTo(
-        C_STRUCT aiMatrix4x4 *mat,
-        const C_STRUCT aiVector3D *from,
-        const C_STRUCT aiVector3D *to) {
-    ai_assert(nullptr != mat);
-    ai_assert(nullptr != from);
-    ai_assert(nullptr != to);
+void aiMatrix4FromTo(
+        aiMatrix4x4 *mat,
+        const aiVector3D *from,
+        const aiVector3D *to) {
     aiMatrix4x4::FromToMatrix(*from, *to, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiQuaternionFromEulerAngles(
-        C_STRUCT aiQuaternion *q,
+void aiQuaternionFromEulerAngles(
+        aiQuaternion *q,
         float x, float y, float z) {
-    ai_assert(nullptr != q);
     *q = aiQuaternion(x, y, z);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiQuaternionFromAxisAngle(
-        C_STRUCT aiQuaternion *q,
-        const C_STRUCT aiVector3D *axis,
+void aiQuaternionFromAxisAngle(
+        aiQuaternion *q,
+        const aiVector3D *axis,
         const float angle) {
-    ai_assert(nullptr != q);
-    ai_assert(nullptr != axis);
     *q = aiQuaternion(*axis, angle);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiQuaternionFromNormalizedQuaternion(
-        C_STRUCT aiQuaternion *q,
-        const C_STRUCT aiVector3D *normalized) {
-    ai_assert(nullptr != q);
-    ai_assert(nullptr != normalized);
+void aiQuaternionFromNormalizedQuaternion(
+        aiQuaternion *q,
+        const aiVector3D *normalized) {
     *q = aiQuaternion(*normalized);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiQuaternionAreEqual(
-        const C_STRUCT aiQuaternion *a,
-        const C_STRUCT aiQuaternion *b) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
+int aiQuaternionAreEqual(
+        const aiQuaternion *a,
+        const aiQuaternion *b) {
     return *a == *b;
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API int aiQuaternionAreEqualEpsilon(
-        const C_STRUCT aiQuaternion *a,
-        const C_STRUCT aiQuaternion *b,
+int aiQuaternionAreEqualEpsilon(
+        const aiQuaternion *a,
+        const aiQuaternion *b,
         const float epsilon) {
-    ai_assert(nullptr != a);
-    ai_assert(nullptr != b);
     return a->Equal(*b, epsilon);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiQuaternionNormalize(
-        C_STRUCT aiQuaternion *q) {
-    ai_assert(nullptr != q);
+void aiQuaternionNormalize(
+        aiQuaternion *q) {
     q->Normalize();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiQuaternionConjugate(
-        C_STRUCT aiQuaternion *q) {
-    ai_assert(nullptr != q);
+void aiQuaternionConjugate(
+        aiQuaternion *q) {
     q->Conjugate();
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiQuaternionMultiply(
-        C_STRUCT aiQuaternion *dst,
-        const C_STRUCT aiQuaternion *q) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != q);
+void aiQuaternionMultiply(
+        aiQuaternion *dst,
+        const aiQuaternion *q) {
     *dst = (*dst) * (*q);
 }
 
 // ------------------------------------------------------------------------------------------------
-ASSIMP_API void aiQuaternionInterpolate(
-        C_STRUCT aiQuaternion *dst,
-        const C_STRUCT aiQuaternion *start,
-        const C_STRUCT aiQuaternion *end,
+void aiQuaternionInterpolate(
+        aiQuaternion *dst,
+        const aiQuaternion *start,
+        const aiQuaternion *end,
         const float factor) {
-    ai_assert(nullptr != dst);
-    ai_assert(nullptr != start);
-    ai_assert(nullptr != end);
     aiQuaternion::Interpolate(*dst, *start, *end, factor);
 }
 
@@ -1073,9 +918,6 @@ ASSIMP_API void aiQuaternionInterpolate(
 //  - PBRT export
 // Since it's a header-only library, its implementation must be instantiated in some cpp file.
 // Don't scatter this task over multiple importers/exporters. Maintain it in a central place (here!).
-
-#define ASSIMP_HAS_PBRT_EXPORT (!ASSIMP_BUILD_NO_EXPORT && !ASSIMP_BUILD_NO_PBRT_EXPORTER)
-#define ASSIMP_HAS_M3D ((!ASSIMP_BUILD_NO_EXPORT && !ASSIMP_BUILD_NO_M3D_EXPORTER) || !ASSIMP_BUILD_NO_M3D_IMPORTER)
 
 #ifndef STB_USE_HUNTER
 #   if ASSIMP_HAS_PBRT_EXPORT

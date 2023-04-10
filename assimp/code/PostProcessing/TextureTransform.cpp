@@ -246,7 +246,6 @@ void TextureTransformStep::Execute( aiScene* pScene) {
                     }
                     else if ( !::strcmp( prop2->mKey.data, "$tex.uvtrafo"))  {
                         // ValidateDS should check this
-                        ai_assert(prop2->mDataLength >= 20);
                         ::memcpy(&info.mTranslation.x,prop2->mData,sizeof(float)*5);
 
                         // Directly remove this property from the list
@@ -461,8 +460,6 @@ void TextureTransformStep::Execute( aiScene* pScene) {
             aiVector3D* src = old[(*it).uvIndex];
             aiVector3D* dest, *end;
             dest = mesh->mTextureCoords[n];
-
-            ai_assert(nullptr != src);
 
             // Copy the data to the destination array
             if (dest != src)

@@ -57,7 +57,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assimp/vector3.h>
 #include <assimp/mesh.h>
-#include <assimp/ai_assert.h>
 
 #include <functional>
 
@@ -110,7 +109,6 @@ public:
     // ----------------------------------------------------------------------------
     /** Extract a particular vertex from a mesh and interleave all components */
     explicit Vertex(const aiMesh* msh, unsigned int idx) {
-        ai_assert(idx < msh->mNumVertices);
         position = msh->mVertices[idx];
 
         if (msh->HasNormals()) {
@@ -130,7 +128,6 @@ public:
     // ----------------------------------------------------------------------------
     /** Extract a particular vertex from a anim mesh and interleave all components */
     explicit Vertex(const aiAnimMesh* msh, unsigned int idx) {
-        ai_assert(idx < msh->mNumVertices);
         if (msh->HasPositions()) {
             position = msh->mVertices[idx];
         }
@@ -172,7 +169,6 @@ public:
     // ----------------------------------------------------------------------------
     /** Convert back to non-interleaved storage */
     void SortBack(aiMesh* out, unsigned int idx) const {
-        ai_assert(idx<out->mNumVertices);
         out->mVertices[idx] = position;
 
         if (out->HasNormals()) {

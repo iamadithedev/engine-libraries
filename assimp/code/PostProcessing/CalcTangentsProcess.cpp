@@ -69,7 +69,6 @@ bool CalcTangentsProcess::IsActive(unsigned int pFlags) const {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void CalcTangentsProcess::SetupProperties(const Importer *pImp) {
-    ai_assert(nullptr != pImp);
 
     // get the current value of the property
     configMaxAngle = pImp->GetPropertyFloat(AI_CONFIG_PP_CT_MAX_SMOOTHING_ANGLE, 45.f);
@@ -82,8 +81,6 @@ void CalcTangentsProcess::SetupProperties(const Importer *pImp) {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void CalcTangentsProcess::Execute(aiScene *pScene) {
-    ai_assert(nullptr != pScene);
-
     bool bHas = false;
     for (unsigned int a = 0; a < pScene->mNumMeshes; a++) {
         if (ProcessMesh(pScene->mMeshes[a], a)) bHas = true;

@@ -229,9 +229,6 @@ void FBXConverter::ConvertNodes(uint64_t id, aiNode *parent, aiNode *root_node) 
             // if need_additional_node is true then you t
             const bool need_additional_node = GenerateTransformationNodeChain(*model, node_name, nodes_chain, post_nodes_chain);
 
-            // assert that for the current node we must have at least a single transform
-            ai_assert(nodes_chain.size());
-
             if (need_additional_node) {
                 nodes_chain.emplace_back(node_name);
             }
@@ -242,7 +239,6 @@ void FBXConverter::ConvertNodes(uint64_t id, aiNode *parent, aiNode *root_node) 
             // link all nodes in a row
             aiNode *last_parent = parent;
             for (PotentialNode& child : nodes_chain) {
-                ai_assert(child.mNode);
 
                 if (last_parent != parent) {
                     last_parent->mNumChildren = 1;
@@ -264,7 +260,6 @@ void FBXConverter::ConvertNodes(uint64_t id, aiNode *parent, aiNode *root_node) 
             // before we attach any child nodes
             if (child_conns.size()) {
                 for (PotentialNode& postnode : post_nodes_chain) {
-                    ai_assert(postnode.mNode);
 
                     if (last_parent != parent) {
                         last_parent->mNumChildren = 1;
@@ -354,8 +349,6 @@ const char *FBXConverter::NameTransformationComp(TransformationComp comp) {
             break;
     }
 
-    ai_assert(false);
-
     return nullptr;
 }
 
@@ -398,8 +391,6 @@ const char *FBXConverter::NameTransformationCompProperty(TransformationComp comp
         case TransformationComp_MAXIMUM: // this is to silence compiler warnings
             break;
     }
-
-    ai_assert(false);
 
     return nullptr;
 }
@@ -477,16 +468,8 @@ void FBXConverter::GetRotationMatrix(Model::RotOrder mode, const aiVector3D &rot
             break;
 
         default:
-            ai_assert(false);
             break;
     }
-
-    ai_assert(order[0] >= 0);
-    ai_assert(order[0] <= 2);
-    ai_assert(order[1] >= 0);
-    ai_assert(order[1] <= 2);
-    ai_assert(order[2] >= 0);
-    ai_assert(order[2] <= 2);
 
     if (!is_id[order[0]]) {
         out = temp[order[0]];
@@ -545,7 +528,6 @@ bool FBXConverter::GenerateTransformationNodeChain(const Model &model, const std
 
     aiMatrix4x4 chain[TransformationComp_MAXIMUM];
 
-    ai_assert(TransformationComp_MAXIMUM < 32);
     std::uint32_t chainBits = 0;
     // A node won't need a node chain if it only has these.
     const std::uint32_t chainMaskSimple = (1 << TransformationComp_Translation) + (1 << TransformationComp_Scaling) + (1 << TransformationComp_Rotation);
@@ -695,7 +677,6 @@ bool FBXConverter::GenerateTransformationNodeChain(const Model &model, const std
             }
         }
 
-        ai_assert(output_nodes.size());
         return true;
     }
 
@@ -747,8 +728,6 @@ void FBXConverter::SetupNodeMetadata(const Model &model, aiNode &nd) {
             data->Set(index++, prop.first, aiString(interpretedString->Value()));
         } else if (const TypedProperty<aiVector3D> *interpretedVec3 = prop.second->As<TypedProperty<aiVector3D>>()) {
             data->Set(index++, prop.first, interpretedVec3->Value());
-        } else {
-            ai_assert(false);
         }
     }
 }
@@ -948,8 +927,6 @@ unsigned int FBXConverter::ConvertMeshSingleMaterial(const MeshGeometry &mesh, c
     // copy normals
     const std::vector<aiVector3D> &normals = mesh.GetNormals();
     if (normals.size()) {
-        ai_assert(normals.size() == vertices.size());
-
         out_mesh->mNormals = new aiVector3D[vertices.size()];
         std::copy(normals.begin(), normals.end(), out_mesh->mNormals);
     }
@@ -976,8 +953,6 @@ unsigned int FBXConverter::ConvertMeshSingleMaterial(const MeshGeometry &mesh, c
         }
 
         if (binormals) {
-            ai_assert(tangents.size() == vertices.size());
-            ai_assert(binormals->size() == vertices.size());
 
             out_mesh->mTangents = new aiVector3D[vertices.size()];
             std::copy(tangents.begin(), tangents.end(), out_mesh->mTangents);
@@ -1076,7 +1051,6 @@ std::vector<unsigned int>
 FBXConverter::ConvertMeshMultiMaterial(const MeshGeometry &mesh, const Model &model, const aiMatrix4x4 &absolute_transform, aiNode *parent,
         aiNode *root_node) {
     const MatIndexArray &mindices = mesh.GetMaterialIndices();
-    ai_assert(mindices.size());
 
     std::set<MatIndexArray::value_type> had;
     std::vector<unsigned int> indices;
@@ -1117,9 +1091,6 @@ unsigned int FBXConverter::ConvertMeshMultiMaterial(const MeshGeometry &mesh, co
         count_vertices += *itf;
     }
 
-    ai_assert(count_faces);
-    ai_assert(count_vertices);
-
     // mapping from output indices to DOM indexing, needed to resolve weights or blendshapes
     std::vector<unsigned int> reverseMapping;
     std::map<unsigned int, unsigned int> translateIndexMap;
@@ -1137,7 +1108,6 @@ unsigned int FBXConverter::ConvertMeshMultiMaterial(const MeshGeometry &mesh, co
     // allocate normals
     const std::vector<aiVector3D> &normals = mesh.GetNormals();
     if (normals.size()) {
-        ai_assert(normals.size() == vertices.size());
         out_mesh->mNormals = new aiVector3D[count_vertices];
     }
 
@@ -1163,9 +1133,6 @@ unsigned int FBXConverter::ConvertMeshMultiMaterial(const MeshGeometry &mesh, co
         }
 
         if (binormals) {
-            ai_assert(tangents.size() == vertices.size());
-            ai_assert(binormals->size() == vertices.size());
-
             out_mesh->mTangents = new aiVector3D[count_vertices];
             out_mesh->mBitangents = new aiVector3D[count_vertices];
         }
@@ -1325,7 +1292,6 @@ void FBXConverter::ConvertWeightsToSkeleton(aiMesh *out, const MeshGeometry &geo
 void FBXConverter::ConvertWeights(aiMesh *out, const MeshGeometry &geo, const aiMatrix4x4 &absolute_transform,
         aiNode *parent, unsigned int materialIndex,
         std::vector<unsigned int> *outputVertStartIndices) {
-    ai_assert(geo.DeformerSkin());
 
     std::vector<size_t> out_indices, index_out_indices, count_out_indices;
 
@@ -1333,12 +1299,10 @@ void FBXConverter::ConvertWeights(aiMesh *out, const MeshGeometry &geo, const ai
 
     std::vector<aiBone*> bones;
     const bool no_mat_check = materialIndex == NO_MATERIAL_SEPARATION;
-    ai_assert(no_mat_check || outputVertStartIndices);
 
     try {
         // iterate over the sub deformers
         for (const Cluster *cluster : sk.Clusters()) {
-            ai_assert(cluster);
 
             const WeightIndexArray &indices = cluster->GetIndices();
 
@@ -1358,7 +1322,6 @@ void FBXConverter::ConvertWeights(aiMesh *out, const MeshGeometry &geo, const ai
                 const unsigned int *const out_idx = geo.ToOutputVertexIndex(index, count);
                 // ToOutputVertexIndex only returns nullptr if index is out of bounds
                 // which should never happen
-                ai_assert(out_idx != nullptr);
 
                 index_out_indices.push_back(no_index_sentinel);
                 count_out_indices.push_back(0);
@@ -1415,7 +1378,6 @@ void FBXConverter::ConvertCluster(std::vector<aiBone*> &local_mesh_bones, const 
         std::vector<size_t> &out_indices, std::vector<size_t> &index_out_indices,
         std::vector<size_t> &count_out_indices, const aiMatrix4x4 & /* absolute_transform*/,
         aiNode *) {
-    ai_assert(cluster != nullptr); // make sure cluster valid
 
     std::string deformer_name = cluster->TargetNode()->Name();
     aiString bone_name = aiString(FixNodeName(deformer_name));
@@ -2319,8 +2281,6 @@ double FBXConverter::FrameRateToDouble(FileGlobalSettings::FrameRate fp, double 
             break;
     }
 
-    ai_assert(false);
-
     return -1.0f;
 }
 
@@ -2396,10 +2356,8 @@ void FBXConverter::ConvertAnimationStack(const AnimationStack &st) {
     std::map<std::string, morphAnimData *> morphAnimDatas;
 
     for (const AnimationLayer *layer : layers) {
-        ai_assert(layer);
         const AnimationCurveNodeList &nodes = layer->Nodes(prop_whitelist, 4);
         for (const AnimationCurveNode *node : nodes) {
-            ai_assert(node);
             const Model *const model = dynamic_cast<const Model *>(node->Target());
             if (model) {
                 const std::string &curName = FixNodeName(model->Name());
@@ -2603,14 +2561,9 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
         double &min_time) {
 
     NodeMap node_property_map;
-    ai_assert(curves.size());
 
-#ifdef ASSIMP_BUILD_DEBUG
-    validateAnimCurveNodes(curves, doc.Settings().strictMode);
-#endif
     const AnimationCurveNode *curve_node = nullptr;
     for (const AnimationCurveNode *node : curves) {
-        ai_assert(node);
 
         if (node->TargetProperty().empty()) {
             continue;
@@ -2623,9 +2576,6 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
 
         node_property_map[node->TargetProperty()].push_back(node);
     }
-
-    ai_assert(curve_node);
-    ai_assert(curve_node->TargetAsModel());
 
     const Model &target = *curve_node->TargetAsModel();
 
@@ -2679,7 +2629,6 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
                 min_time
         );
 
-        ai_assert(nd);
         if (nd->mNumPositionKeys == 0 && nd->mNumRotationKeys == 0 && nd->mNumScalingKeys == 0) {
             delete nd;
         } else {
@@ -2699,9 +2648,6 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
 
         if (chain[i] != node_property_map.end()) {
             flags |= bit;
-
-            ai_assert(comp != TransformationComp_RotationPivotInverse);
-            ai_assert(comp != TransformationComp_ScalingPivotInverse);
 
             const std::string &chain_name = NameTransformationChainNode(fixed_name, comp);
 
@@ -2749,14 +2695,12 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
                                 min_time,
                                 true);
 
-                        ai_assert(inv);
                         if (inv->mNumPositionKeys == 0 && inv->mNumRotationKeys == 0 && inv->mNumScalingKeys == 0) {
                             delete inv;
                         } else {
                             node_anims.push_back(inv);
                         }
 
-                        ai_assert(TransformationComp_RotationPivotInverse > i);
                         flags |= bit << (TransformationComp_RotationPivotInverse - i);
                     } else if (comp == TransformationComp_ScalingPivot) {
                         const std::string &invName = NameTransformationChainNode(fixed_name,
@@ -2771,14 +2715,12 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
                                 min_time,
                                 true);
 
-                        ai_assert(inv);
                         if (inv->mNumPositionKeys == 0 && inv->mNumRotationKeys == 0 && inv->mNumScalingKeys == 0) {
                             delete inv;
                         } else {
                             node_anims.push_back(inv);
                         }
 
-                        ai_assert(TransformationComp_RotationPivotInverse > i);
                         flags |= bit << (TransformationComp_RotationPivotInverse - i);
                     }
 
@@ -2795,12 +2737,8 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
                             min_time);
 
                     break;
-
-                default:
-                    ai_assert(false);
             }
 
-            ai_assert(na);
             if (na->mNumPositionKeys == 0 && na->mNumRotationKeys == 0 && na->mNumScalingKeys == 0) {
                 delete na;
             } else {
@@ -2816,7 +2754,6 @@ void FBXConverter::GenerateNodeAnimations(std::vector<aiNodeAnim *> &node_anims,
 bool FBXConverter::IsRedundantAnimationData(const Model &target,
         TransformationComp comp,
         const std::vector<const AnimationCurveNode *> &curves) {
-    ai_assert(curves.size());
 
     // look for animation nodes with
     //  * sub channels for all relevant components set
@@ -3083,8 +3020,6 @@ FBXConverter::KeyFrameListList FBXConverter::GetKeyframeList(const std::vector<c
     int64_t adj_stop = stop + 10000;
 
     for (const AnimationCurveNode *node : nodes) {
-        ai_assert(node);
-
         const AnimationCurveMap &curves = node->Curves();
         for (const AnimationCurveMap::value_type &kv : curves) {
 
@@ -3100,8 +3035,6 @@ FBXConverter::KeyFrameListList FBXConverter::GetKeyframeList(const std::vector<c
             }
 
             const AnimationCurve *const curve = kv.second;
-            ai_assert(curve->GetKeys().size() == curve->GetValues().size());
-            ai_assert(curve->GetKeys().size());
 
             //get values within the start/stop time window
             std::shared_ptr<KeyTimeList> Keys(new KeyTimeList());
@@ -3133,7 +3066,6 @@ FBXConverter::KeyFrameListList FBXConverter::GetRotationKeyframeList(const std::
     const int64_t adj_stop = stop + 10000;
 
     for (const AnimationCurveNode *node : nodes) {
-        ai_assert(node);
 
         const AnimationCurveMap &curves = node->Curves();
         for (const AnimationCurveMap::value_type &kv : curves) {
@@ -3150,8 +3082,6 @@ FBXConverter::KeyFrameListList FBXConverter::GetRotationKeyframeList(const std::
             }
 
             const AnimationCurve *const curve = kv.second;
-            ai_assert(curve->GetKeys().size() == curve->GetValues().size());
-            ai_assert(curve->GetKeys().size());
 
             //get values within the start/stop time window
             std::shared_ptr<KeyTimeList> Keys(new KeyTimeList());
@@ -3200,7 +3130,6 @@ FBXConverter::KeyFrameListList FBXConverter::GetRotationKeyframeList(const std::
 }
 
 KeyTimeList FBXConverter::GetKeyTimeList(const KeyFrameListList &inputs) {
-    ai_assert(!inputs.empty());
 
     // reserve some space upfront - it is likely that the key-frame lists
     // have matching time values, so max(of all key-frame lists) should
@@ -3250,8 +3179,6 @@ void FBXConverter::InterpolateKeys(aiVectorKey *valOut, const KeyTimeList &keys,
         const aiVector3D &def_value,
         double &max_time,
         double &min_time) {
-    ai_assert(!keys.empty());
-    ai_assert(nullptr != valOut);
 
     std::vector<unsigned int> next_pos;
     const size_t count(inputs.size());
@@ -3307,8 +3234,6 @@ void FBXConverter::InterpolateKeys(aiQuatKey *valOut, const KeyTimeList &keys, c
         double &maxTime,
         double &minTime,
         Model::RotOrder order) {
-    ai_assert(!keys.empty());
-    ai_assert(nullptr != valOut);
 
     std::unique_ptr<aiVectorKey[]> temp(new aiVectorKey[keys.size()]);
     InterpolateKeys(temp.get(), keys, inputs, def_value, maxTime, minTime);
@@ -3347,7 +3272,6 @@ void FBXConverter::ConvertScaleKeys(aiNodeAnim *na, const std::vector<const Anim
         int64_t start, int64_t stop,
         double &maxTime,
         double &minTime) {
-    ai_assert(nodes.size());
 
     // XXX for now, assume scale should be blended geometrically (i.e. two
     // layers should be multiplied with each other). There is a FBX
@@ -3368,7 +3292,6 @@ void FBXConverter::ConvertTranslationKeys(aiNodeAnim *na, const std::vector<cons
         int64_t start, int64_t stop,
         double &maxTime,
         double &minTime) {
-    ai_assert(nodes.size());
 
     // XXX see notes in ConvertScaleKeys()
     const KeyFrameListList &inputs = GetKeyframeList(nodes, start, stop);
@@ -3386,7 +3309,6 @@ void FBXConverter::ConvertRotationKeys(aiNodeAnim *na, const std::vector<const A
         double &maxTime,
         double &minTime,
         Model::RotOrder order) {
-    ai_assert(nodes.size());
 
     // XXX see notes in ConvertScaleKeys()
     const std::vector<KeyFrameList> &inputs = GetRotationKeyframeList(nodes, start, stop);
@@ -3430,8 +3352,6 @@ void FBXConverter::ConvertGlobalSettings() {
 }
 
 void FBXConverter::TransferDataToScene() {
-    ai_assert(!mSceneOut->mMeshes);
-    ai_assert(!mSceneOut->mNumMeshes);
 
     // note: the trailing () ensures initialization with nullptr - not
     // many C++ users seem to know this, so pointing it out to avoid

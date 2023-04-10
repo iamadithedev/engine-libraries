@@ -86,10 +86,6 @@ void ScaleProcess::Execute( aiScene* pScene ) {
         return; // nothing to scale
     }
 
-    ai_assert( mScale != 0 );
-    ai_assert( nullptr != pScene );
-    ai_assert( nullptr != pScene->mRootNode );
-
     if ( nullptr == pScene ) {
         return;
     }

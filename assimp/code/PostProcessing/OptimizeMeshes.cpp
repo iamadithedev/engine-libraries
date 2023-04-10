@@ -52,7 +52,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "OptimizeMeshes.h"
 #include "ProcessHelper.h"
 #include <assimp/SceneCombiner.h>
-#include <assimp/Exceptional.h>
 
 using namespace Assimp;
 
@@ -132,12 +131,8 @@ void OptimizeMeshesProcess::Execute( aiScene* pScene)
 
     // and process all nodes in the scenegraph recursively
     ProcessNode(pScene->mRootNode);
-    if (!output.size()) {
-        throw DeadlyImportError("OptimizeMeshes: No meshes remaining; there's definitely something wrong");
-    }
 
     meshes.resize( 0 );
-    ai_assert(output.size() <= num_old);
 
     mScene->mNumMeshes = static_cast<unsigned int>(output.size());
     std::copy(output.begin(),output.end(),mScene->mMeshes);

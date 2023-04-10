@@ -102,7 +102,6 @@ void RemoveVCProcess::Execute(aiScene *pScene) {
 
         pScene->mNumMaterials = 1;
         aiMaterial *helper = (aiMaterial *)pScene->mMaterials[0];
-        ai_assert(nullptr != helper);
         helper->Clear();
 
         // gray

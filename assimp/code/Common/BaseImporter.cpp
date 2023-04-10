@@ -74,9 +74,6 @@ BaseImporter::BaseImporter() AI_NO_EXCEPT
 BaseImporter::~BaseImporter() = default;
 
 void BaseImporter::UpdateImporterScale(Importer *pImp) {
-    ai_assert(pImp != nullptr);
-    ai_assert(importerScale != 0.0);
-    ai_assert(fileScale != 0.0);
 
     double activeScale = importerScale * fileScale;
 
@@ -124,16 +121,12 @@ void BaseImporter::SetupProperties(const Importer *) {
 // ------------------------------------------------------------------------------------------------
 void BaseImporter::GetExtensionList(std::set<std::string> &extensions) {
     const aiImporterDesc *desc = GetInfo();
-    ai_assert(desc != nullptr);
-
     const char *ext = desc->mFileExtensions;
-    ai_assert(ext != nullptr);
 
     const char *last = ext;
     do {
         if (!*ext || *ext == ' ') {
             extensions.insert(std::string(last, ext - last));
-            ai_assert(ext - last > 0);
             last = ext;
             while (*last == ' ') {
                 ++last;
@@ -150,9 +143,6 @@ void BaseImporter::GetExtensionList(std::set<std::string> &extensions) {
         unsigned int searchBytes /* = 200 */,
         bool tokensSol /* false */,
         bool noAlphaBeforeTokens /* false */) {
-    ai_assert(nullptr != tokens);
-    ai_assert(0 != numTokens);
-    ai_assert(0 != searchBytes);
 
     if (nullptr == pIOHandler) {
         return false;
@@ -185,7 +175,6 @@ void BaseImporter::GetExtensionList(std::set<std::string> &extensions) {
 
         std::string token;
         for (unsigned int i = 0; i < numTokens; ++i) {
-            ai_assert(nullptr != tokens[i]);
             const size_t len(strlen(tokens[i]));
             token.clear();
             const char *ptr(tokens[i]);
@@ -265,8 +254,6 @@ std::string BaseImporter::GetExtension(const std::string &file) {
 // Check for magic bytes at the beginning of the file.
 /* static */ bool BaseImporter::CheckMagicToken(IOSystem *pIOHandler, const std::string &pFile,
         const void *_magic, std::size_t num, unsigned int offset, unsigned int size) {
-    ai_assert(size <= 16);
-    ai_assert(_magic);
 
     if (!pIOHandler) {
         return false;
@@ -415,7 +402,6 @@ void BaseImporter::ConvertUTF8toISO8859_1(std::string &data) {
 void BaseImporter::TextFileToBuffer(IOStream *stream,
         std::vector<char> &data,
         TextFileMode mode) {
-    ai_assert(nullptr != stream);
 
     const size_t fileSize = stream->FileSize();
     if (mode == FORBID_EMPTY) {
@@ -469,7 +455,6 @@ struct LoadRequest {
 struct Assimp::BatchData {
     BatchData(IOSystem *pIO, bool validate) :
             pIOSystem(pIO), pImporter(nullptr), next_id(0xffff), validate(validate) {
-        ai_assert(nullptr != pIO);
 
         pImporter = new Importer();
         pImporter->SetIOHandler(pIO);
@@ -503,8 +488,6 @@ typedef std::list<LoadRequest>::iterator LoadReqIt;
 
 // ------------------------------------------------------------------------------------------------
 BatchLoader::BatchLoader(IOSystem *pIO, bool validate) {
-    ai_assert(nullptr != pIO);
-
     m_data = new BatchData(pIO, validate);
 }
 
@@ -530,7 +513,6 @@ bool BatchLoader::getValidation() const {
 // ------------------------------------------------------------------------------------------------
 unsigned int BatchLoader::AddLoadRequest(const std::string &file,
         unsigned int steps /*= 0*/, const PropertyMap *map /*= nullptr*/) {
-    ai_assert(!file.empty());
 
     // check whether we have this loading request already
     for (LoadReqIt it = m_data->requests.begin(); it != m_data->requests.end(); ++it) {

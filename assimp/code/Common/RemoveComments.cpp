@@ -52,10 +52,6 @@ namespace Assimp {
 // ------------------------------------------------------------------------------------------------
 // Remove line comments from a file
 void CommentRemover::RemoveLineComments(const char* szComment, char* szBuffer, char chReplacement /* = ' ' */) {
-    // validate parameters
-    ai_assert(nullptr != szComment);
-    ai_assert(nullptr != szBuffer);
-    ai_assert(*szComment);
 
     size_t len = strlen(szComment);
     const size_t lenBuffer = strlen(szBuffer);
@@ -85,12 +81,6 @@ void CommentRemover::RemoveLineComments(const char* szComment, char* szBuffer, c
 void CommentRemover::RemoveMultiLineComments(const char* szCommentStart,
         const char* szCommentEnd,char* szBuffer,
         char chReplacement) {
-    // validate parameters
-    ai_assert(nullptr != szCommentStart);
-    ai_assert(nullptr != szCommentEnd);
-    ai_assert(nullptr != szBuffer);
-    ai_assert(*szCommentStart);
-    ai_assert(*szCommentEnd);
 
     const size_t len  = strlen(szCommentEnd);
     const size_t len2 = strlen(szCommentStart);

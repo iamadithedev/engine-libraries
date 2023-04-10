@@ -77,14 +77,11 @@ void ArmaturePopulate::Execute(aiScene *out) {
         // bone->mOffsetMatrix = bone_node->mTransformation;
         aiNode *armature = GetArmatureRoot(bone_node, bones);
 
-        ai_assert(armature);
-
 #ifndef ASSIMP_BUILD_NO_ARMATUREPOPULATE_PROCESS
         // set up bone armature id
         bone->mArmature = armature;
 
         // set this bone node to be referenced properly
-        ai_assert(bone_node);
         bone->mNode = bone_node;
 #endif
     }
@@ -101,21 +98,17 @@ void ArmaturePopulate::BuildBoneList(aiNode *current_node,
                                      const aiNode *root_node,
                                      const aiScene *scene,
                                      std::vector<aiBone *> &bones) {
-    ai_assert(scene);
     for (unsigned int nodeId = 0; nodeId < current_node->mNumChildren; ++nodeId) {
         aiNode *child = current_node->mChildren[nodeId];
-        ai_assert(child);
 
         // check for bones
         for (unsigned int meshId = 0; meshId < child->mNumMeshes; ++meshId) {
-            ai_assert(child->mMeshes);
+
             unsigned int mesh_index = child->mMeshes[meshId];
             aiMesh *mesh = scene->mMeshes[mesh_index];
-            ai_assert(mesh);
 
             for (unsigned int boneId = 0; boneId < mesh->mNumBones; ++boneId) {
                 aiBone *bone = mesh->mBones[boneId];
-                ai_assert(nullptr != bone);
 
                 // duplicate mehes exist with the same bones sometimes :)
                 // so this must be detected
@@ -136,11 +129,9 @@ void ArmaturePopulate::BuildBoneList(aiNode *current_node,
 // Prepare flat node list which can be used for non recursive lookups later
 void ArmaturePopulate::BuildNodeList(const aiNode *current_node,
                                      std::vector<aiNode *> &nodes) {
-    ai_assert(nullptr != current_node);
 
     for (unsigned int nodeId = 0; nodeId < current_node->mNumChildren; ++nodeId) {
         aiNode *child = current_node->mChildren[nodeId];
-        ai_assert(child);
 
         if (child->mNumMeshes == 0) {
             nodes.emplace_back(child);
@@ -162,10 +153,8 @@ void ArmaturePopulate::BuildBoneStack(aiNode *,
     if (node_stack.empty()) {
         return;
     }
-    ai_assert(nullptr != root_node);
 
     for (aiBone *bone : bones) {
-        ai_assert(bone);
         aiNode *node = GetNodeFromStack(bone->mName, node_stack);
         if (node == nullptr) {
             node_stack.clear();
@@ -222,7 +211,6 @@ aiNode *ArmaturePopulate::GetNodeFromStack(const aiString &node_name,
     aiNode *found = nullptr;
     for (iter = nodes.begin(); iter < nodes.end(); ++iter) {
         aiNode *element = *iter;
-        ai_assert(nullptr != element);
         // node valid and node name matches
         if (element->mName == node_name) {
             found = element;

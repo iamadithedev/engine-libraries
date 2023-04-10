@@ -66,7 +66,7 @@ class IOStream;
 /**
  *  This class is used to store and write bitmap information.
  */
-class ASSIMP_API Bitmap {
+class Bitmap {
 protected:
 
     struct Header {

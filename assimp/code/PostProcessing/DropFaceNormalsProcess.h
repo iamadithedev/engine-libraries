@@ -53,7 +53,7 @@ namespace Assimp {
 // ---------------------------------------------------------------------------
 /** The DropFaceNormalsProcess computes face normals for all faces of all meshes
 */
-class ASSIMP_API_WINONLY DropFaceNormalsProcess : public BaseProcess {
+class DropFaceNormalsProcess : public BaseProcess {
 public:
     DropFaceNormalsProcess() = default;
     ~DropFaceNormalsProcess() override = default;

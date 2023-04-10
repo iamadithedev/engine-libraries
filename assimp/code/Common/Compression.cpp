@@ -40,7 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include "Compression.h"
-#include <assimp/ai_assert.h>
 
 namespace Assimp {
 
@@ -63,14 +62,10 @@ Compression::Compression() :
 }
 
 Compression::~Compression() {
-    ai_assert(mImpl != nullptr);
-
     delete mImpl;
 }
 
 bool Compression::open(Format format, FlushMode flush, int windowBits) {
-    ai_assert(mImpl != nullptr);
-
     if (mImpl->mOpen) {
         return false;
     }
@@ -116,7 +111,6 @@ static int getFlushMode(Compression::FlushMode flush) {
             z_flush = Z_FINISH;
             break;
         default:
-            ai_assert(false);
             break;
     }
 
@@ -126,7 +120,6 @@ static int getFlushMode(Compression::FlushMode flush) {
 constexpr size_t MYBLOCK = 32786;
 
 size_t Compression::decompress(const void *data, size_t in, std::vector<char> &uncompressed) {
-    ai_assert(mImpl != nullptr);
     if (data == nullptr || in == 0) {
         return 0l;
     }
@@ -162,7 +155,6 @@ size_t Compression::decompress(const void *data, size_t in, std::vector<char> &u
 }
 
 size_t Compression::decompressBlock(const void *data, size_t in, char *out, size_t availableOut) {
-    ai_assert(mImpl != nullptr);
     if (data == nullptr || in == 0 || out == nullptr || availableOut == 0) {
         return 0l;
     }
@@ -180,14 +172,10 @@ size_t Compression::decompressBlock(const void *data, size_t in, char *out, size
 }
 
 bool Compression::isOpen() const {
-    ai_assert(mImpl != nullptr);
-
     return mImpl->mOpen;
 }
 
 bool Compression::close() {
-    ai_assert(mImpl != nullptr);
-
     if (!mImpl->mOpen) {
         return false;
     }

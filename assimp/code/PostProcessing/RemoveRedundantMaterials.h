@@ -57,7 +57,7 @@ namespace Assimp    {
 /** RemoveRedundantMatsProcess: Post-processing step to remove redundant
  *  materials from the imported scene.
  */
-class ASSIMP_API RemoveRedundantMatsProcess : public BaseProcess {
+class RemoveRedundantMatsProcess : public BaseProcess {
 public:
     // -------------------------------------------------------------------
     /// The default class constructor / destructor.

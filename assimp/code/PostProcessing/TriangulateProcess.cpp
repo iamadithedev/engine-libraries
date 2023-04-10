@@ -93,7 +93,6 @@ namespace {
          * @param tri Triangle to encode.
          */
         void ngonEncodeTriangle(aiFace * tri) {
-            ai_assert(tri->mNumIndices == 3);
 
             // Rotate indices in new triangle to avoid ngon encoding false ngons
             // Otherwise, the new triangle would be considered part of the previous NGON.
@@ -114,9 +113,6 @@ namespace {
          * @pre Triangles must be properly fanned from the most appropriate vertex.
          */
         void ngonEncodeQuad(aiFace *tri1, aiFace *tri2) {
-            ai_assert(tri1->mNumIndices == 3);
-            ai_assert(tri2->mNumIndices == 3);
-            ai_assert(tri1->mIndices[0] == tri2->mIndices[0]);
 
             // If the selected fanning vertex is the same as the previously
             // emitted ngon, we use the opposite vertex which also happens to work
@@ -130,8 +126,6 @@ namespace {
                 // Left-rotate indices for tri2 (index 2 becomes the new fanning vertex)
                 std::swap(tri2->mIndices[1], tri2->mIndices[2]);
                 std::swap(tri2->mIndices[0], tri2->mIndices[2]);
-
-                ai_assert(tri1->mIndices[0] == tri2->mIndices[0]);
             }
 
             mLastNGONFirstIndex = tri1->mIndices[0];
@@ -145,7 +139,6 @@ namespace {
          * @return false If used as is, this triangle is not considered part of the last ngon.
          */
         bool isConsideredSameAsLastNgon(const aiFace * tri) const {
-            ai_assert(tri->mNumIndices == 3);
             return tri->mIndices[0] == mLastNGONFirstIndex;
         }
 
@@ -216,9 +209,6 @@ bool TriangulateProcess::TriangulateMesh( aiMesh* pMesh)
             max_out = std::max(max_out,face.mNumIndices);
         }
     }
-
-    // Just another check whether aiMesh::mPrimitiveTypes is correct
-    ai_assert(numOut != pMesh->mNumFaces);
 
     aiVector3D *nor_out = nullptr;
 

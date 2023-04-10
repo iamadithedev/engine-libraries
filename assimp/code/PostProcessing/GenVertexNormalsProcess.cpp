@@ -48,7 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 // internal headers
 #include "GenVertexNormalsProcess.h"
 #include "ProcessHelper.h"
-#include <assimp/Exceptional.h>
 #include <assimp/qnan.h>
 
 using namespace Assimp;
@@ -80,10 +79,6 @@ void GenVertexNormalsProcess::SetupProperties(const Importer *pImp) {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void GenVertexNormalsProcess::Execute(aiScene *pScene) {
-
-    if (pScene->mFlags & AI_SCENE_FLAGS_NON_VERBOSE_FORMAT) {
-        throw DeadlyImportError("Post-processing order mismatch: expecting pseudo-indexed (\"verbose\") vertices here");
-    }
 
     bool bHas = false;
     for (unsigned int a = 0; a < pScene->mNumMeshes; ++a) {

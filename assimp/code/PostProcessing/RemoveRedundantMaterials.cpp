@@ -50,7 +50,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/ParsingUtils.h>
 #include "ProcessHelper.h"
 #include "Material/MaterialSystem.h"
-#include <assimp/Exceptional.h>
 #include <stdio.h>
 
 using namespace Assimp;
@@ -162,10 +161,8 @@ void RemoveRedundantMatsProcess::Execute( aiScene* pScene)
         }
         // If the new material count differs from the original,
         // we need to rebuild the material list and remap mesh material indexes.
-        if(iNewNum < 1)
-          throw DeadlyImportError("No materials remaining");
+
         if (iNewNum != pScene->mNumMaterials) {
-            ai_assert(iNewNum > 0);
             aiMaterial** ppcMaterials = new aiMaterial*[iNewNum];
             ::memset(ppcMaterials,0,sizeof(void*)*iNewNum);
             for (unsigned int p = 0; p < pScene->mNumMaterials;++p)
@@ -190,7 +187,6 @@ void RemoveRedundantMatsProcess::Execute( aiScene* pScene)
             // update all material indices
             for (unsigned int p = 0; p < pScene->mNumMeshes;++p) {
                 aiMesh* mesh = pScene->mMeshes[p];
-                ai_assert(nullptr != mesh);
                 mesh->mMaterialIndex = aiMappingTable[mesh->mMaterialIndex];
             }
             // delete the old material list

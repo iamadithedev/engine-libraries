@@ -143,8 +143,6 @@ ai_real ComputePositionEpsilon(const aiMesh *pMesh) {
 
 // -------------------------------------------------------------------------------
 ai_real ComputePositionEpsilon(const aiMesh *const *pMeshes, size_t num) {
-    ai_assert(nullptr != pMeshes);
-
     const ai_real epsilon = ai_real(1e-4);
 
     // calculate the position bounds so we have a reliable epsilon to check position differences against
@@ -163,8 +161,6 @@ ai_real ComputePositionEpsilon(const aiMesh *const *pMeshes, size_t num) {
 
 // -------------------------------------------------------------------------------
 unsigned int GetMeshVFormatUnique(const aiMesh *pcMesh) {
-    ai_assert(nullptr != pcMesh);
-
     // FIX: the hash may never be 0. Otherwise a comparison against
     // nullptr could be successful
     unsigned int iRet = 1;
@@ -230,7 +226,6 @@ const char *MappingTypeToString(aiTextureMapping in) {
         break;
     }
 
-    ai_assert(false);
     return "BUG";
 }
 
@@ -362,7 +357,6 @@ aiMesh *MakeSubmesh(const aiMesh *pMesh, const std::vector<unsigned int> &subMes
                 }
             }
 
-            ai_assert(nbParanoia == oMesh->mNumBones);
             (void)nbParanoia; // remove compiler warning on release build
         }
     }

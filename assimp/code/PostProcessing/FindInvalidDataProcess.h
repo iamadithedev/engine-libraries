@@ -62,7 +62,7 @@ namespace Assimp {
  *
  *  Originally this was a workaround for some models written by Blender
  *  which have zero normal vectors. */
-class ASSIMP_API FindInvalidDataProcess : public BaseProcess {
+class FindInvalidDataProcess : public BaseProcess {
 public:
     // -------------------------------------------------------------------
     /// The default class constructor / destructor.

@@ -1516,7 +1516,6 @@ aiString ColladaLoader::FindFilenameForEffectTexture(const ColladaParser &pParse
 // Reads a float value from an accessor and its data array.
 ai_real ColladaLoader::ReadFloat(const Accessor &pAccessor, const Data &pData, size_t pIndex, size_t pOffset) const {
     size_t pos = pAccessor.mStride * pIndex + pAccessor.mOffset + pOffset;
-    ai_assert(pos < pData.mValues.size());
     return pData.mValues[pos];
 }
 
@@ -1524,7 +1523,6 @@ ai_real ColladaLoader::ReadFloat(const Accessor &pAccessor, const Data &pData, s
 // Reads a string value from an accessor and its data array.
 const std::string &ColladaLoader::ReadString(const Accessor &pAccessor, const Data &pData, size_t pIndex) const {
     size_t pos = pAccessor.mStride * pIndex + pAccessor.mOffset;
-    ai_assert(pos < pData.mStrings.size());
     return pData.mStrings[pos];
 }
 

@@ -257,7 +257,7 @@ struct aiBone {
     /**
      * The name of the bone.
      */
-    C_STRUCT aiString mName;
+    aiString mName;
 
     /**
      * The number of vertices affected by this bone.
@@ -270,19 +270,19 @@ struct aiBone {
      * The bone armature node - used for skeleton conversion
      * you must enable aiProcess_PopulateArmatureData to populate this
      */
-    C_STRUCT aiNode *mArmature;
+    aiNode *mArmature;
 
     /**
      * The bone node in the scene - used for skeleton conversion
      * you must enable aiProcess_PopulateArmatureData to populate this
      */
-    C_STRUCT aiNode *mNode;
+    aiNode *mNode;
 
 #endif
     /**
      * The influence weights of this bone, by vertex index.
      */
-    C_STRUCT aiVertexWeight *mWeights;
+    aiVertexWeight *mWeights;
 
     /**
      * Matrix that transforms from mesh space to bone space in bind pose.
@@ -296,7 +296,7 @@ struct aiBone {
      * It is sometimes called an inverse-bind matrix,
      * or inverse bind pose matrix.
      */
-    C_STRUCT aiMatrix4x4 mOffsetMatrix;
+    aiMatrix4x4 mOffsetMatrix;
 
 #ifdef __cplusplus
 
@@ -463,7 +463,7 @@ enum aiPrimitiveType {
 */
 struct aiAnimMesh {
     /**Anim Mesh name */
-    C_STRUCT aiString mName;
+    aiString mName;
 
     /** Replacement for aiMesh::mVertices. If this array is non-nullptr,
      *  it *must* contain mNumVertices entries. The corresponding
@@ -471,19 +471,19 @@ struct aiAnimMesh {
      *  meshes may neither add or nor remove vertex components (if
      *  a replacement array is nullptr and the corresponding source
      *  array is not, the source data is taken instead)*/
-    C_STRUCT aiVector3D *mVertices;
+    aiVector3D *mVertices;
 
     /** Replacement for aiMesh::mNormals.  */
-    C_STRUCT aiVector3D *mNormals;
+    aiVector3D *mNormals;
 
     /** Replacement for aiMesh::mTangents. */
-    C_STRUCT aiVector3D *mTangents;
+    aiVector3D *mTangents;
 
     /** Replacement for aiMesh::mBitangents. */
-    C_STRUCT aiVector3D *mBitangents;
+    aiVector3D *mBitangents;
 
     /** Replacement for aiMesh::mTextureCoords */
-    C_STRUCT aiVector3D *mTextureCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
+    aiVector3D *mTextureCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
 
     /** The number of vertices in the aiAnimMesh, and thus the length of all
      * the member arrays.
@@ -637,7 +637,7 @@ struct aiMesh {
      * This array is always present in a mesh. The array is
      * mNumVertices in size.
      */
-    C_STRUCT aiVector3D *mVertices;
+    aiVector3D *mVertices;
 
     /**
      * @brief Vertex normals.
@@ -661,7 +661,7 @@ struct aiMesh {
      * However, this needn't apply for normals that have been taken
      * directly from the model file.
      */
-    C_STRUCT aiVector3D *mNormals;
+    aiVector3D *mNormals;
 
     /**
      * @brief Vertex tangents.
@@ -677,7 +677,7 @@ struct aiMesh {
      * @note If the mesh contains tangents, it automatically also
      * contains bitangents.
      */
-    C_STRUCT aiVector3D *mTangents;
+    aiVector3D *mTangents;
 
     /**
      * @brief Vertex bitangents.
@@ -688,7 +688,7 @@ struct aiMesh {
      * @note If the mesh contains tangents, it automatically also contains
      * bitangents.
      */
-    C_STRUCT aiVector3D *mBitangents;
+    aiVector3D *mBitangents;
 
     /**
      * @brief Vertex texture coordinates, also known as UV channels.
@@ -696,7 +696,7 @@ struct aiMesh {
      * A mesh may contain 0 to AI_MAX_NUMBER_OF_TEXTURECOORDS per
      * vertex. nullptr if not present. The array is mNumVertices in size.
      */
-    C_STRUCT aiVector3D *mTextureCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
+    aiVector3D *mTextureCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
 
     /**
      * @brief Specifies the number of components for a given UV channel.
@@ -717,7 +717,7 @@ struct aiMesh {
      *  in mNumFaces. If the #AI_SCENE_FLAGS_NON_VERBOSE_FORMAT
      * is NOT set each face references an unique set of vertices.
      */
-    C_STRUCT aiFace *mFaces;
+    aiFace *mFaces;
 
     /**
     * The number of bones this mesh contains. Can be 0, in which case the mBones array is nullptr.
@@ -730,7 +730,7 @@ struct aiMesh {
      * A bone consists of a name by which it can be found in the
      * frame hierarchy and a set of vertex weights.
      */
-    C_STRUCT aiBone **mBones;
+    aiBone **mBones;
 
     /**
      * @brief The material used by this mesh.
@@ -753,7 +753,7 @@ struct aiMesh {
      *      partitioning.
      *   - Vertex animations refer to meshes by their names.
      */
-    C_STRUCT aiString mName;
+    aiString mName;
 
     /**
      * The number of attachment meshes.
@@ -771,7 +771,7 @@ struct aiMesh {
      * - Collada
      * - gltf
      */
-    C_STRUCT aiAnimMesh **mAnimMeshes;
+    aiAnimMesh **mAnimMeshes;
 
     /**
      *  Method of morphing when anim-meshes are specified.
@@ -782,12 +782,12 @@ struct aiMesh {
     /**
      *  The bounding box.
      */
-    C_STRUCT aiAABB mAABB;
+    aiAABB mAABB;
 
     /**
      * Vertex UV stream names. Pointer to array of size AI_MAX_NUMBER_OF_TEXTURECOORDS
      */
-    C_STRUCT aiString **mTextureCoordsNames;
+    aiString **mTextureCoordsNames;
 
 #ifdef __cplusplus
 
@@ -982,21 +982,21 @@ struct aiSkeletonBone {
 #ifndef ASSIMP_BUILD_NO_ARMATUREPOPULATE_PROCESS
     /// @brief The bone armature node - used for skeleton conversion
     /// you must enable aiProcess_PopulateArmatureData to populate this
-    C_STRUCT aiNode *mArmature;
+    aiNode *mArmature;
 
     /// @brief The bone node in the scene - used for skeleton conversion
     /// you must enable aiProcess_PopulateArmatureData to populate this
-    C_STRUCT aiNode *mNode;
+    aiNode *mNode;
 
 #endif
     /// @brief The number of weights
     unsigned int mNumnWeights;
 
     /// The mesh index, which will get influenced by the weight.
-    C_STRUCT aiMesh *mMeshId;
+    aiMesh *mMeshId;
 
     /// The influence weights of this bone, by vertex index.
-    C_STRUCT aiVertexWeight *mWeights;
+    aiVertexWeight *mWeights;
 
     /** Matrix that transforms from bone space to mesh space in bind pose.
      *
@@ -1009,10 +1009,10 @@ struct aiSkeletonBone {
      * It is sometimes called an inverse-bind matrix,
      * or inverse bind pose matrix.
      */
-    C_STRUCT aiMatrix4x4 mOffsetMatrix;
+    aiMatrix4x4 mOffsetMatrix;
 
     /// Matrix that transforms the locale bone in bind pose.
-    C_STRUCT aiMatrix4x4 mLocalMatrix;
+    aiMatrix4x4 mLocalMatrix;
 
 #ifdef __cplusplus
     ///	@brief The class constructor.
@@ -1070,7 +1070,7 @@ struct aiSkeleton {
     /**
      *  @brief The name of the skeleton instance.
      */
-    C_STRUCT aiString mName;
+    aiString mName;
 
     /**
      *  @brief  The number of bones in the skeleton.
@@ -1080,7 +1080,7 @@ struct aiSkeleton {
     /**
      *  @brief The bone instance in the skeleton.
      */
-    C_STRUCT aiSkeletonBone **mBones;
+    aiSkeletonBone **mBones;
 
 #ifdef __cplusplus
     /**

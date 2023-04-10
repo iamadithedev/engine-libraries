@@ -295,7 +295,6 @@ void DeboneProcess::SplitMesh( const aiMesh* pMesh, std::vector< std::pair< aiMe
     for(unsigned int i=0;i<pMesh->mNumFaces;i++) {
         if(faceBones[i]<pMesh->mNumBones&&isBoneNecessary[faceBones[i]])
         {
-            ai_assert(facesPerBone[faceBones[i]]>0);
             facesPerBone[faceBones[i]]--;
 
             nFacesUnowned++;

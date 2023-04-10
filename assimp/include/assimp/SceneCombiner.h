@@ -51,7 +51,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #pragma GCC system_header
 #endif
 
-#include <assimp/ai_assert.h>
 #include <assimp/types.h>
 
 #include <cstddef>
@@ -187,7 +186,7 @@ struct SceneHelper {
  * The class is currently being used by various postprocessing steps
  * and loaders (ie. LWS).
  */
-class ASSIMP_API SceneCombiner {
+class SceneCombiner {
     // class cannot be instanced
     SceneCombiner() = delete;
 

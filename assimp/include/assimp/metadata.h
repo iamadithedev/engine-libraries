@@ -158,11 +158,11 @@ struct aiMetadata {
     unsigned int mNumProperties;
 
     /** Arrays of keys, may not be NULL. Entries in this array may not be NULL as well. */
-    C_STRUCT aiString *mKeys;
+    aiString *mKeys;
 
     /** Arrays of values, may not be NULL. Entries in this array may be NULL if the
       * corresponding property key has no assigned value. */
-    C_STRUCT aiMetadataEntry *mValues;
+    aiMetadataEntry *mValues;
 
 #ifdef __cplusplus
 

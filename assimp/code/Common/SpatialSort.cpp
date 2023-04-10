@@ -42,7 +42,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 /** @file Implementation of the helper class to quickly find vertices close to a given position */
 
 #include <assimp/SpatialSort.h>
-#include <assimp/ai_assert.h>
 
 using namespace Assimp;
 
@@ -107,7 +106,7 @@ void SpatialSort::Finalize() {
 void SpatialSort::Append(const aiVector3D *pPositions, unsigned int pNumPositions,
         unsigned int pElementOffset,
         bool pFinalize /*= true */) {
-    ai_assert(!mFinalized && "You cannot add positions to the SpatialSort object after it has been finalized.");
+
     // store references to all given positions along with their distance to the reference plane
     const size_t initial = mPositions.size();
     mPositions.reserve(initial + pNumPositions);
@@ -127,7 +126,6 @@ void SpatialSort::Append(const aiVector3D *pPositions, unsigned int pNumPosition
 // Returns an iterator for all positions close to the given position.
 void SpatialSort::FindPositions(const aiVector3D &pPosition,
         ai_real pRadius, std::vector<unsigned int> &poResults) const {
-    ai_assert(mFinalized && "The SpatialSort object must be finalized before FindPositions can be called.");
     const ai_real dist = CalculateDistance(pPosition);
     const ai_real minDist = dist - pRadius, maxDist = dist + pRadius;
 
@@ -243,7 +241,7 @@ BinFloat ToBinary(const ai_real &pValue) {
 // Fills an array with indices of all positions identical to the given position. In opposite to
 // FindPositions(), not an epsilon is used but a (very low) tolerance of four floating-point units.
 void SpatialSort::FindIdenticalPositions(const aiVector3D &pPosition, std::vector<unsigned int> &poResults) const {
-    ai_assert(mFinalized && "The SpatialSort object must be finalized before FindIdenticalPositions can be called.");
+
     // Epsilons have a huge disadvantage: they are of constant precision, while floating-point
     //  values are of log2 precision. If you apply e=0.01 to 100, the epsilon is rather small, but
     //  if you apply it to 0.001, it is enormous.
@@ -312,7 +310,7 @@ void SpatialSort::FindIdenticalPositions(const aiVector3D &pPosition, std::vecto
 
 // ------------------------------------------------------------------------------------------------
 unsigned int SpatialSort::GenerateMappingTable(std::vector<unsigned int> &fill, ai_real pRadius) const {
-    ai_assert(mFinalized && "The SpatialSort object must be finalized before GenerateMappingTable can be called.");
+
     fill.resize(mPositions.size(), UINT_MAX);
     ai_real dist, maxDist;
 
@@ -334,7 +332,6 @@ unsigned int SpatialSort::GenerateMappingTable(std::vector<unsigned int> &fill, 
 
     // debug invariant: mPositions[i].mIndex values must range from 0 to mPositions.size()-1
     for (size_t i = 0; i < fill.size(); ++i) {
-        ai_assert(fill[i] < mPositions.size());
     }
 
 #endif

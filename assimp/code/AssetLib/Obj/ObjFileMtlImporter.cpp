@@ -95,7 +95,6 @@ ObjFileMtlImporter::ObjFileMtlImporter(std::vector<char> &buffer,
         m_pModel(pModel),
         m_uiLine(0),
         m_buffer() {
-    ai_assert(nullptr != m_pModel);
     m_buffer.resize(BUFFERSIZE);
     std::fill(m_buffer.begin(), m_buffer.end(), '\0');
     if (nullptr == m_pModel->mDefaultMaterial) {
@@ -266,8 +265,6 @@ void ObjFileMtlImporter::load() {
 // -------------------------------------------------------------------
 //  Loads a color definition
 void ObjFileMtlImporter::getColorRGBA(aiColor3D *pColor) {
-    ai_assert(nullptr != pColor);
-
     ai_real r(0.0), g(0.0), b(0.0);
     m_DataIt = getFloat<DataArrayIt>(m_DataIt, m_DataItEnd, r);
     pColor->r = r;

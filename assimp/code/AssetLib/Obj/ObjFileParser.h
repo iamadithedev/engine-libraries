@@ -66,7 +66,7 @@ class IOSystem;
 
 /// \class  ObjFileParser
 /// \brief  Parser for a obj waveform file
-class ASSIMP_API ObjFileParser {
+class ObjFileParser {
 public:
     static const size_t Buffersize = 4096;
     typedef std::vector<char> DataArray;

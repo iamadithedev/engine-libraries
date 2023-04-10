@@ -48,7 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FindInvalidDataProcess.h"
 #include "ProcessHelper.h"
 
-#include <assimp/Exceptional.h>
 #include <assimp/qnan.h>
 
 using namespace Assimp;
@@ -135,9 +134,6 @@ void FindInvalidDataProcess::Execute(aiScene *pScene) {
 
     if (out) {
         if (real != pScene->mNumMeshes) {
-            if (!real) {
-                throw DeadlyImportError("No meshes remaining");
-            }
 
             // we need to remove some meshes.
             // therefore we'll also need to remove all references
@@ -256,9 +252,8 @@ void FindInvalidDataProcess::ProcessAnimation(aiAnimation *anim) {
 
 // ------------------------------------------------------------------------------------------------
 void FindInvalidDataProcess::ProcessAnimationChannel(aiNodeAnim *anim) {
-    ai_assert(nullptr != anim);
+
     if (anim->mNumPositionKeys == 0 && anim->mNumRotationKeys == 0 && anim->mNumScalingKeys == 0) {
-        ai_assert_entry();
         return;
     }
 

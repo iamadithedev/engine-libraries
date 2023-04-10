@@ -48,7 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "OptimizeGraph.h"
 #include "ProcessHelper.h"
 #include "ConvertToLHProcess.h"
-#include <assimp/Exceptional.h>
 #include <assimp/SceneCombiner.h>
 #include <stdio.h>
 
@@ -294,11 +293,8 @@ void OptimizeGraphProcess::Execute(aiScene *pScene) {
 	std::list<aiNode *> nodes;
 	CollectNewChildren(dummy_root, nodes);
 
-	ai_assert(nodes.size() == 1);
-
 	if (dummy_root->mNumChildren == 0) {
 		pScene->mRootNode = nullptr;
-		throw DeadlyImportError("After optimizing the scene graph, no data remains");
 	}
 
 	if (dummy_root->mNumChildren > 1) {

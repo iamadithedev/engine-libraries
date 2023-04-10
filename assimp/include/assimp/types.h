@@ -100,7 +100,7 @@ namespace Intern {
      */
 // --------------------------------------------------------------------
 #ifndef SWIG
-struct ASSIMP_API AllocateFromAssimpHeap {
+struct AllocateFromAssimpHeap {
     // http://www.gotw.ca/publications/mill15.htm
 
     // new/delete overload
@@ -162,7 +162,7 @@ struct aiRay {
 #endif // !__cplusplus
 
     //! Position and direction of the ray
-    C_STRUCT aiVector3D pos, dir;
+    aiVector3D pos, dir;
 }; // !struct aiRay
 
 // ----------------------------------------------------------------------------------

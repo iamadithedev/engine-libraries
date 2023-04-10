@@ -50,7 +50,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #   pragma GCC system_header
 #endif
 
-#include <assimp/ai_assert.h>
 #include <assimp/types.h>
 #include <cstdint>
 
@@ -75,8 +74,6 @@ public:
      *  @param[inout] _szOut A void* to save the reintcasts for the caller. */
     static inline void Swap2(void* _szOut)
     {
-        ai_assert(_szOut);
-
 #if _MSC_VER >= 1400
         uint16_t* const szOut = reinterpret_cast<uint16_t*>(_szOut);
         *szOut = _byteswap_ushort(*szOut);
@@ -91,7 +88,6 @@ public:
      *  @param[inout] _szOut A void* to save the reintcasts for the caller. */
     static inline void Swap4(void* _szOut)
     {
-        ai_assert(_szOut);
 
 #if _MSC_VER >= 1400
         uint32_t* const szOut = reinterpret_cast<uint32_t*>(_szOut);
@@ -108,8 +104,6 @@ public:
      *  @param[inout] _szOut A void* to save the reintcasts for the caller. */
     static inline void Swap8(void* _szOut)
     {
-    ai_assert(_szOut);
-
 #if _MSC_VER >= 1400
         uint64_t* const szOut = reinterpret_cast<uint64_t*>(_szOut);
         *szOut = _byteswap_uint64(*szOut);

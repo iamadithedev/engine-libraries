@@ -43,7 +43,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
 #include <assimp/DefaultIOStream.h>
-#include <assimp/ai_assert.h>
 #include <sys/stat.h>
 
 using namespace Assimp;
@@ -91,8 +90,6 @@ size_t DefaultIOStream::Read(void *pvBuffer,
     if (0 == pCount) {
         return 0;
     }
-    ai_assert(nullptr != pvBuffer);
-    ai_assert(0 != pSize);
 
     return (mFile ? ::fread(pvBuffer, pSize, pCount, mFile) : 0);
 }
@@ -101,8 +98,6 @@ size_t DefaultIOStream::Read(void *pvBuffer,
 size_t DefaultIOStream::Write(const void *pvBuffer,
         size_t pSize,
         size_t pCount) {
-    ai_assert(nullptr != pvBuffer);
-    ai_assert(0 != pSize);
 
     return (mFile ? ::fwrite(pvBuffer, pSize, pCount, mFile) : 0);
 }

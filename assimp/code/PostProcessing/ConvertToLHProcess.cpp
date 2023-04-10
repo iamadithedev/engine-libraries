@@ -87,8 +87,6 @@ bool MakeLeftHandedProcess::IsActive(unsigned int pFlags) const {
 // ------------------------------------------------------------------------------------------------
 // Executes the post processing step on the given imported data.
 void MakeLeftHandedProcess::Execute(aiScene *pScene) {
-    // Check for an existent root node to proceed
-    ai_assert(pScene->mRootNode != nullptr);
 
     // recursively convert all the nodes
     ProcessNode(pScene->mRootNode, aiMatrix4x4());
@@ -198,7 +196,6 @@ void MakeLeftHandedProcess::ProcessMaterial(aiMaterial *_mat) {
 
         // Mapping axis for UV mappings?
         if (!::strcmp(prop->mKey.data, "$tex.mapaxis")) {
-            ai_assert(prop->mDataLength >= sizeof(aiVector3D)); // something is wrong with the validation if we end up here
             aiVector3D *pff = (aiVector3D *)prop->mData;
             pff->z *= -1.f;
         }
@@ -266,7 +263,6 @@ void FlipUVsProcess::ProcessMaterial(aiMaterial *_mat) {
 
         // UV transformation key?
         if (!::strcmp(prop->mKey.data, "$tex.uvtrafo")) {
-            ai_assert(prop->mDataLength >= sizeof(aiUVTransform)); // something is wrong with the validation if we end up here
             aiUVTransform *uv = (aiUVTransform *)prop->mData;
 
             // just flip it, that's everything

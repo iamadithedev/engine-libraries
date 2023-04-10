@@ -221,7 +221,6 @@ void ColladaParser::UriDecodePath(aiString &ss) {
 
     // adjust length and terminator of the shortened string
     *out = 0;
-    ai_assert(out > ss.data);
     ss.length = static_cast<ai_uint32>(out - ss.data);
 }
 
@@ -1393,8 +1392,6 @@ void ColladaParser::ReadIndexData(XmlNode &node, Mesh &pMesh) {
     else if (elementName == "tristrips")
         primType = Prim_TriStrips;
 
-    ai_assert(primType != Prim_Invalid);
-
     // also a number of <input> elements, but in addition a <p> primitive collection and probably index counts for all primitives
     XmlNodeIterator xmlIt(node, XmlNodeIterator::PreOrderMode);
     XmlNode currentNode;
@@ -1432,13 +1429,6 @@ void ColladaParser::ReadIndexData(XmlNode &node, Mesh &pMesh) {
             // skip
         }
     }
-
-#ifdef ASSIMP_BUILD_DEBUG
-    if (primType != Prim_TriFans && primType != Prim_TriStrips && primType != Prim_LineStrip &&
-            primType != Prim_Lines) { // this is ONLY to workaround a bug in SketchUp 15.3.331 where it writes the wrong 'count' when it writes out the 'lines'.
-        ai_assert(actualPrimitives == numPrimitives);
-    }
-#endif
 
     // only when we're done reading all <p> tags (and thus know the final vertex count) can we commit the submesh
     subgroup.mNumFaces = actualPrimitives;
@@ -1651,9 +1641,6 @@ void ColladaParser::CopyVertex(size_t currentVertex, size_t numOffsets, size_t n
     // calculate the base offset of the vertex whose attributes we ant to copy
     size_t baseOffset = currentPrimitive * numOffsets * numPoints + currentVertex * numOffsets;
 
-    // don't overrun the boundaries of the index list
-    ai_assert((baseOffset + numOffsets - 1) < indices.size());
-
     // extract per-vertex channels using the global per-vertex offset
     for (std::vector<InputChannel>::iterator it = pMesh.mPerVertexData.begin(); it != pMesh.mPerVertexData.end(); ++it) {
         ExtractDataObjectFromChannel(*it, indices[baseOffset + perVertexOffset], pMesh);
@@ -1753,9 +1740,6 @@ void ColladaParser::ExtractDataObjectFromChannel(const InputChannel &pInput, siz
             }
         }
         break;
-    default:
-        // IT_Invalid and IT_Vertex
-        ai_assert(false && "shouldn't ever get here");
     }
 }
 
@@ -2054,7 +2038,6 @@ aiMatrix4x4 ColladaParser::CalculateResultTransform(const std::vector<Transform>
         }
         case TF_SKEW:
             // TODO: (thom)
-            ai_assert(false);
             break;
         case TF_MATRIX: {
             aiMatrix4x4 mat(tf.f[0], tf.f[1], tf.f[2], tf.f[3], tf.f[4], tf.f[5], tf.f[6], tf.f[7],
@@ -2063,7 +2046,6 @@ aiMatrix4x4 ColladaParser::CalculateResultTransform(const std::vector<Transform>
             break;
         }
         default:
-            ai_assert(false);
             break;
         }
     }

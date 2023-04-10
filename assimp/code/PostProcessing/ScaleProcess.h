@@ -60,7 +60,7 @@ namespace Assimp {
  * from your model package are preserved, so this is completely intentional
  * bugs should be reported as soon as they are found.
 */
-class ASSIMP_API ScaleProcess : public BaseProcess {
+class ScaleProcess : public BaseProcess {
 public:
     // -------------------------------------------------------------------
     /// The default class constructor / destructor.

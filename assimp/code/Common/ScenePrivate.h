@@ -46,7 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef AI_SCENEPRIVATE_H_INCLUDED
 #define AI_SCENEPRIVATE_H_INCLUDED
 
-#include <assimp/ai_assert.h>
 #include <assimp/scene.h>
 
 namespace Assimp {
@@ -84,7 +83,6 @@ ScenePrivateData::ScenePrivateData() AI_NO_EXCEPT
 // Access private data stored in the scene
 inline
 ScenePrivateData* ScenePriv(aiScene* in) {
-    ai_assert( nullptr != in );
     if ( nullptr == in ) {
         return nullptr;
     }
@@ -93,7 +91,6 @@ ScenePrivateData* ScenePriv(aiScene* in) {
 
 inline
 const ScenePrivateData* ScenePriv(const aiScene* in) {
-    ai_assert( nullptr != in );
     if ( nullptr == in ) {
         return nullptr;
     }

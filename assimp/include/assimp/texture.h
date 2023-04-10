@@ -175,13 +175,13 @@ struct aiTexture {
      * buffer of size mWidth containing the compressed texture
      * data. Good luck, have fun!
      */
-    C_STRUCT aiTexel* pcData;
+    aiTexel* pcData;
 
     /** Texture original filename
     *
     * Used to get the texture reference
     */
-    C_STRUCT aiString mFilename;
+    aiString mFilename;
 
 #ifdef __cplusplus
 

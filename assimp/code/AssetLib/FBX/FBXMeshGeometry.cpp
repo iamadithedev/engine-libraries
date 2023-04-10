@@ -203,17 +203,12 @@ const unsigned int* MeshGeometry::ToOutputVertexIndex( unsigned int in_index, un
         return nullptr;
     }
 
-    ai_assert( m_mapping_counts.size() == m_mapping_offsets.size() );
     count = m_mapping_counts[ in_index ];
-
-    ai_assert( m_mapping_offsets[ in_index ] + count <= m_mappings.size() );
-
     return &m_mappings[ m_mapping_offsets[ in_index ] ];
 }
 
 // ------------------------------------------------------------------------------------------------
 unsigned int MeshGeometry::FaceForVertexIndex( unsigned int in_index ) const {
-    ai_assert( in_index < m_vertices.size() );
 
     // in the current conversion pattern this will only be needed if
     // weights are present, so no need to always pre-compute this table
@@ -224,7 +219,6 @@ unsigned int MeshGeometry::FaceForVertexIndex( unsigned int in_index ) const {
         m_facesVertexStartIndices.pop_back();
     }
 
-    ai_assert( m_facesVertexStartIndices.size() == m_faces.size() );
     const std::vector<unsigned int>::iterator it = std::upper_bound(
         m_facesVertexStartIndices.begin(),
         m_facesVertexStartIndices.end(),

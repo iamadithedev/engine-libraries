@@ -59,20 +59,20 @@ using AiAssertHandler = void (*)(const char* failedExpression, const char* file,
 /**
  *  @brief  Set the assert handler.
  */
-ASSIMP_API void setAiAssertHandler(AiAssertHandler handler);
+void setAiAssertHandler(AiAssertHandler handler);
 
 // ---------------------------------------------------------------------------
 /** The assert handler which is set by default.
  *
  *  @brief  This issues a message to stderr and calls abort.
  */
-ASSIMP_API void defaultAiAssertHandler(const char* failedExpression, const char* file, int line);
+void defaultAiAssertHandler(const char* failedExpression, const char* file, int line);
 
 // ---------------------------------------------------------------------------
 /**
  *  @brief  Dispatches an assert violation to the assert handler.
  */
-ASSIMP_API void aiAssertViolation(const char* failedExpression, const char* file, int line);
+void aiAssertViolation(const char* failedExpression, const char* file, int line);
 
 } // end of namespace Assimp
 

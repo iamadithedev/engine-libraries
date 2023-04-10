@@ -59,7 +59,7 @@ namespace Assimp    {
 /** Helper class to evaluate subdivision surfaces. Different algorithms
  *  are provided for choice. */
 // ------------------------------------------------------------------------------
-class ASSIMP_API Subdivider {
+class Subdivider {
 public:
 
     /** Enumerates all supported subvidision algorithms */

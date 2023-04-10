@@ -66,7 +66,7 @@ namespace Assimp {
  * You can contact RevoluPowered <gordon@gordonite.tech>
  * For more info about this
 */
-class ASSIMP_API ArmaturePopulate : public BaseProcess {
+class ArmaturePopulate : public BaseProcess {
 public:
     /// The default class constructor.
     ArmaturePopulate();

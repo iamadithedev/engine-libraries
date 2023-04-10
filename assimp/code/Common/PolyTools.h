@@ -46,7 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_POLYTOOLS_H_INCLUDED
 
 #include <assimp/material.h>
-#include <assimp/ai_assert.h>
 
 namespace Assimp {
 

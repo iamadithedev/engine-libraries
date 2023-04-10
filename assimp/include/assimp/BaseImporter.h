@@ -79,7 +79,7 @@ class IOStream;
  * imports the given file. ReadFile is not overridable, it just calls
  * InternReadFile() and catches any ImportErrorException that might occur.
  */
-class ASSIMP_API BaseImporter {
+class BaseImporter {
     friend class Importer;
 
 public:

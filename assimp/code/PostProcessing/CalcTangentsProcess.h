@@ -59,7 +59,7 @@ namespace Assimp
  * because the joining of vertices also considers tangents and bitangents for
  * uniqueness.
  */
-class ASSIMP_API_WINONLY CalcTangentsProcess : public BaseProcess {
+class CalcTangentsProcess : public BaseProcess {
 public:
     CalcTangentsProcess();
     ~CalcTangentsProcess() override = default;

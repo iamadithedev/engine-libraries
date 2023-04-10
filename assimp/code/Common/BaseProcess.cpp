@@ -61,12 +61,10 @@ BaseProcess::~BaseProcess() = default;
 
 // ------------------------------------------------------------------------------------------------
 void BaseProcess::ExecuteOnScene(Importer *pImp) {
-    ai_assert( nullptr != pImp );
     if (pImp == nullptr) {
         return;
     }
 
-    ai_assert(nullptr != pImp->Pimpl()->mScene);
     if (pImp->Pimpl()->mScene == nullptr) {
         return;
     }

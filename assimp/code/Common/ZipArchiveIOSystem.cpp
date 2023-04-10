@@ -46,8 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/BaseImporter.h>
 #include <assimp/ZipArchiveIOSystem.h>
 
-#include <assimp/ai_assert.h>
-
 #include <map>
 #include <memory>
 
@@ -227,7 +225,6 @@ private:
 
 ZipFileInfo::ZipFileInfo(unzFile zip_handle, size_t size) :
         m_Size(size) {
-    ai_assert(m_Size != 0);
     // Workaround for MSVC 2013 - C2797
     m_ZipFilePos.num_of_file = 0;
     m_ZipFilePos.pos_in_zip_directory = 0;
@@ -269,25 +266,17 @@ ZipFile *ZipFileInfo::Extract(std::string &filename, unzFile zip_handle) const {
         readCount += ret;
     }
 
-    ai_assert(unzCloseCurrentFile(zip_handle) == UNZ_OK);
     return zip_file;
 }
 
 ZipFile::ZipFile(std::string &filename, size_t size) :
         m_Filename(filename), m_Size(size) {
-    ai_assert(m_Size != 0);
     m_Buffer = std::unique_ptr<uint8_t[]>(new uint8_t[m_Size]);
 }
 
 ZipFile::~ZipFile() = default;
 
 size_t ZipFile::Read(void *pvBuffer, size_t pSize, size_t pCount) {
-    // Should be impossible
-    ai_assert(m_Buffer != nullptr);
-    ai_assert(nullptr != pvBuffer);
-    ai_assert(0 != pSize);
-    ai_assert(0 != pCount);
-
     // Clip down to file size
     size_t byteSize = pSize * pCount;
     if ((byteSize + m_SeekPtr) > m_Size) {
@@ -366,8 +355,6 @@ private:
 };
 
 ZipArchiveIOSystem::Implement::Implement(IOSystem *pIOHandler, const char *pFilename, const char *pMode) {
-    ai_assert(strcmp(pMode, "r") == 0);
-    ai_assert(pFilename != nullptr);
     if (pFilename[0] == 0 || nullptr == pMode) {
         return;
     }
@@ -507,8 +494,6 @@ ZipArchiveIOSystem::~ZipArchiveIOSystem() {
 }
 
 bool ZipArchiveIOSystem::Exists(const char *pFilename) const {
-    ai_assert(pFilename != nullptr);
-
     if (pFilename == nullptr) {
         return false;
     }
@@ -524,10 +509,7 @@ char ZipArchiveIOSystem::getOsSeparator() const {
 
 // Only supports Reading
 IOStream *ZipArchiveIOSystem::Open(const char *pFilename, const char *pMode) {
-    ai_assert(pFilename != nullptr);
-
     for (size_t i = 0; pMode[i] != 0; ++i) {
-        ai_assert(pMode[i] != 'w');
         if (pMode[i] == 'w')
             return nullptr;
     }

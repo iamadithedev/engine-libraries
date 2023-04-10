@@ -67,8 +67,6 @@ namespace FBX {
 // read a typed property out of a FBX element. The return value is nullptr if the property cannot be read.
 Property* ReadTypedProperty(const Element& element)
 {
-    ai_assert(element.KeyToken().StringContents() == "P");
-
     const TokenList& tok = element.Tokens();
     if (tok.size() < 2) {
         return nullptr;
@@ -127,7 +125,6 @@ Property* ReadTypedProperty(const Element& element)
 // peek into an element and check if it contains a FBX property, if so return its name.
 std::string PeekPropertyName(const Element& element)
 {
-    ai_assert(element.KeyToken().StringContents() == "P");
     const TokenList& tok = element.Tokens();
     if(tok.size() < 4) {
         return std::string();
@@ -188,8 +185,6 @@ const Property* PropertyTable::Get(const std::string& name) const
         if(lit != lazyProps.end()) {
             props[name] = ReadTypedProperty(*(*lit).second);
             it = props.find(name);
-
-            ai_assert(it != props.end());
         }
 
         if (it == props.end()) {

@@ -67,7 +67,6 @@ public:
     : mWrapped  (old)
     , mSrc_file(file)
     , mSep(mWrapped->getOsSeparator()) {
-        ai_assert(nullptr != mWrapped);
 
         // Determine base directory
         mBase = mSrc_file;
@@ -95,7 +94,6 @@ public:
     // -------------------------------------------------------------------
     /** Tests for the existence of a file at the given path. */
     bool Exists( const char* pFile) const {
-        ai_assert( nullptr != mWrapped );
 
         std::string tmp = pFile;
 
@@ -117,13 +115,9 @@ public:
     // -------------------------------------------------------------------
     /** Open a new file with a given path. */
     IOStream* Open( const char* pFile, const char* pMode = "rb") {
-        ai_assert( nullptr != mWrapped );
         if ( nullptr == pFile || nullptr == pMode ) {
             return nullptr;
         }
-
-        ai_assert( nullptr != pFile );
-        ai_assert( nullptr != pMode );
 
         // First try the unchanged path
         IOStream* s = mWrapped->Open(pFile,pMode);
@@ -152,63 +146,54 @@ public:
     // -------------------------------------------------------------------
     /** Closes the given file and releases all resources associated with it. */
     void Close( IOStream* pFile) {
-        ai_assert( nullptr != mWrapped );
         return mWrapped->Close(pFile);
     }
 
     // -------------------------------------------------------------------
     /** Compare two paths */
     bool ComparePaths (const char* one, const char* second) const {
-        ai_assert( nullptr != mWrapped );
         return mWrapped->ComparePaths (one,second);
     }
 
     // -------------------------------------------------------------------
     /** Pushes a new directory onto the directory stack. */
     bool PushDirectory(const std::string &path ) {
-        ai_assert( nullptr != mWrapped );
         return mWrapped->PushDirectory(path);
     }
 
     // -------------------------------------------------------------------
     /** Returns the top directory from the stack. */
     const std::string &CurrentDirectory() const {
-        ai_assert( nullptr != mWrapped );
         return mWrapped->CurrentDirectory();
     }
 
     // -------------------------------------------------------------------
     /** Returns the number of directories stored on the stack. */
     size_t StackSize() const {
-        ai_assert( nullptr != mWrapped );
         return mWrapped->StackSize();
     }
 
     // -------------------------------------------------------------------
     /** Pops the top directory from the stack. */
     bool PopDirectory() {
-        ai_assert( nullptr != mWrapped );
         return mWrapped->PopDirectory();
     }
 
     // -------------------------------------------------------------------
     /** Creates an new directory at the given path. */
     bool CreateDirectory(const std::string &path) {
-        ai_assert( nullptr != mWrapped );
         return mWrapped->CreateDirectory(path);
     }
 
     // -------------------------------------------------------------------
     /** Will change the current directory to the given path. */
     bool ChangeDirectory(const std::string &path) {
-        ai_assert( nullptr != mWrapped );
         return mWrapped->ChangeDirectory(path);
     }
 
     // -------------------------------------------------------------------
     /** Delete file. */
     bool DeleteFile(const std::string &file) {
-        ai_assert( nullptr != mWrapped );
         return mWrapped->DeleteFile(file);
     }
 
@@ -217,7 +202,6 @@ private:
     /** Build a valid path from a given relative or absolute path.
      */
     void BuildPath (std::string& in) const {
-        ai_assert( nullptr != mWrapped );
         // if we can already access the file, great.
         if (in.length() < 3 || mWrapped->Exists(in)) {
             return;

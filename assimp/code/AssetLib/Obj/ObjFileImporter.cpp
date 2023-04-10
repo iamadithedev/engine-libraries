@@ -46,7 +46,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "ObjFileParser.h"
 #include <assimp/DefaultIOSystem.h>
 #include <assimp/IOStreamBuffer.h>
-#include <assimp/ai_assert.h>
 #include <assimp/importerdesc.h>
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
@@ -153,9 +152,6 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model *pModel, aiScene
     if (!pModel->mModelName.empty()) {
         // Set the name of the scene
         pScene->mRootNode->mName.Set(pModel->mModelName);
-    } else {
-        // This is a fatal error, so break down the application
-        ai_assert(false);
     }
 
     if (!pModel->mObjects.empty()) {
@@ -179,8 +175,6 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model *pModel, aiScene
         for (size_t index = 0; index < pModel->mObjects.size(); ++index) {
             createNodes(pModel, pModel->mObjects[index], pScene->mRootNode, pScene, MeshArray);
         }
-
-        ai_assert(pScene->mRootNode->mNumChildren == childCount);
 
         // Create mesh pointer buffer for this scene
         if (pScene->mNumMeshes > 0) {
@@ -224,7 +218,7 @@ void ObjFileImporter::CreateDataFromImport(const ObjFile::Model *pModel, aiScene
 aiNode *ObjFileImporter::createNodes(const ObjFile::Model *pModel, const ObjFile::Object *pObject,
         aiNode *pParent, aiScene *pScene,
         std::vector<aiMesh *> &MeshArray) {
-    ai_assert(nullptr != pModel);
+
     if (nullptr == pObject) {
         return nullptr;
     }
@@ -236,7 +230,6 @@ aiNode *ObjFileImporter::createNodes(const ObjFile::Model *pModel, const ObjFile
     pNode->mName = pObject->m_strObjName;
 
     // If we have a parent node, store it
-    ai_assert(nullptr != pParent);
     appendChildToParentNode(pParent, pNode);
 
     for (size_t i = 0; i < pObject->m_Meshes.size(); ++i) {
@@ -279,8 +272,6 @@ aiNode *ObjFileImporter::createNodes(const ObjFile::Model *pModel, const ObjFile
 // ------------------------------------------------------------------------------------------------
 //  Create topology data
 aiMesh *ObjFileImporter::createTopology(const ObjFile::Model *pModel, const ObjFile::Object *pData, unsigned int meshIndex) {
-    // Checking preconditions
-    ai_assert(nullptr != pModel);
 
     if (nullptr == pData) {
         return nullptr;
@@ -371,8 +362,6 @@ void ObjFileImporter::createVertexArray(const ObjFile::Model *pModel,
         unsigned int uiMeshIndex,
         aiMesh *pMesh,
         unsigned int numIndices) {
-    // Checking preconditions
-    ai_assert(nullptr != pCurrentObject);
 
     // Break, if no faces are stored in object
     if (pCurrentObject->m_Meshes.empty())
@@ -709,17 +698,11 @@ void ObjFileImporter::createMaterials(const ObjFile::Model *pModel, aiScene *pSc
         pScene->mMaterials[pScene->mNumMaterials] = mat;
         pScene->mNumMaterials++;
     }
-
-    // Test number of created materials.
-    ai_assert(pScene->mNumMaterials == numMaterials);
 }
 
 // ------------------------------------------------------------------------------------------------
 //  Appends this node to the parent node
 void ObjFileImporter::appendChildToParentNode(aiNode *pParent, aiNode *pChild) {
-    // Checking preconditions
-    ai_assert(nullptr != pParent);
-    ai_assert(nullptr != pChild);
 
     // Assign parent to child
     pChild->mParent = pParent;

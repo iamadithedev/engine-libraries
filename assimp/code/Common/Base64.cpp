@@ -40,7 +40,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 #include <assimp/Base64.hpp>
-#include <assimp/Exceptional.h>
 
 namespace Assimp {
 
@@ -64,9 +63,6 @@ static inline char EncodeChar(uint8_t b) {
 }
 
 inline uint8_t DecodeChar(char c) {
-    if (c & 0x80) {
-        throw DeadlyImportError("Invalid base64 char value: ", size_t(c));
-    }
     return tableDecodeBase64[size_t(c & 0x7F)]; // TODO faster with lookup table or ifs?
 }
 
@@ -123,11 +119,6 @@ size_t Decode(const char *in, size_t inLength, uint8_t *&out) {
     if (in == nullptr) {
         out = nullptr;
         return 0;
-    }
-
-    if (inLength % 4 != 0) {
-        throw DeadlyImportError("Invalid base64 encoded data: \"", std::string(in, std::min(size_t(32), inLength)),
-            "\", length:", inLength);
     }
 
     if (inLength < 4) {

@@ -80,7 +80,6 @@ const char* TokenTypeString(TokenType t)
             return "TOK_BINARY_DATA";
     }
 
-    ai_assert(false);
     return "";
 }
 

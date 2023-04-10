@@ -49,7 +49,6 @@
 
 #include "ColladaHelper.h"
 #include <assimp/TinyFormatter.h>
-#include <assimp/ai_assert.h>
 #include <assimp/XmlParser.h>
 
 #include <map>

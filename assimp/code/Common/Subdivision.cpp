@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/SceneCombiner.h>
 #include <assimp/SpatialSort.h>
 #include <assimp/Vertex.h>
-#include <assimp/ai_assert.h>
 
 #include "PostProcessing/ProcessHelper.h"
 
@@ -112,8 +111,6 @@ Subdivider *Subdivider::Create(Algorithm algo) {
         return new CatmullClarkSubdivider();
     };
 
-    ai_assert(false);
-
     return nullptr; // shouldn't happen
 }
 
@@ -124,7 +121,6 @@ void CatmullClarkSubdivider::Subdivide(
         aiMesh *&out,
         unsigned int num,
         bool discard_input) {
-    ai_assert(mesh != out);
 
     Subdivide(&mesh, 1, &out, num, discard_input);
 }
@@ -137,11 +133,7 @@ void CatmullClarkSubdivider::Subdivide(
         aiMesh **out,
         unsigned int num,
         bool discard_input) {
-    ai_assert(nullptr != smesh);
-    ai_assert(nullptr != out);
 
-    // course, both regions may not overlap
-    ai_assert(smesh < out || smesh + nmesh > out + nmesh);
     if (!num) {
         // No subdivision at all. Need to copy all the meshes .. argh.
         if (discard_input) {
@@ -190,14 +182,11 @@ void CatmullClarkSubdivider::Subdivide(
     // Do the actual subdivision on the preallocated storage. InternSubdivide
     // *always* assumes that enough storage is available, it does not bother
     // checking any ranges.
-    ai_assert(inmeshes.size() == outmeshes.size());
-    ai_assert(inmeshes.size() == maptbl.size());
     if (inmeshes.empty()) {
         return;
     }
     InternSubdivide(&inmeshes.front(), inmeshes.size(), &outmeshes.front(), num);
     for (unsigned int i = 0; i < maptbl.size(); ++i) {
-        ai_assert(nullptr != outmeshes[i]);
         out[maptbl[i]] = outmeshes[i];
     }
 
@@ -224,8 +213,6 @@ void CatmullClarkSubdivider::InternSubdivide(
         size_t nmesh,
         aiMesh **out,
         unsigned int num) {
-    ai_assert(nullptr != smesh);
-    ai_assert(nullptr != out);
 
     INIT_EDGE_HASH_TEMPORARIES();
 
@@ -325,7 +312,6 @@ void CatmullClarkSubdivider::InternSubdivide(
             unsigned int bad_cnt = 0;
             for (EdgeMap::iterator it = edges.begin(); it != edges.end(); ++it) {
                 if ((*it).second.ref < 2) {
-                    ai_assert((*it).second.ref);
                     ++bad_cnt;
                 }
                 (*it).second.edge_point *= 1.f / ((*it).second.ref + 2.f);
@@ -488,7 +474,6 @@ void CatmullClarkSubdivider::InternSubdivide(
 
                             Vertex F, R;
                             for (unsigned int o = 0; o < cnt; ++o) {
-                                ai_assert(adj[o] < totfaces);
                                 F += centroids[adj[o]];
 
                                 // adj[0] is a global face index - search the face in the mesh list
@@ -506,7 +491,6 @@ void CatmullClarkSubdivider::InternSubdivide(
                                     }
                                 }
 
-                                ai_assert(adj[o] - moffsets[nidx].first < mp->mNumFaces);
                                 const aiFace &f = mp->mFaces[adj[o] - moffsets[nidx].first];
                                 bool haveit = false;
 
@@ -533,9 +517,6 @@ void CatmullClarkSubdivider::InternSubdivide(
                                         break;
                                     }
                                 }
-
-                                // this invariant *must* hold if the vertex-to-face adjacency table is valid
-                                ai_assert(haveit);
                             }
 
                             const float div = static_cast<float>(cnt), divsq = 1.f / (div * div);

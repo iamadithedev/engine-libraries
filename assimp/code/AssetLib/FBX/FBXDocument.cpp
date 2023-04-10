@@ -469,9 +469,6 @@ std::vector<const Connection*> Document::GetConnectionsSequenced(uint64_t id, bo
         const ConnectionMap& conns,
         const char* const* classnames,
         size_t count) const {
-    ai_assert(classnames);
-    ai_assert( count != 0 );
-    ai_assert( count <= MAX_CLASSNAMES);
 
     size_t lengths[MAX_CLASSNAMES] = {};
 
@@ -494,7 +491,6 @@ std::vector<const Connection*> Document::GetConnectionsSequenced(uint64_t id, bo
         const char* obtype = key.begin();
 
         for (size_t i = 0; i < c; ++i) {
-            ai_assert(classnames[i]);
             if(static_cast<size_t>(std::distance(key.begin(),key.end())) == lengths[i] && !strncmp(classnames[i],obtype,lengths[i])) {
                 obtype = nullptr;
                 break;
@@ -551,36 +547,29 @@ std::vector<const Connection*> Document::GetConnectionsByDestinationSequenced(ui
 Connection::Connection(uint64_t insertionOrder,  uint64_t src, uint64_t dest, const std::string& prop,
             const Document& doc) :
             insertionOrder(insertionOrder), prop(prop), src(src), dest(dest), doc(doc) {
-    ai_assert(doc.Objects().find(src) != doc.Objects().end());
-    // dest may be 0 (root node)
-    ai_assert(!dest || doc.Objects().find(dest) != doc.Objects().end());
 }
 
 // ------------------------------------------------------------------------------------------------
 LazyObject& Connection::LazySourceObject() const {
     LazyObject* const lazy = doc.GetObject(src);
-    ai_assert(lazy);
     return *lazy;
 }
 
 // ------------------------------------------------------------------------------------------------
 LazyObject& Connection::LazyDestinationObject() const {
     LazyObject* const lazy = doc.GetObject(dest);
-    ai_assert(lazy);
     return *lazy;
 }
 
 // ------------------------------------------------------------------------------------------------
 const Object* Connection::SourceObject() const {
     LazyObject* const lazy = doc.GetObject(src);
-    ai_assert(lazy);
     return lazy->Get();
 }
 
 // ------------------------------------------------------------------------------------------------
 const Object* Connection::DestinationObject() const {
     LazyObject* const lazy = doc.GetObject(dest);
-    ai_assert(lazy);
     return lazy->Get();
 }
 
