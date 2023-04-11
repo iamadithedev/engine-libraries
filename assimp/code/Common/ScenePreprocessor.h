@@ -46,7 +46,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define AI_SCENE_PREPROCESSOR_H_INC
 
 #include <assimp/defs.h>
-#include <stddef.h>
+#include <cstddef>
 
 struct aiScene;
 struct aiAnimation;

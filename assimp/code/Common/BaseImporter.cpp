@@ -66,7 +66,6 @@ using namespace Assimp;
 // Constructor to be privately used by Importer
 BaseImporter::BaseImporter() AI_NO_EXCEPT
 {
-    // empty
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -239,7 +238,7 @@ std::string BaseImporter::GetExtension(const std::string &file) {
 
     // no file extension at all
     if (pos == std::string::npos) {
-        return std::string();
+        return { };
     }
 
     // thanks to Andy Maloney for the hint

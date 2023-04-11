@@ -113,9 +113,6 @@ corresponding preprocessor flag to selectively disable steps.
 #ifndef ASSIMP_BUILD_NO_DEBONE_PROCESS
 #   include "PostProcessing/DeboneProcess.h"
 #endif
-#if (!defined ASSIMP_BUILD_NO_GLOBALSCALE_PROCESS)
-#   include "PostProcessing/ScaleProcess.h"
-#endif
 #if (!defined ASSIMP_BUILD_NO_ARMATUREPOPULATE_PROCESS)
 #   include "PostProcessing/ArmaturePopulate.h"
 #endif
@@ -165,9 +162,6 @@ void GetPostProcessingStepInstanceList(std::vector< BaseProcess* >& out)
 #endif
 #ifndef ASSIMP_BUILD_NO_TRANSFORMTEXCOORDS_PROCESS
     out.push_back( new TextureTransformStep());
-#endif
-#if (!defined ASSIMP_BUILD_NO_GLOBALSCALE_PROCESS)
-    out.push_back( new ScaleProcess());
 #endif
 #if (!defined ASSIMP_BUILD_NO_ARMATUREPOPULATE_PROCESS)
     out.push_back( new ArmaturePopulate());

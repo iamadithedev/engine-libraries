@@ -356,8 +356,6 @@ SET( PostProcessing_SRCS
   PostProcessing/DeboneProcess.h
   PostProcessing/ProcessHelper.h
   PostProcessing/ProcessHelper.cpp
-  PostProcessing/ScaleProcess.cpp
-  PostProcessing/ScaleProcess.h
   PostProcessing/ArmaturePopulate.cpp
   PostProcessing/ArmaturePopulate.h
   PostProcessing/GenBoundingBoxesProcess.cpp
@@ -378,11 +376,6 @@ if ((MINGW) AND (CMAKE_BUILD_TYPE MATCHES Debug))
   SET_SOURCE_FILES_PROPERTIES(Importer/StepFile/StepFileGen1.cpp PROPERTIES LINK_FLAGS -Os )
   SET_SOURCE_FILES_PROPERTIES(Importer/StepFile/StepFileGen1.cpp PROPERTIES STATIC_LIBRARY_FLAGS -Os )
 endif()
-
-SET( Extra_SRCS
-  MD4FileData.h
-)
-SOURCE_GROUP( Extra FILES ${Extra_SRCS})
 
 # pugixml
 IF(ASSIMP_HUNTER_ENABLED)
@@ -445,14 +438,6 @@ IF(3MF IN_LIST ASSIMP_EXPORTERS_LIST)
   ENDIF()
 ENDIF()
 
-# VC2010 fixes
-if(MSVC10)
-  option( VC10_STDINT_FIX "Fix for VC10 Compiler regarding pstdint.h redefinition errors" OFF )
-  if( VC10_STDINT_FIX )
-    ADD_DEFINITIONS( -D_STDINT )
-  endif()
-endif()
-
 IF( MSVC OR "${CMAKE_CXX_SIMULATE_ID}" MATCHES "MSVC") # clang with MSVC ABI
   ADD_DEFINITIONS( -D_SCL_SECURE_NO_WARNINGS )
   ADD_DEFINITIONS( -D_CRT_SECURE_NO_WARNINGS )
@@ -469,11 +454,6 @@ ENDIF()
 
 MESSAGE(STATUS "Enabled importer formats:${ASSIMP_IMPORTERS_ENABLED}")
 MESSAGE(STATUS "Disabled importer formats:${ASSIMP_IMPORTERS_DISABLED}")
-
-if (NOT ASSIMP_NO_EXPORT)
-  MESSAGE(STATUS "Enabled exporter formats:${ASSIMP_EXPORTERS_ENABLED}")
-  MESSAGE(STATUS "Disabled exporter formats:${ASSIMP_EXPORTERS_DISABLED}")
-endif()
 
 SOURCE_GROUP( include\\assimp    FILES ${PUBLIC_HEADERS} )
 
