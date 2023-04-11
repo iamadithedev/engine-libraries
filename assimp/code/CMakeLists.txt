@@ -133,7 +133,6 @@ IF(MSVC OR (MINGW AND BUILD_SHARED_LIBS))
 ENDIF()
 
 SET( Common_SRCS
-  Common/StbCommon.h
   Common/Compression.cpp
   Common/Compression.h
   Common/BaseImporter.cpp
@@ -458,18 +457,6 @@ IF(3MF IN_LIST ASSIMP_EXPORTERS_LIST)
 
     SOURCE_GROUP( ziplib FILES ${ziplib_SRCS} )
   ENDIF()
-ENDIF()
-
-# stb
-IF(ASSIMP_HUNTER_ENABLED)
-  hunter_add_package(stb)
-  find_package(stb CONFIG REQUIRED)
-ELSE()
-  SET( stb_SRCS
-    ../contrib/stb/stb_image.h
-  )
-  INCLUDE_DIRECTORIES("../contrib")
-  SOURCE_GROUP( Contrib\\stb FILES ${stb_SRCS})
 ENDIF()
 
 # VC2010 fixes

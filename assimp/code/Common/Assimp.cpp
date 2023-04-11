@@ -911,30 +911,3 @@ void aiQuaternionInterpolate(
         const float factor) {
     aiQuaternion::Interpolate(*dst, *start, *end, factor);
 }
-
-
-// stb_image is a lightweight image loader. It is shared by:
-//  - M3D import
-//  - PBRT export
-// Since it's a header-only library, its implementation must be instantiated in some cpp file.
-// Don't scatter this task over multiple importers/exporters. Maintain it in a central place (here!).
-
-#ifndef STB_USE_HUNTER
-#   if ASSIMP_HAS_PBRT_EXPORT
-#       define ASSIMP_NEEDS_STB_IMAGE 1
-#   elif ASSIMP_HAS_M3D
-#       define ASSIMP_NEEDS_STB_IMAGE 1
-#       define STBI_ONLY_PNG
-#   endif
-#endif
-
-// Ensure all symbols are linked correctly
-#if ASSIMP_NEEDS_STB_IMAGE
-    // Share stb_image's PNG loader with other importers/exporters instead of bringing our own copy.
-#   define STBI_ONLY_PNG
-#   ifdef ASSIMP_USE_STB_IMAGE_STATIC
-#       define STB_IMAGE_STATIC
-#   endif
-#   define STB_IMAGE_IMPLEMENTATION
-#   include "Common/StbCommon.h"
-#endif
