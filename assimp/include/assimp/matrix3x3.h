@@ -43,16 +43,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  @brief Definition of a 3x3 matrix, including operators when compiling in C++
  */
 #pragma once
-#ifndef AI_MATRIX3X3_H_INC
-#define AI_MATRIX3X3_H_INC
-
-#ifdef __GNUC__
-#   pragma GCC system_header
-#endif
 
 #include <assimp/defs.h>
-
-#ifdef __cplusplus
 
 template <typename T> class aiMatrix4x4t;
 template <typename T> class aiVector2t;
@@ -164,15 +156,3 @@ public:
 };
 
 typedef aiMatrix3x3t<ai_real> aiMatrix3x3;
-
-#else
-
-struct aiMatrix3x3 {
-    ai_real a1, a2, a3;
-    ai_real b1, b2, b3;
-    ai_real c1, c2, c3;
-};
-
-#endif // __cplusplus
-
-#endif // AI_MATRIX3X3_H_INC
