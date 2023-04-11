@@ -49,7 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 
-#include "CApi/CInterfaceIOWrapper.h"
 #include "Importer.h"
 #include "ScenePrivate.h"
 
@@ -108,7 +107,7 @@ const aiScene *aiImportFileEx(const char *pFile, unsigned int pFlags, aiFileIO *
 
 // ------------------------------------------------------------------------------------------------
 const aiScene *aiImportFileExWithProperties(const char *pFile, unsigned int pFlags,
-        aiFileIO *pFS, const aiPropertyStore *props) {
+        aiFileIO*, const aiPropertyStore *props) {
 
     // create an Importer for this file
     Assimp::Importer *imp = new Assimp::Importer();
@@ -121,10 +120,6 @@ const aiScene *aiImportFileExWithProperties(const char *pFile, unsigned int pFla
         pimpl->mFloatProperties = pp->floats;
         pimpl->mStringProperties = pp->strings;
         pimpl->mMatrixProperties = pp->matrices;
-    }
-    // setup a custom IO system if necessary
-    if (pFS) {
-        imp->SetIOHandler(new CIOSystemWrapper(pFS));
     }
 
     // and have it read the file

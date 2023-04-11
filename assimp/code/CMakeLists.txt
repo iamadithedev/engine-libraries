@@ -170,12 +170,6 @@ SET( Common_SRCS
 )
 SOURCE_GROUP(Common FILES ${Common_SRCS})
 
-SET( CApi_SRCS
-  CApi/CInterfaceIOWrapper.cpp
-  CApi/CInterfaceIOWrapper.h
-)
-SOURCE_GROUP(CApi FILES ${CApi_SRCS})
-
 SET(Geometry_SRCS
   Geometry/GeometryUtils.h
   Geometry/GeometryUtils.cpp
