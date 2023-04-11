@@ -244,7 +244,6 @@
 #  if defined(NO_SIZE_T)
      typedef unsigned NO_SIZE_T z_size_t;
 #  elif defined(STDC)
-#    include <stddef.h>
      typedef size_t z_size_t;
 #  else
      typedef unsigned long z_size_t;
@@ -437,24 +436,6 @@ typedef uLong FAR uLongf;
 
 #ifdef HAVE_STDARG_H    /* may be set to #if 1 by ./configure */
 #  define Z_HAVE_STDARG_H
-#endif
-
-#ifdef STDC
-#  ifndef Z_SOLO
-#    include <sys/types.h>      /* for off_t */
-#  endif
-#endif
-
-#if defined(STDC) || defined(Z_HAVE_STDARG_H)
-#  ifndef Z_SOLO
-#    include <stdarg.h>         /* for va_list */
-#  endif
-#endif
-
-#ifdef _WIN32
-#  ifndef Z_SOLO
-#    include <stddef.h>         /* for wchar_t */
-#  endif
 #endif
 
 /* a little trick to accommodate both "#define _LARGEFILE64_SOURCE" and

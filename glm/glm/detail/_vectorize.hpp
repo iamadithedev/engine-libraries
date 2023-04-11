@@ -1,7 +1,6 @@
 #pragma once
 
-namespace glm{
-namespace detail
+namespace glm::detail
 {
 	template<template<length_t L, typename T, qualifier Q> class vec, length_t L, typename R, typename T, qualifier Q>
 	struct functor1{};
@@ -158,5 +157,4 @@ namespace detail
 			return vec<4, int, Q>(Func(a.x, b.x), Func(a.y, b.y), Func(a.z, b.z), Func(a.w, b.w));
 		}
 	};
-}//namespace detail
 }//namespace glm

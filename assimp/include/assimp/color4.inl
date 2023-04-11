@@ -236,14 +236,5 @@ aiColor4t<TReal> operator - ( TReal f, const aiColor4t<TReal>& v)  {
     return aiColor4t<TReal>( f-v.r, f-v.g, f-v.b, f-v.a);
 }
 
-// ------------------------------------------------------------------------------------------------
-template <typename TReal>
-AI_FORCE_INLINE
-bool aiColor4t<TReal>::IsBlack() const {
-    // The alpha component doesn't care here. black is black.
-    static const TReal epsilon = 10e-3f;
-    return std::fabs( r ) < epsilon && std::fabs( g ) < epsilon && std::fabs( b ) < epsilon;
-}
-
 #endif // __cplusplus
 #endif // AI_VECTOR3D_INL_INC

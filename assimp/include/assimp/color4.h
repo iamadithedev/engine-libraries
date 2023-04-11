@@ -42,16 +42,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *  @brief RGBA color structure, including operators when compiling in C++
  */
 #pragma once
-#ifndef AI_COLOR4D_H_INC
-#define AI_COLOR4D_H_INC
-
-#ifdef __GNUC__
-#   pragma GCC system_header
-#endif
 
 #include <assimp/defs.h>
-
-#ifdef __cplusplus
 
 // ----------------------------------------------------------------------------------
 /** Represents a color in Red-Green-Blue space including an
@@ -81,21 +73,8 @@ public:
     inline TReal operator[](unsigned int i) const;
     inline TReal& operator[](unsigned int i);
 
-    /** check whether a color is (close to) black */
-    inline bool IsBlack() const;
-
     // Red, green, blue and alpha color values
     TReal r, g, b, a;
 };  // !struct aiColor4D
 
 typedef aiColor4t<ai_real> aiColor4D;
-
-#else
-
-struct aiColor4D {
-    ai_real r, g, b, a;
-};
-
-#endif // __cplusplus
-
-#endif // AI_COLOR4D_H_INC

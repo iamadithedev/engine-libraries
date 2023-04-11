@@ -25,7 +25,6 @@
     #define MICROSOFT_WINDOWS_WINBASE_H_DEFINE_INTERLOCKED_CPLUSPLUS_OVERLOADS 0
 #endif
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <time.h>

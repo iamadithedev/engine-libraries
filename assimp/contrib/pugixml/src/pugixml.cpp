@@ -165,22 +165,6 @@ using std::memset;
 #	define PUGI__FN_NO_INLINE PUGI__NO_INLINE
 #endif
 
-// uintptr_t
-#if (defined(_MSC_VER) && _MSC_VER < 1600) || (defined(__BORLANDC__) && __BORLANDC__ < 0x561)
-namespace pugi
-{
-#	ifndef _UINTPTR_T_DEFINED
-	typedef size_t uintptr_t;
-#	endif
-
-	typedef unsigned __int8 uint8_t;
-	typedef unsigned __int16 uint16_t;
-	typedef unsigned __int32 uint32_t;
-}
-#else
-#	include <stdint.h>
-#endif
-
 // Memory allocation
 PUGI__NS_BEGIN
 	PUGI__FN void* default_allocate(size_t size)

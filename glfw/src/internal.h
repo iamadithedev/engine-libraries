@@ -43,8 +43,6 @@
 #define _GLFW_INSERT_FIRST      0
 #define _GLFW_INSERT_LAST       1
 
-#define _GLFW_MESSAGE_SIZE      1024
-
 typedef int GLFWbool;
 typedef void (*GLFWproc)(void);
 

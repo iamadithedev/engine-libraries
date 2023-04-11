@@ -236,12 +236,6 @@ struct aiColor3D {
         return r;
     }
 
-    /** Check whether a color is black */
-    bool IsBlack() const {
-        static const ai_real epsilon = ai_real(10e-3);
-        return std::fabs(r) < epsilon && std::fabs(g) < epsilon && std::fabs(b) < epsilon;
-    }
-
 #endif // !__cplusplus
 
     //! Red, green and blue color values

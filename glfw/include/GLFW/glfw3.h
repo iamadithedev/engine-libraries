@@ -1135,7 +1135,7 @@ extern "C" {
  *
  *  @ingroup context
  */
-typedef void (*GLFWglproc)(void);
+typedef void (*GLFWglproc)();
 
 /*! @brief Vulkan API function pointer type.
  *
@@ -1149,7 +1149,7 @@ typedef void (*GLFWglproc)(void);
  *
  *  @ingroup vulkan
  */
-typedef void (*GLFWvkproc)(void);
+typedef void (*GLFWvkproc)();
 
 /*! @brief Opaque monitor object.
  *

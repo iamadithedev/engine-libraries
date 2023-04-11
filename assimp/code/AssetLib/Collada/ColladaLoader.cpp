@@ -262,7 +262,7 @@ void ColladaLoader::ResolveNodeInstances(const ColladaParser &pParser, const Nod
     // ... and iterate through all nodes to be instanced as children of pNode
     for (const auto &nodeInst : pNode->mNodeInstances) {
         // find the corresponding node in the library
-        const ColladaParser::NodeLibrary::const_iterator itt = pParser.mNodeLibrary.find(nodeInst.mNode);
+        const auto itt = pParser.mNodeLibrary.find(nodeInst.mNode);
         const Node *nd = itt == pParser.mNodeLibrary.end() ? nullptr : (*itt).second;
 
         // FIX for http://sourceforge.net/tracker/?func=detail&aid=3054873&group_id=226462&atid=1067632
@@ -282,7 +282,7 @@ void ColladaLoader::ResolveNodeInstances(const ColladaParser &pParser, const Nod
 // ------------------------------------------------------------------------------------------------
 // Resolve UV channels
 void ColladaLoader::ApplyVertexToEffectSemanticMapping(Sampler &sampler, const SemanticMappingTable &table) {
-    SemanticMappingTable::InputSemanticMap::const_iterator it = table.mMap.find(sampler.mUVChannel);
+    auto it = table.mMap.find(sampler.mUVChannel);
     if (it == table.mMap.end()) {
         return;
     }
@@ -306,7 +306,7 @@ void ColladaLoader::BuildMeshesForNode(const ColladaParser &pParser, const Node 
         ColladaParser::MeshLibrary::const_iterator srcMeshIt = pParser.mMeshLibrary.find(mid.mMeshOrController);
         if (srcMeshIt == pParser.mMeshLibrary.end()) {
             // if not found in the mesh-library, it might also be a controller referring to a mesh
-            ColladaParser::ControllerLibrary::const_iterator srcContrIt = pParser.mControllerLibrary.find(mid.mMeshOrController);
+            auto srcContrIt = pParser.mControllerLibrary.find(mid.mMeshOrController);
             if (srcContrIt != pParser.mControllerLibrary.end()) {
                 srcController = &srcContrIt->second;
                 srcMeshIt = pParser.mMeshLibrary.find(srcController->mMeshId);
@@ -513,7 +513,7 @@ aiMesh *ColladaLoader::CreateMesh(const ColladaParser &pParser, const Mesh *pSrc
     std::vector<float> targetWeights;
     Collada::MorphMethod method = Normalized;
 
-    for (std::map<std::string, Controller>::const_iterator it = pParser.mControllerLibrary.begin();
+    for (auto it = pParser.mControllerLibrary.begin();
             it != pParser.mControllerLibrary.end(); ++it) {
         const Controller &c = it->second;
         const Collada::Mesh *baseMesh = pParser.ResolveLibraryReference(pParser.mMeshLibrary, c.mMeshId);
@@ -597,7 +597,7 @@ aiMesh *ColladaLoader::CreateMesh(const ColladaParser &pParser, const Mesh *pSrc
             // the controller assigns the vertex weights
             size_t orgIndex = pSrcMesh->mFacePosIndices[a];
             // find the vertex weights for this vertex
-            IndexPairVector::const_iterator iit = weightStartPerVertex[orgIndex];
+            auto iit = weightStartPerVertex[orgIndex];
             size_t pairCount = pSrcController->mWeightCounts[orgIndex];
 
             for (size_t b = 0; b < pairCount; ++b, ++iit) {
@@ -1145,7 +1145,7 @@ void ColladaLoader::CreateAnimation(aiScene *pScene, const ColladaParser &pParse
 
         // build an animation channel for the given node out of these trafo keys
         if (!resultTrafos.empty()) {
-            aiNodeAnim *dstAnim = new aiNodeAnim;
+            auto *dstAnim = new aiNodeAnim;
             dstAnim->mNodeName = nodeName;
             dstAnim->mNumPositionKeys = static_cast<unsigned int>(resultTrafos.size());
             dstAnim->mNumRotationKeys = static_cast<unsigned int>(resultTrafos.size());
@@ -1185,7 +1185,7 @@ void ColladaLoader::CreateAnimation(aiScene *pScene, const ColladaParser &pParse
                 // or     2) one channel with morph target count arrays
                 // assume first
 
-                aiMeshMorphAnim *morphAnim = new aiMeshMorphAnim;
+                auto *morphAnim = new aiMeshMorphAnim;
                 morphAnim->mName.Set(nodeName);
 
                 std::vector<MorphTimeValues> morphTimeValues;

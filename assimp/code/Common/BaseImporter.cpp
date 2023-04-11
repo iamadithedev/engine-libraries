@@ -308,12 +308,6 @@ std::string BaseImporter::GetExtension(const std::string &file) {
     return false;
 }
 
-#ifdef ASSIMP_USE_HUNTER
-#include <utf8.h>
-#else
-#include "../contrib/utf8cpp/source/utf8.h"
-#endif
-
 // ------------------------------------------------------------------------------------------------
 // Convert to UTF8 data
 void BaseImporter::ConvertToUTF8(std::vector<char> &data) {

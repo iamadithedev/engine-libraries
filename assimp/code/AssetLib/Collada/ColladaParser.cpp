@@ -157,14 +157,14 @@ std::string ColladaParser::ReadZaeManifest(ZipArchiveIOSystem &zip_archive) {
         zip_archive.getFileListExtension(file_list, "dae");
 
         if (file_list.empty()) {
-            return std::string();
+            return { };
         }
 
         return file_list.front();
     }
     XmlParser manifestParser;
     if (!manifestParser.parse(manifestfile.get())) {
-        return std::string();
+        return { };
     }
 
     XmlNode root = manifestParser.getRootNode();
@@ -172,7 +172,7 @@ std::string ColladaParser::ReadZaeManifest(ZipArchiveIOSystem &zip_archive) {
     if (name != "dae_root") {
         root = *manifestParser.findNode("dae_root");
         if (nullptr == root) {
-            return std::string();
+            return { };
         }
         std::string v;
         XmlParser::getValueAsString(root, v);
@@ -181,7 +181,7 @@ std::string ColladaParser::ReadZaeManifest(ZipArchiveIOSystem &zip_archive) {
         return std::string(ai_str.C_Str());
     }
 
-    return std::string();
+    return { };
 }
 
 // ------------------------------------------------------------------------------------------------
@@ -371,7 +371,7 @@ void ColladaParser::ReadAnimationClipLibrary(XmlNode &node) {
             clip.second.push_back(url);
         }
 
-        if (clip.second.size() > 0) {
+        if (!clip.second.empty()) {
             mAnimationClipLibrary.push_back(clip);
         }
     }
@@ -385,7 +385,7 @@ void ColladaParser::PostProcessControllers() {
             continue;
         }
 
-        ControllerLibrary::iterator findItr = mControllerLibrary.find(meshId);
+        auto findItr = mControllerLibrary.find(meshId);
         while (findItr != mControllerLibrary.end()) {
             meshId = findItr->second.mMeshId;
             findItr = mControllerLibrary.find(meshId);
@@ -413,7 +413,7 @@ void ColladaParser::PostProcessRootAnimations() {
         temp.mSubAnims.push_back(clip);
 
         for (const std::string &animationID : it.second) {
-            AnimationLibrary::iterator animation = mAnimationLibrary.find(animationID);
+            auto animation = mAnimationLibrary.find(animationID);
 
             if (animation != mAnimationLibrary.end()) {
                 Animation *pSourceAnimation = animation->second;
@@ -486,7 +486,7 @@ void ColladaParser::ReadAnimation(XmlNode &node, Collada::Animation *pParent) {
             std::string id;
             if (XmlParser::getStdStrAttribute(currentNode, "id", id)) {
                 // have it read into a channel
-                ChannelMap::iterator newChannel = channels.insert(std::make_pair(id, AnimationChannel())).first;
+                auto newChannel = channels.insert(std::make_pair(id, AnimationChannel())).first;
                 ReadAnimationSampler(currentNode, newChannel->second);
             }
         } else if (currentName == "channel") {
@@ -496,7 +496,7 @@ void ColladaParser::ReadAnimation(XmlNode &node, Collada::Animation *pParent) {
             if (source_name[0] == '#') {
                 source_name = source_name.substr(1, source_name.size() - 1);
             }
-            ChannelMap::iterator cit = channels.find(source_name);
+            auto cit = channels.find(source_name);
             if (cit != channels.end()) {
                 cit->second.mTarget = target;
             }
@@ -1089,7 +1089,7 @@ void ColladaParser::ReadEffectParam(XmlNode &node, Collada::EffectParam &pParam)
                 std::string v;
                 XmlParser::getValueAsString(initNode, v);
                 pParam.mType = Param_Surface;
-                pParam.mReference = v.c_str();
+                pParam.mReference = v;
             }
         } else if (currentName == "sampler2D" && (FV_1_4_n == mFormat || FV_1_3_n == mFormat)) {
             // surface ID is given inside <source> tags

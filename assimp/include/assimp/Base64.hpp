@@ -45,12 +45,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assimp/defs.h>
 
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
 #include <string>
 
-namespace Assimp {
-namespace Base64 {
+namespace Assimp::Base64 {
 
 /// @brief Will encode the given character buffer from UTF64 to ASCII
 /// @param in           The UTF-64 buffer.
@@ -86,7 +85,6 @@ size_t Decode(const std::string &in, std::vector<uint8_t> &out);
 /// @return The decoded buffer in a vector.
 std::vector<uint8_t> Decode(const std::string &in);
 
-} // namespace Base64
 } // namespace Assimp
 
 #endif // AI_BASE64_HPP_INC
