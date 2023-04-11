@@ -134,7 +134,6 @@ void AllocateFromAssimpHeap::operator delete[] ( void* data)    {
 Importer::Importer()
  : pimpl( new ImporterPimpl ) {
     pimpl->mScene = nullptr;
-    pimpl->mErrorString = std::string();
 
     // Allocate a default IO handler
     pimpl->mIOHandler = new DefaultIOSystem;
@@ -146,7 +145,7 @@ Importer::Importer()
 
     // Allocate a SharedPostProcessInfo object and store pointers to it in all post-process steps in the list.
     pimpl->mPPShared = new SharedPostProcessInfo();
-    for (std::vector<BaseProcess*>::iterator it =  pimpl->mPostProcessingSteps.begin();
+    for (auto it =  pimpl->mPostProcessingSteps.begin();
         it != pimpl->mPostProcessingSteps.end();
         ++it)   {
 
@@ -200,7 +199,7 @@ aiReturn Importer::RegisterLoader(BaseImporter* pImp) {
     std::string baked;
     pImp->GetExtensionList(st);
 
-    for(std::set<std::string>::const_iterator it = st.begin(); it != st.end(); ++it) {
+    for(auto it = st.begin(); it != st.end(); ++it) {
         baked += *it;
     }
 
@@ -218,7 +217,7 @@ aiReturn Importer::UnregisterLoader(BaseImporter* pImp) {
         return AI_SUCCESS;
     }
 
-    std::vector<BaseImporter*>::iterator it = std::find(pimpl->mImporter.begin(),
+    auto it = std::find(pimpl->mImporter.begin(),
         pimpl->mImporter.end(),pImp);
 
     if (it != pimpl->mImporter.end())   {
@@ -237,7 +236,7 @@ aiReturn Importer::UnregisterPPStep(BaseProcess* pImp) {
         return AI_SUCCESS;
     }
 
-    std::vector<BaseProcess*>::iterator it = std::find(pimpl->mPostProcessingSteps.begin(),
+    auto it = std::find(pimpl->mPostProcessingSteps.begin(),
         pimpl->mPostProcessingSteps.end(),pImp);
 
     if (it != pimpl->mPostProcessingSteps.end())    {
@@ -293,15 +292,7 @@ void Importer::FreeScene( ) {
     delete pimpl->mScene;
     pimpl->mScene = nullptr;
 
-    pimpl->mErrorString = std::string();
     pimpl->mException = std::exception_ptr();
-}
-
-// ------------------------------------------------------------------------------------------------
-// Get the current error string, if any
-const char* Importer::GetErrorString() const {
-    // Must remain valid as long as ReadFile() or FreeFile() are not called
-    return pimpl->mErrorString.c_str();
 }
 
 const std::exception_ptr& Importer::GetException() const {
@@ -327,8 +318,6 @@ aiScene* Importer::GetOrphanedScene() {
     aiScene* s = pimpl->mScene;
 
     pimpl->mScene = nullptr;
-
-    pimpl->mErrorString = std::string();
     pimpl->mException = std::exception_ptr();
 
     return s;
@@ -375,7 +364,6 @@ const aiScene* Importer::ReadFileFromMemory(const void* pBuffer, size_t pLength,
         pHint = "";
     }
     if (!pBuffer || !pLength || strlen(pHint) > MaxLenHint ) {
-        pimpl->mErrorString = "Invalid parameters passed to ReadFileFromMemory()";
         return nullptr;
     }
     // prevent deletion of the previous IOHandler
@@ -418,7 +406,6 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
         // First check if the file is accessible at all
         if( !pimpl->mIOHandler->Exists( pFile)) {
 
-            pimpl->mErrorString = "Unable to open file \"" + pFile + "\".";
             return nullptr;
         }
 
@@ -439,7 +426,7 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
             // CAUTION: Do not just search for the extension!
             // GetExtension() returns the part after the *last* dot, but some extensions have dots
             // inside them, e.g. ogre.mesh.xml. Compare the entire end of the string.
-            for (std::set<std::string>::const_iterator it = extensions.cbegin(); it != extensions.cend(); ++it) {
+            for (auto it = extensions.cbegin(); it != extensions.cend(); ++it) {
 
                 // Yay for C++<20 not having std::string::ends_with()
                 std::string extension = "." + *it;
@@ -489,7 +476,6 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
             }
             // Put a proper error message if no suitable importer was found
             if( !imp)   {
-                pimpl->mErrorString = "No suitable reader found for the file format of file \"" + pFile + "\".";
                 return nullptr;
             }
         }
@@ -531,7 +517,6 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
         }
         // if failed, extract the error string
         else if( !pimpl->mScene) {
-            pimpl->mErrorString = imp->GetErrorText();
             pimpl->mException = imp->GetException();
         }
 
@@ -539,14 +524,7 @@ const aiScene* Importer::ReadFile( const char* _pFile, unsigned int pFlags) {
         pimpl->mPPShared->Clean();
     }
 #ifdef ASSIMP_CATCH_GLOBAL_EXCEPTIONS
-    catch (std::exception &e) {
-#if (defined _MSC_VER) &&   (defined _CPPRTTI)
-        // if we have RTTI get the full name of the exception that occurred
-        pimpl->mErrorString = std::string(typeid( e ).name()) + ": " + e.what();
-#else
-        pimpl->mErrorString = std::string("std::exception: ") + e.what();
-#endif
-
+    catch (std::exception &) {
         delete pimpl->mScene; pimpl->mScene = nullptr;
     }
 #endif // ! ASSIMP_CATCH_GLOBAL_EXCEPTIONS

@@ -93,10 +93,6 @@ public:
     /** The imported data, if ReadFile() was successful, nullptr otherwise. */
     aiScene* mScene;
 
-    /** The error description, if there was one. In the case of an exception,
-     *  mException will carry the full details. */
-    std::string mErrorString;
-
     /** Any exception which occurred */
     std::exception_ptr mException;
 
@@ -133,7 +129,6 @@ ImporterPimpl::ImporterPimpl() AI_NO_EXCEPT :
         mImporter(),
         mPostProcessingSteps(),
         mScene( nullptr ),
-        mErrorString(),
         mException(),
         mIntProperties(),
         mFloatProperties(),

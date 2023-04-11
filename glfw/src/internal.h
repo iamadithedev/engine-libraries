@@ -27,10 +27,6 @@
 
 #pragma once
 
-#if defined(_GLFW_USE_CONFIG_H)
- #include "glfw_config.h"
-#endif
-
 #if defined(GLFW_INCLUDE_GLCOREARB) || \
     defined(GLFW_INCLUDE_NONE)      || \
     defined(GLFW_INCLUDE_VULKAN)
@@ -46,7 +42,6 @@
 typedef int GLFWbool;
 typedef void (*GLFWproc)(void);
 
-typedef struct _GLFWerror       _GLFWerror;
 typedef struct _GLFWinitconfig  _GLFWinitconfig;
 typedef struct _GLFWwndconfig   _GLFWwndconfig;
 typedef struct _GLFWctxconfig   _GLFWctxconfig;

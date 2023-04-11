@@ -74,10 +74,7 @@ void BaseProcess::ExecuteOnScene(Importer *pImp) {
     // catch exceptions thrown inside the PostProcess-Step
     try {
         Execute(pImp->Pimpl()->mScene);
-    } catch (const std::exception &err) {
-
-        // extract error description
-        pImp->Pimpl()->mErrorString = err.what();
+    } catch (const std::exception&) {
 
         // and kill the partially imported data
         delete pImp->Pimpl()->mScene;
