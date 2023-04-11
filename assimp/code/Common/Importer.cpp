@@ -100,7 +100,7 @@ void* AllocateFromAssimpHeap::operator new ( size_t num_bytes)  {
     return ::operator new(num_bytes);
 }
 
-void* AllocateFromAssimpHeap::operator new ( size_t num_bytes, const std::nothrow_t& ) throw()  {
+void* AllocateFromAssimpHeap::operator new ( size_t num_bytes, const std::nothrow_t& ) noexcept  {
     try {
         return AllocateFromAssimpHeap::operator new( num_bytes );
     }
@@ -117,7 +117,7 @@ void* AllocateFromAssimpHeap::operator new[] ( size_t num_bytes)    {
     return ::operator new[](num_bytes);
 }
 
-void* AllocateFromAssimpHeap::operator new[] ( size_t num_bytes, const std::nothrow_t& ) throw() {
+void* AllocateFromAssimpHeap::operator new[] ( size_t num_bytes, const std::nothrow_t& ) noexcept {
     try {
         return AllocateFromAssimpHeap::operator new[]( num_bytes );
     } catch( ... )    {

@@ -50,8 +50,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <string>
 
-namespace Assimp {
-namespace FBX {
+namespace Assimp::FBX {
 
 // Forward declarations
 class Element;
@@ -179,7 +178,6 @@ T PropertyGet(const PropertyTable& in, const std::string& name, bool& result, bo
     return tprop->Value();
 }
 
-} //! FBX
 } //! Assimp
 
 #endif // INCLUDED_AI_FBX_PROPERTIES_H

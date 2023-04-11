@@ -53,8 +53,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXDocumentUtil.h"
 #include "FBXParser.h"
 
-namespace Assimp {
-namespace FBX {
+namespace Assimp::FBX {
 
 using namespace Util;
 
@@ -218,7 +217,7 @@ unsigned int MeshGeometry::FaceForVertexIndex( unsigned int in_index ) const {
         m_facesVertexStartIndices.pop_back();
     }
 
-    const std::vector<unsigned int>::iterator it = std::upper_bound(
+    const auto it = std::upper_bound(
         m_facesVertexStartIndices.begin(),
         m_facesVertexStartIndices.end(),
         in_index
@@ -288,7 +287,7 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
         );
     }
     else if (type == "LayerElementMaterial") {
-        if (m_materials.size() > 0) {
+        if (!m_materials.empty()) {
             return;
         }
 
@@ -313,7 +312,7 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
         std::swap(temp_materials, m_materials);
     }
     else if (type == "LayerElementNormal") {
-        if (m_normals.size() > 0) {
+        if (!m_normals.empty()) {
             return;
         }
 
@@ -323,7 +322,7 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
         );
     }
     else if (type == "LayerElementTangent") {
-        if (m_tangents.size() > 0) {
+        if (!m_tangents.empty()) {
             return;
         }
 
@@ -333,7 +332,7 @@ void MeshGeometry::ReadVertexData(const std::string& type, int index, const Scop
         );
     }
     else if (type == "LayerElementBinormal") {
-        if (m_binormals.size() > 0) {
+        if (!m_binormals.empty()) {
             return;
         }
 
@@ -628,7 +627,6 @@ const std::vector<aiVector3D>& LineGeometry::GetVertices() const {
 const std::vector<int>& LineGeometry::GetIndices() const {
     return m_indices;
 }
-} // !FBX
 } // !Assimp
 #endif
 

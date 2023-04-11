@@ -48,14 +48,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "FBXCompileConfig.h"
 #include "FBXTokenizer.h"
-#include <stdint.h>
+#include <cstdint>
 
-namespace Assimp {
-namespace FBX {
-
-
-namespace Util {
-
+namespace Assimp::FBX::Util {
 
 /** helper for std::for_each to delete all heap-allocated items in a container */
 template<typename T>
@@ -123,8 +118,6 @@ char EncodeBase64(char byte);
 *  @return base64-encoded string*/
 std::string EncodeBase64(const char* data, size_t length);
 
-}
-}
 }
 
 #endif // ! INCLUDED_AI_FBX_UTIL_H

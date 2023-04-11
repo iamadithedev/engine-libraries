@@ -51,8 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXMeshGeometry.h"
 #include "FBXParser.h"
 
-namespace Assimp {
-namespace FBX {
+namespace Assimp::FBX {
 
 using namespace Util;
 
@@ -133,7 +132,6 @@ bool Model::IsNull() const {
     return false;
 }
 
-} // namespace FBX
 } // namespace Assimp
 
 #endif

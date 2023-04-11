@@ -51,8 +51,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <vector>
 #include <string>
 
-namespace Assimp {
-namespace FBX {
+namespace Assimp::FBX {
 
 /** Rough classification for text FBX tokens used for constructing the
  *  basic scope hierarchy. */
@@ -177,7 +176,6 @@ void Tokenize(TokenList& output_tokens, const char* input);
 void TokenizeBinary(TokenList& output_tokens, const char* input, size_t length);
 
 
-} // ! FBX
 } // ! Assimp
 
 #endif // ! INCLUDED_AI_FBX_PARSER_H

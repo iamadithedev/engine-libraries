@@ -52,8 +52,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <utility>
 
-namespace Assimp {
-namespace FBX {
+namespace Assimp::FBX {
 
 // ------------------------------------------------------------------------------------------------
     Property::Property() = default;
@@ -181,7 +180,7 @@ const Property* PropertyTable::Get(const std::string& name) const
     PropertyMap::const_iterator it = props.find(name);
     if (it == props.end()) {
         // hasn't been parsed yet?
-        LazyPropertyMap::const_iterator lit = lazyProps.find(name);
+        auto lit = lazyProps.find(name);
         if(lit != lazyProps.end()) {
             props[name] = ReadTypedProperty(*(*lit).second);
             it = props.find(name);
@@ -229,7 +228,6 @@ DirectPropertyMap PropertyTable::GetUnparsedProperties() const
     return result;
 }
 
-} //! FBX
 } //! Assimp
 
 #endif

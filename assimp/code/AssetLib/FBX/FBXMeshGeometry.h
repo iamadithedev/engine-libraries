@@ -48,8 +48,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXParser.h"
 #include "FBXDocument.h"
 
-namespace Assimp {
-namespace FBX {
+namespace Assimp::FBX {
 
 /**
  *  @brief DOM base class for all kinds of FBX geometry
@@ -241,7 +240,6 @@ private:
     std::vector<int> m_indices;
 };
 
-}
 }
 
 #endif // INCLUDED_AI_FBX_MESHGEOMETRY_H
