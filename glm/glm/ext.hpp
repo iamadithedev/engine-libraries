@@ -125,17 +125,6 @@
 #include "./ext/vector_relational.hpp"
 #include "./ext/vector_ulp.hpp"
 
-#include "./ext/vector_bool1.hpp"
-#include "./ext/vector_bool1_precision.hpp"
-#include "./ext/vector_bool2.hpp"
-#include "./ext/vector_bool2_precision.hpp"
-#include "./ext/vector_bool3.hpp"
-#include "./ext/vector_bool3_precision.hpp"
-#include "./ext/vector_bool4.hpp"
-#include "./ext/vector_bool4_precision.hpp"
-
-#include "./ext/vector_double1.hpp"
-#include "./ext/vector_double1_precision.hpp"
 #include "./ext/vector_double2.hpp"
 #include "./ext/vector_double2_precision.hpp"
 #include "./ext/vector_double3.hpp"
@@ -143,8 +132,6 @@
 #include "./ext/vector_double4.hpp"
 #include "./ext/vector_double4_precision.hpp"
 
-#include "./ext/vector_float1.hpp"
-#include "./ext/vector_float1_precision.hpp"
 #include "./ext/vector_float2.hpp"
 #include "./ext/vector_float2_precision.hpp"
 #include "./ext/vector_float3.hpp"
@@ -152,8 +139,6 @@
 #include "./ext/vector_float4.hpp"
 #include "./ext/vector_float4_precision.hpp"
 
-#include "./ext/vector_int1.hpp"
-#include "./ext/vector_int1_sized.hpp"
 #include "./ext/vector_int2.hpp"
 #include "./ext/vector_int2_sized.hpp"
 #include "./ext/vector_int3.hpp"
@@ -161,8 +146,6 @@
 #include "./ext/vector_int4.hpp"
 #include "./ext/vector_int4_sized.hpp"
 
-#include "./ext/vector_uint1.hpp"
-#include "./ext/vector_uint1_sized.hpp"
 #include "./ext/vector_uint2.hpp"
 #include "./ext/vector_uint2_sized.hpp"
 #include "./ext/vector_uint3.hpp"
@@ -188,7 +171,6 @@
 #include "./gtc/type_precision.hpp"
 #include "./gtc/type_ptr.hpp"
 #include "./gtc/ulp.hpp"
-#include "./gtc/vec1.hpp"
 #if GLM_CONFIG_ALIGNED_GENTYPES == GLM_ENABLE
 #	include "./gtc/type_aligned.hpp"
 #endif
