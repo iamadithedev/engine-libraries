@@ -171,7 +171,6 @@ SET( Common_SRCS
   Common/simd.cpp
   Common/material.cpp
   Common/AssertHandler.cpp
-  Common/Exceptional.cpp
   Common/Base64.cpp
 )
 SOURCE_GROUP(Common FILES ${Common_SRCS})

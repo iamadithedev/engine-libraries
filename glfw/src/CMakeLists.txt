@@ -51,26 +51,6 @@ if (GLFW_BUILD_WIN32)
     list(APPEND glfw_PKG_LIBS "-lgdi32")
 endif()
 
-if (GLFW_BUILD_COCOA)
-    target_link_libraries(glfw PRIVATE "-framework Cocoa"
-                                       "-framework IOKit"
-                                       "-framework CoreFoundation")
-
-    set(glfw_PKG_DEPS "")
-    set(glfw_PKG_LIBS "-framework Cocoa -framework IOKit -framework CoreFoundation")
-endif()
-
-# Make GCC warn about declarations that VS 2010 and 2012 won't accept for all
-# source files that VS will build (Clang ignores this because we set -std=c99)
-if (CMAKE_C_COMPILER_ID STREQUAL "GNU")
-    set_source_files_properties(context.c init.c input.c monitor.c platform.c vulkan.c
-                                window.c null_init.c null_monitor.c
-                                null_window.c win32_init.c win32_module.c
-                                win32_monitor.c win32_time.c win32_thread.c win32_window.c
-                                wgl_context.c osmesa_context.c PROPERTIES
-                                COMPILE_FLAGS -Wdeclaration-after-statement)
-endif()
-
 if (WIN32)
     if (GLFW_USE_HYBRID_HPG)
         target_compile_definitions(glfw PRIVATE _GLFW_USE_HYBRID_HPG)
@@ -102,16 +82,9 @@ if (MSVC90)
     target_include_directories(glfw PUBLIC "${GLFW_SOURCE_DIR}/deps/vs2008")
 endif()
 
-foreach(arg ${glfw_PKG_DEPS})
-    string(APPEND deps " ${arg}")
-endforeach()
 foreach(arg ${glfw_PKG_LIBS})
     string(APPEND libs " ${arg}")
 endforeach()
 
-set(GLFW_PKG_CONFIG_REQUIRES_PRIVATE "${deps}" CACHE INTERNAL
-    "GLFW pkg-config Requires.private")
 set(GLFW_PKG_CONFIG_LIBS_PRIVATE "${libs}" CACHE INTERNAL
     "GLFW pkg-config Libs.private")
-
-configure_file("${GLFW_SOURCE_DIR}/CMake/glfw3.pc.in" glfw3.pc @ONLY)
