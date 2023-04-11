@@ -44,7 +44,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <assimp/BaseImporter.h>
 #include <assimp/GenericProperty.h>
-#include <assimp/cimport.h>
 #include <assimp/importerdesc.h>
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
@@ -93,98 +92,6 @@ void DeleteImporterInstanceList(std::vector<BaseImporter *> &out);
 /** Global mutex to manage the access to the log-stream map */
 static std::mutex gLogStreamMutex;
 #endif
-
-// ------------------------------------------------------------------------------------------------
-// Reads the given file and returns its content.
-const aiScene *aiImportFile(const char *pFile, unsigned int pFlags) {
-    return aiImportFileEx(pFile, pFlags, nullptr);
-}
-
-// ------------------------------------------------------------------------------------------------
-const aiScene *aiImportFileEx(const char *pFile, unsigned int pFlags, aiFileIO *pFS) {
-    return aiImportFileExWithProperties(pFile, pFlags, pFS, nullptr);
-}
-
-// ------------------------------------------------------------------------------------------------
-const aiScene *aiImportFileExWithProperties(const char *pFile, unsigned int pFlags,
-        aiFileIO*, const aiPropertyStore *props) {
-
-    // create an Importer for this file
-    Assimp::Importer *imp = new Assimp::Importer();
-
-    // copy properties
-    if (props) {
-        const PropertyMap *pp = reinterpret_cast<const PropertyMap *>(props);
-        ImporterPimpl *pimpl = imp->Pimpl();
-        pimpl->mIntProperties = pp->ints;
-        pimpl->mFloatProperties = pp->floats;
-        pimpl->mStringProperties = pp->strings;
-        pimpl->mMatrixProperties = pp->matrices;
-    }
-
-    // and have it read the file
-    const aiScene* scene = imp->ReadFile(pFile, pFlags);
-
-    // if succeeded, store the importer in the scene and keep it alive
-    if (scene) {
-        ScenePrivateData *priv = const_cast<ScenePrivateData *>(ScenePriv(scene));
-        priv->mOrigImporter = imp;
-    } else {
-        // if failed, extract error code and destroy the import
-        gLastErrorString = imp->GetErrorString();
-        delete imp;
-    }
-
-    return scene;
-}
-
-// ------------------------------------------------------------------------------------------------
-const aiScene *aiImportFileFromMemory(
-        const char *pBuffer,
-        unsigned int pLength,
-        unsigned int pFlags,
-        const char *pHint) {
-    return aiImportFileFromMemoryWithProperties(pBuffer, pLength, pFlags, pHint, nullptr);
-}
-
-// ------------------------------------------------------------------------------------------------
-const aiScene *aiImportFileFromMemoryWithProperties(
-        const char *pBuffer,
-        unsigned int pLength,
-        unsigned int pFlags,
-        const char *pHint,
-        const aiPropertyStore *props) {
-
-    const aiScene *scene = nullptr;
-
-    // create an Importer for this file
-    Assimp::Importer *imp = new Assimp::Importer();
-
-    // copy properties
-    if (props) {
-        const PropertyMap *pp = reinterpret_cast<const PropertyMap *>(props);
-        ImporterPimpl *pimpl = imp->Pimpl();
-        pimpl->mIntProperties = pp->ints;
-        pimpl->mFloatProperties = pp->floats;
-        pimpl->mStringProperties = pp->strings;
-        pimpl->mMatrixProperties = pp->matrices;
-    }
-
-    // and have it read the file from the memory buffer
-    scene = imp->ReadFileFromMemory(pBuffer, pLength, pFlags, pHint);
-
-    // if succeeded, store the importer in the scene and keep it alive
-    if (scene) {
-        ScenePrivateData *priv = const_cast<ScenePrivateData *>(ScenePriv(scene));
-        priv->mOrigImporter = imp;
-    } else {
-        // if failed, extract error code and destroy the import
-        gLastErrorString = imp->GetErrorString();
-        delete imp;
-    }
-    // return imported data. If the import failed the pointer is nullptr anyways
-    return scene;
-}
 
 // ------------------------------------------------------------------------------------------------
 // Releases all resources associated with the given import process.
@@ -267,18 +174,6 @@ size_t aiGetImportFormatCount(void) {
 }
 
 // ------------------------------------------------------------------------------------------------
-// Returns the error text of the last failed import process.
-aiBool aiIsExtensionSupported(const char *szExtension) {
-    aiBool candoit = AI_FALSE;
-
-    // FIXME: no need to create a temporary Importer instance just for that ..
-    Assimp::Importer tmp;
-    candoit = tmp.IsExtensionSupported(std::string(szExtension)) ? AI_TRUE : AI_FALSE;
-
-    return candoit;
-}
-
-// ------------------------------------------------------------------------------------------------
 // Get a list of all file extensions supported by ASSIMP
 void aiGetExtensionList(aiString *szOut) {
     // FIXME: no need to create a temporary Importer instance just for that ..
@@ -298,52 +193,6 @@ void aiGetMemoryRequirements(const aiScene *pIn,
     }
 
     return priv->mOrigImporter->GetMemoryRequirements(*in);
-}
-
-// ------------------------------------------------------------------------------------------------
-aiPropertyStore *aiCreatePropertyStore(void) {
-    return reinterpret_cast<aiPropertyStore *>(new PropertyMap());
-}
-
-// ------------------------------------------------------------------------------------------------
-void aiReleasePropertyStore(aiPropertyStore *p) {
-    delete reinterpret_cast<PropertyMap *>(p);
-}
-
-// ------------------------------------------------------------------------------------------------
-// Importer::SetPropertyInteger
-void aiSetImportPropertyInteger(aiPropertyStore *p, const char *szName, int value) {
-    PropertyMap *pp = reinterpret_cast<PropertyMap *>(p);
-    SetGenericProperty<int>(pp->ints, szName, value);
-}
-
-// ------------------------------------------------------------------------------------------------
-// Importer::SetPropertyFloat
-void aiSetImportPropertyFloat(aiPropertyStore *p, const char *szName, ai_real value) {
-    PropertyMap *pp = reinterpret_cast<PropertyMap *>(p);
-    SetGenericProperty<ai_real>(pp->floats, szName, value);
-}
-
-// ------------------------------------------------------------------------------------------------
-// Importer::SetPropertyString
-void aiSetImportPropertyString(aiPropertyStore *p, const char *szName,
-        const aiString *st) {
-    if (!st) {
-        return;
-    }
-    PropertyMap *pp = reinterpret_cast<PropertyMap *>(p);
-    SetGenericProperty<std::string>(pp->strings, szName, std::string(st->C_Str()));
-}
-
-// ------------------------------------------------------------------------------------------------
-// Importer::SetPropertyMatrix
-void aiSetImportPropertyMatrix(aiPropertyStore *p, const char *szName,
-        const aiMatrix4x4 *mat) {
-    if (!mat) {
-        return;
-    }
-    PropertyMap *pp = reinterpret_cast<PropertyMap *>(p);
-    SetGenericProperty<aiMatrix4x4>(pp->matrices, szName, *mat);
 }
 
 // ------------------------------------------------------------------------------------------------

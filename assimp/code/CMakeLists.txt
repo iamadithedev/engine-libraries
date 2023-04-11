@@ -60,7 +60,6 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/ColladaMetaData.h
   ${HEADER_PATH}/commonMetaData.h
   ${HEADER_PATH}/defs.h
-  ${HEADER_PATH}/cfileio.h
   ${HEADER_PATH}/material.h
   ${HEADER_PATH}/material.inl
   ${HEADER_PATH}/matrix3x3.h
@@ -81,7 +80,6 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/vector2.inl
   ${HEADER_PATH}/vector3.h
   ${HEADER_PATH}/vector3.inl
-  ${HEADER_PATH}/cimport.h
   ${HEADER_PATH}/AssertHandler.h
   ${HEADER_PATH}/importerdesc.h
   ${HEADER_PATH}/Importer.hpp
@@ -114,7 +112,6 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/Vertex.h
   ${HEADER_PATH}/LineSplitter.h
   ${HEADER_PATH}/TinyFormatter.h
-  ${HEADER_PATH}/Bitmap.h
   ${HEADER_PATH}/XMLTools.h
   ${HEADER_PATH}/IOStreamBuffer.h
   ${HEADER_PATH}/CreateAnimMesh.h
@@ -159,7 +156,6 @@ SET( Common_SRCS
   Common/RemoveComments.cpp
   Common/Subdivision.cpp
   Common/scene.cpp
-  Common/Bitmap.cpp
   Common/Version.cpp
   Common/CreateAnimMesh.cpp
   Common/simd.h
