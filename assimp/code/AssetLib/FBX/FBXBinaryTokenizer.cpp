@@ -48,8 +48,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef ASSIMP_BUILD_NO_FBX_IMPORTER
 
 #include "FBXTokenizer.h"
-#include "FBXUtil.h"
-#include <assimp/defs.h>
 #include <assimp/ByteSwapper.h>
 #include <assimp/StringUtils.h>
 

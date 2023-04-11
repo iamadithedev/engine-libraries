@@ -47,12 +47,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "FBXParser.h"
 #include "FBXDocument.h"
-#include "FBXImporter.h"
 #include "FBXImportSettings.h"
 #include "FBXDocumentUtil.h"
 #include "FBXProperties.h"
 #include <assimp/ByteSwapper.h>
-#include <assimp/ParsingUtils.h>
 #include <stdexcept>
 
 #include "FBXUtil.h"

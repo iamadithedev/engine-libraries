@@ -50,7 +50,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "FBXMeshGeometry.h"
 #include "FBXDocument.h"
 #include "FBXImporter.h"
-#include "FBXImportSettings.h"
 #include "FBXDocumentUtil.h"
 #include "FBXParser.h"
 

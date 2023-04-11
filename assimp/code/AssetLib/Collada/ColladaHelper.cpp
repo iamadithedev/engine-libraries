@@ -45,10 +45,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/ParsingUtils.h>
 #include <assimp/commonMetaData.h>
 
-namespace Assimp {
-namespace Collada {
+namespace Assimp::Collada {
 
-const MetaKeyPairVector MakeColladaAssimpMetaKeys() {
+MetaKeyPairVector MakeColladaAssimpMetaKeys() {
     MetaKeyPairVector result;
     result.emplace_back("authoring_tool", AI_METADATA_SOURCE_GENERATOR);
     result.emplace_back("copyright", AI_METADATA_SOURCE_COPYRIGHT);
@@ -60,7 +59,7 @@ const MetaKeyPairVector &GetColladaAssimpMetaKeys() {
     return result;
 }
 
-const MetaKeyPairVector MakeColladaAssimpMetaKeysCamelCase() {
+MetaKeyPairVector MakeColladaAssimpMetaKeysCamelCase() {
     MetaKeyPairVector result = MakeColladaAssimpMetaKeys();
     for (auto &val : result) {
         ToCamelCase(val.first);
@@ -95,5 +94,4 @@ void ToCamelCase(std::string &text) {
     }
 }
 
-} // namespace Collada
 } // namespace Assimp

@@ -49,7 +49,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include "FBXTokenizer.h"
 #include "FBXParser.h"
-#include "FBXUtil.h"
 
 #include <assimp/fast_atof.h>
 #include <assimp/ByteSwapper.h>

@@ -52,7 +52,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <assimp/ParsingUtils.h>
 
 #include "FBXTokenizer.h"
-#include "FBXUtil.h"
 
 namespace Assimp {
 namespace FBX {

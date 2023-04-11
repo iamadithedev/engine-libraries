@@ -3,8 +3,7 @@
 #include "setup.hpp"
 #include <limits>
 
-namespace glm{
-namespace detail
+namespace glm::detail
 {
 	template<typename genFIType, bool /*signed*/>
 	struct compute_abs
@@ -46,5 +45,4 @@ namespace detail
 			return x;
 		}
 	};
-}//namespace detail
 }//namespace glm

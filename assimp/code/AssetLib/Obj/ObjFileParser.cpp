@@ -52,7 +52,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <memory>
 #include <utility>
 #include <string_view>
-#include <assimp/defs.h>
 #include <assimp/types.h>
 
 namespace Assimp {

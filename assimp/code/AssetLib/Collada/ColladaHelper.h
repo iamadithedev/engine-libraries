@@ -54,8 +54,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 struct aiMaterial;
 
-namespace Assimp {
-namespace Collada {
+namespace Assimp::Collada {
 
 /// Collada file versions which evolved during the years ...
 enum FormatVersion {
@@ -186,7 +185,7 @@ struct Node {
 
     /// Destructor: delete all children subsequently
     ~Node() {
-        for (std::vector<Node *>::iterator it = mChildren.begin(); it != mChildren.end(); ++it) {
+        for (auto it = mChildren.begin(); it != mChildren.end(); ++it) {
             delete *it;
         }
     }
@@ -503,7 +502,7 @@ struct Animation {
 
     /// Destructor
     ~Animation() {
-        for (std::vector<Animation *>::iterator it = mSubAnims.begin(); it != mSubAnims.end(); ++it) {
+        for (auto it = mSubAnims.begin(); it != mSubAnims.end(); ++it) {
             delete *it;
         }
     }
@@ -512,7 +511,7 @@ struct Animation {
     void CollectChannelsRecursively(std::vector<AnimationChannel> &channels) {
         channels.insert(channels.end(), mChannels.begin(), mChannels.end());
 
-        for (std::vector<Animation *>::iterator it = mSubAnims.begin(); it != mSubAnims.end(); ++it) {
+        for (auto it = mSubAnims.begin(); it != mSubAnims.end(); ++it) {
             Animation *pAnim = (*it);
             pAnim->CollectChannelsRecursively(channels);
         }
@@ -548,7 +547,7 @@ struct Animation {
 
         // We only want to combine animations if they have different channels
         if (childrenAnimationsHaveDifferentChannels) {
-            for (std::vector<Animation *>::iterator it = pParent->mSubAnims.begin(); it != pParent->mSubAnims.end();) {
+            for (auto it = pParent->mSubAnims.begin(); it != pParent->mSubAnims.end();) {
                 Animation *anim = *it;
 
                 pParent->mChannels.push_back(anim->mChannels[0]);
@@ -556,8 +555,7 @@ struct Animation {
                 it = pParent->mSubAnims.erase(it);
 
                 delete anim;
-                continue;
-            }
+           }
         }
     }
 };
@@ -586,7 +584,6 @@ struct ChannelEntry {
             mValueData() {}
 };
 
-} // end of namespace Collada
 } // end of namespace Assimp
 
 #endif // AI_COLLADAHELPER_H_INC
