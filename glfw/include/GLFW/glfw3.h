@@ -2570,12 +2570,6 @@ GLFWAPI void glfwWindowHint(int hint, int value);
  *  [make it current](@ref context_current).  For information about the `share`
  *  parameter, see @ref context_sharing.
  *
- *  The created window, framebuffer and context may differ from what you
- *  requested, as not all parameters and hints are
- *  [hard constraints](@ref window_hints_hard).  This includes the size of the
- *  window, especially for full screen windows.  To query the actual attributes
- *  of the created window, framebuffer and context, see @ref
- *  glfwGetWindowAttrib, @ref glfwGetWindowSize and @ref glfwGetFramebufferSize.
  *
  *  To create a full screen window, you need to specify the monitor the window
  *  will cover.  If no monitor is specified, the window will be windowed mode.
@@ -2734,48 +2728,6 @@ GLFWAPI GLFWwindow* glfwCreateWindow(int width, int height, const char* title, G
  */
 GLFWAPI void glfwDestroyWindow(GLFWwindow* window);
 
-/*! @brief Checks the close flag of the specified window.
- *
- *  This function returns the value of the close flag of the specified window.
- *
- *  @param[in] window The window to query.
- *  @return The value of the close flag.
- *
- *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED.
- *
- *  @thread_safety This function may be called from any thread.  Access is not
- *  synchronized.
- *
- *  @sa @ref window_close
- *
- *  @since Added in version 3.0.
- *
- *  @ingroup window
- */
-GLFWAPI int glfwWindowShouldClose(GLFWwindow* window);
-
-/*! @brief Sets the close flag of the specified window.
- *
- *  This function sets the value of the close flag of the specified window.
- *  This can be used to override the user's attempt to close the window, or
- *  to signal that it should be closed.
- *
- *  @param[in] window The window whose flag to change.
- *  @param[in] value The new value.
- *
- *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED.
- *
- *  @thread_safety This function may be called from any thread.  Access is not
- *  synchronized.
- *
- *  @sa @ref window_close
- *
- *  @since Added in version 3.0.
- *
- *  @ingroup window
- */
-GLFWAPI void glfwSetWindowShouldClose(GLFWwindow* window, int value);
-
 /*! @brief Sets the title of the specified window.
  *
  *  This function sets the window title, encoded as UTF-8, of the specified
@@ -2918,9 +2870,6 @@ GLFWAPI void glfwSetWindowPos(GLFWwindow* window, int xpos, int ypos);
 
 /*! @brief Retrieves the size of the content area of the specified window.
  *
- *  This function retrieves the size, in screen coordinates, of the content area
- *  of the specified window.  If you wish to retrieve the size of the
- *  framebuffer of the window in pixels, see @ref glfwGetFramebufferSize.
  *
  *  Any or all of the size arguments may be `NULL`.  If an error occurs, all
  *  non-`NULL` size arguments will be set to zero.
@@ -3072,35 +3021,6 @@ GLFWAPI void glfwSetWindowAspectRatio(GLFWwindow* window, int numer, int denom);
  *  @ingroup window
  */
 GLFWAPI void glfwSetWindowSize(GLFWwindow* window, int width, int height);
-
-/*! @brief Retrieves the size of the framebuffer of the specified window.
- *
- *  This function retrieves the size, in pixels, of the framebuffer of the
- *  specified window.  If you wish to retrieve the size of the window in screen
- *  coordinates, see @ref glfwGetWindowSize.
- *
- *  Any or all of the size arguments may be `NULL`.  If an error occurs, all
- *  non-`NULL` size arguments will be set to zero.
- *
- *  @param[in] window The window whose framebuffer to query.
- *  @param[out] width Where to store the width, in pixels, of the framebuffer,
- *  or `NULL`.
- *  @param[out] height Where to store the height, in pixels, of the framebuffer,
- *  or `NULL`.
- *
- *  @errors Possible errors include @ref GLFW_NOT_INITIALIZED and @ref
- *  GLFW_PLATFORM_ERROR.
- *
- *  @thread_safety This function must only be called from the main thread.
- *
- *  @sa @ref window_fbsize
- *  @sa @ref glfwSetFramebufferSizeCallback
- *
- *  @since Added in version 3.0.
- *
- *  @ingroup window
- */
-GLFWAPI void glfwGetFramebufferSize(GLFWwindow* window, int* width, int* height);
 
 /*! @brief Retrieves the size of the frame of the window.
  *
@@ -3709,8 +3629,6 @@ GLFWAPI GLFWwindowsizefun glfwSetWindowSizeCallback(GLFWwindow* window, GLFWwind
  *  called when the user attempts to close the window, for example by clicking
  *  the close widget in the title bar.
  *
- *  The close flag is set before this callback is called, but you can modify it
- *  at any time with @ref glfwSetWindowShouldClose.
  *
  *  The close callback is not triggered by @ref glfwDestroyWindow.
  *

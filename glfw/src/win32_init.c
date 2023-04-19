@@ -486,7 +486,6 @@ GLFWbool _glfwConnectWin32(int platformID, _GLFWplatform* platform)
         _glfwSetWindowSizeWin32,
         _glfwSetWindowSizeLimitsWin32,
         _glfwSetWindowAspectRatioWin32,
-        _glfwGetFramebufferSizeWin32,
         _glfwGetWindowFrameSizeWin32,
         _glfwGetWindowContentScaleWin32,
         _glfwIconifyWindowWin32,

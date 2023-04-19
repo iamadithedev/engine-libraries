@@ -1594,11 +1594,6 @@ void _glfwSetWindowAspectRatioWin32(_GLFWwindow* window, int numer, int denom)
                area.bottom - area.top, TRUE);
 }
 
-void _glfwGetFramebufferSizeWin32(_GLFWwindow* window, int* width, int* height)
-{
-    _glfwGetWindowSizeWin32(window, width, height);
-}
-
 void _glfwGetWindowFrameSizeWin32(_GLFWwindow* window,
                                   int* left, int* top,
                                   int* right, int* bottom)

@@ -160,8 +160,6 @@ void _glfwInputWindowCloseRequest(_GLFWwindow* window)
 {
     assert(window != NULL);
 
-    window->shouldClose = GLFW_TRUE;
-
     if (window->callbacks.close)
         window->callbacks.close((GLFWwindow*) window);
 }
@@ -427,22 +425,6 @@ GLFWAPI void glfwDestroyWindow(GLFWwindow* handle)
     _glfw_free(window);
 }
 
-GLFWAPI int glfwWindowShouldClose(GLFWwindow* handle)
-{
-    _GLFWwindow* window = (_GLFWwindow*) handle;
-    assert(window != NULL);
-
-    return window->shouldClose;
-}
-
-GLFWAPI void glfwSetWindowShouldClose(GLFWwindow* handle, int value)
-{
-    _GLFWwindow* window = (_GLFWwindow*) handle;
-    assert(window != NULL);
-
-    window->shouldClose = value;
-}
-
 GLFWAPI void glfwSetWindowTitle(GLFWwindow* handle, const char* title)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
@@ -589,19 +571,6 @@ GLFWAPI void glfwSetWindowAspectRatio(GLFWwindow* handle, int numer, int denom)
         return;
 
     _glfw.platform.setWindowAspectRatio(window, numer, denom);
-}
-
-GLFWAPI void glfwGetFramebufferSize(GLFWwindow* handle, int* width, int* height)
-{
-    _GLFWwindow* window = (_GLFWwindow*) handle;
-    assert(window != NULL);
-
-    if (width)
-        *width = 0;
-    if (height)
-        *height = 0;
-
-    _glfw.platform.getFramebufferSize(window, width, height);
 }
 
 GLFWAPI void glfwGetWindowFrameSize(GLFWwindow* handle,
