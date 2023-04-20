@@ -85,11 +85,6 @@ static _GLFWmonitor* createMonitor(DISPLAY_DEVICEW* adapter,
         widthMM  = GetDeviceCaps(dc, HORZSIZE);
         heightMM = GetDeviceCaps(dc, VERTSIZE);
     }
-    else
-    {
-        widthMM  = (int) (dm.dmPelsWidth * 25.4f / GetDeviceCaps(dc, LOGPIXELSX));
-        heightMM = (int) (dm.dmPelsHeight * 25.4f / GetDeviceCaps(dc, LOGPIXELSY));
-    }
 
     DeleteDC(dc);
 
