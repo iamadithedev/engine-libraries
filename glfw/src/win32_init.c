@@ -469,7 +469,6 @@ GLFWbool _glfwConnectWin32(int platformID, _GLFWplatform* platform)
         _glfwFreeMonitorWin32,
         _glfwGetMonitorPosWin32,
         _glfwGetMonitorContentScaleWin32,
-        _glfwGetMonitorWorkareaWin32,
         _glfwGetVideoModesWin32,
         _glfwGetVideoModeWin32,
         _glfwGetGammaRampWin32,

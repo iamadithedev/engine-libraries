@@ -334,25 +334,6 @@ GLFWAPI void glfwGetMonitorPos(GLFWmonitor* handle, int* xpos, int* ypos)
     _glfw.platform.getMonitorPos(monitor, xpos, ypos);
 }
 
-GLFWAPI void glfwGetMonitorWorkarea(GLFWmonitor* handle,
-                                    int* xpos, int* ypos,
-                                    int* width, int* height)
-{
-    _GLFWmonitor* monitor = (_GLFWmonitor*) handle;
-    assert(monitor != NULL);
-
-    if (xpos)
-        *xpos = 0;
-    if (ypos)
-        *ypos = 0;
-    if (width)
-        *width = 0;
-    if (height)
-        *height = 0;
-
-    _glfw.platform.getMonitorWorkarea(monitor, xpos, ypos, width, height);
-}
-
 GLFWAPI void glfwGetMonitorPhysicalSize(GLFWmonitor* handle, int* widthMM, int* heightMM)
 {
     _GLFWmonitor* monitor = (_GLFWmonitor*) handle;

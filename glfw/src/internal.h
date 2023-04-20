@@ -400,7 +400,6 @@ struct _GLFWplatform
     void (*freeMonitor)(_GLFWmonitor*);
     void (*getMonitorPos)(_GLFWmonitor*,int*,int*);
     void (*getMonitorContentScale)(_GLFWmonitor*,float*,float*);
-    void (*getMonitorWorkarea)(_GLFWmonitor*,int*,int*,int*,int*);
     GLFWvidmode* (*getVideoModes)(_GLFWmonitor*,int*);
     void (*getVideoMode)(_GLFWmonitor*,GLFWvidmode*);
     GLFWbool (*getGammaRamp)(_GLFWmonitor*,GLFWgammaramp*);

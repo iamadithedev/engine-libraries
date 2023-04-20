@@ -365,23 +365,6 @@ void _glfwGetMonitorContentScaleWin32(_GLFWmonitor* monitor,
     _glfwGetHMONITORContentScaleWin32(monitor->win32.handle, xscale, yscale);
 }
 
-void _glfwGetMonitorWorkareaWin32(_GLFWmonitor* monitor,
-                                  int* xpos, int* ypos,
-                                  int* width, int* height)
-{
-    MONITORINFO mi = { sizeof(mi) };
-    GetMonitorInfoW(monitor->win32.handle, &mi);
-
-    if (xpos)
-        *xpos = mi.rcWork.left;
-    if (ypos)
-        *ypos = mi.rcWork.top;
-    if (width)
-        *width = mi.rcWork.right - mi.rcWork.left;
-    if (height)
-        *height = mi.rcWork.bottom - mi.rcWork.top;
-}
-
 GLFWvidmode* _glfwGetVideoModesWin32(_GLFWmonitor* monitor, int* count)
 {
     int modeIndex = 0, size = 0;
