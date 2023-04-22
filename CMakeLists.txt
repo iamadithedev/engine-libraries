@@ -3,3 +3,4 @@ add_subdirectory(glad)
 add_subdirectory(glm)
 
 add_subdirectory(assimp)
+add_subdirectory(stb)
