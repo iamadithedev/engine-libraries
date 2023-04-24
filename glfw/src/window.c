@@ -606,30 +606,6 @@ GLFWAPI void glfwGetWindowContentScale(GLFWwindow* handle,
     _glfw.platform.getWindowContentScale(window, xscale, yscale);
 }
 
-GLFWAPI float glfwGetWindowOpacity(GLFWwindow* handle)
-{
-    _GLFWwindow* window = (_GLFWwindow*) handle;
-    assert(window != NULL);
-
-    return _glfw.platform.getWindowOpacity(window);
-}
-
-GLFWAPI void glfwSetWindowOpacity(GLFWwindow* handle, float opacity)
-{
-    _GLFWwindow* window = (_GLFWwindow*) handle;
-    assert(window != NULL);
-    assert(opacity == opacity);
-    assert(opacity >= 0.f);
-    assert(opacity <= 1.f);
-
-    if (opacity != opacity || opacity < 0.f || opacity > 1.f)
-    {
-        return;
-    }
-
-    _glfw.platform.setWindowOpacity(window, opacity);
-}
-
 GLFWAPI void glfwIconifyWindow(GLFWwindow* handle)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;

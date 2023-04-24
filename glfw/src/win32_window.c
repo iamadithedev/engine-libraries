@@ -1840,7 +1840,7 @@ void _glfwSetWindowMousePassthroughWin32(_GLFWwindow* window, GLFWbool enabled)
     else
     {
         exStyle &= ~WS_EX_TRANSPARENT;
-        // NOTE: Window opacity also needs the layered window style so do not
+        // NOTE: Window also needs the layered window style so do not
         //       remove it if the window is alpha blended
         if (exStyle & WS_EX_LAYERED)
         {
@@ -1853,42 +1853,6 @@ void _glfwSetWindowMousePassthroughWin32(_GLFWwindow* window, GLFWbool enabled)
 
     if (enabled)
         SetLayeredWindowAttributes(window->win32.handle, key, alpha, flags);
-}
-
-float _glfwGetWindowOpacityWin32(_GLFWwindow* window)
-{
-    BYTE alpha;
-    DWORD flags;
-
-    if ((GetWindowLongW(window->win32.handle, GWL_EXSTYLE) & WS_EX_LAYERED) &&
-        GetLayeredWindowAttributes(window->win32.handle, NULL, &alpha, &flags))
-    {
-        if (flags & LWA_ALPHA)
-            return alpha / 255.f;
-    }
-
-    return 1.f;
-}
-
-void _glfwSetWindowOpacityWin32(_GLFWwindow* window, float opacity)
-{
-    LONG exStyle = GetWindowLongW(window->win32.handle, GWL_EXSTYLE);
-    if (opacity < 1.f || (exStyle & WS_EX_TRANSPARENT))
-    {
-        const BYTE alpha = (BYTE) (255 * opacity);
-        exStyle |= WS_EX_LAYERED;
-        SetWindowLongW(window->win32.handle, GWL_EXSTYLE, exStyle);
-        SetLayeredWindowAttributes(window->win32.handle, 0, alpha, LWA_ALPHA);
-    }
-    else if (exStyle & WS_EX_TRANSPARENT)
-    {
-        SetLayeredWindowAttributes(window->win32.handle, 0, 0, 0);
-    }
-    else
-    {
-        exStyle &= ~WS_EX_LAYERED;
-        SetWindowLongW(window->win32.handle, GWL_EXSTYLE, exStyle);
-    }
 }
 
 void _glfwSetRawMouseMotionWin32(_GLFWwindow *window, GLFWbool enabled)
