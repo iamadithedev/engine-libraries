@@ -28,7 +28,6 @@ SET(CLAMP_VELOCITIES "0" CACHE STRING "Clamp rigid bodies' velocity to this valu
 OPTION(USE_GRAPHICAL_BENCHMARK "Use Graphical Benchmark" ON)
 OPTION(BUILD_SHARED_LIBS "Use shared libraries" OFF)
 OPTION(USE_SOFT_BODY_MULTI_BODY_DYNAMICS_WORLD "Use btSoftMultiBodyDynamicsWorld" ON)
-OPTION(USE_OPENVR "Use OpenVR for virtual reality" OFF)
 
 OPTION(ENABLE_VHACD "Use VHACD in BulletRobotics and pybullet" ON)
 
