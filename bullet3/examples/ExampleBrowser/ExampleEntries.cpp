@@ -70,9 +70,6 @@
 #include "../Tutorial/Dof6ConstraintTutorial.h"
 #include "../MultiThreading/MultiThreadingExample.h"
 #include "../InverseDynamics/InverseDynamicsExample.h"
-#include "../RoboticsLearning/R2D2GraspExample.h"
-#include "../RoboticsLearning/KukaGraspExample.h"
-#include "../RoboticsLearning/GripperGraspExample.h"
 #include "../ReducedDeformableDemo/ConservationTest.h"
 #include "../ReducedDeformableDemo/ModeVisualizer.h"
 #include "../ReducedDeformableDemo/Springboard.h"
@@ -99,7 +96,6 @@
 #endif
 #endif  //B3_USE_CLEW
 
-//Extended Tutorial Includes Added by Mobeen and Benelot
 #include "../ExtendedTutorials/SimpleBox.h"
 #include "../ExtendedTutorials/MultipleBoxes.h"
 #include "../ExtendedTutorials/CompoundBoxes.h"
@@ -112,7 +108,6 @@
 #include "../ExtendedTutorials/NewtonsCradle.h"
 #include "../ExtendedTutorials/NewtonsRopeCradle.h"
 #include "../ExtendedTutorials/MultiPendulum.h"
-#include "../Evolution/NN3DWalkers.h"
 
 struct ExampleEntry
 {
@@ -325,21 +320,7 @@ static ExampleEntry gDefaultExamples[] =
 
 		ExampleEntry(0, "Experiments"),
 
-		ExampleEntry(1, "Robot Control", "Create a physics client and server to create and control robots.",
-					 PhysicsClientCreateFunc, eCLIENTEXAMPLE_SERVER),
-
-		ExampleEntry(1, "R2D2 Grasp", "Load the R2D2 robot from URDF file and control it to grasp objects", R2D2GraspExampleCreateFunc, eROBOTIC_LEARN_GRASP),
-		ExampleEntry(1, "Kuka IK", "Control a Kuka IIWA robot to follow a target using IK. This IK is not setup properly yet.", KukaGraspExampleCreateFunc, 0),
-		ExampleEntry(1, "URDF Compliant Contact", "Work-in-progress, experiment/improve compliant rigid contact using parameters from URDF file (contact_cfm, contact_erp, lateral_friction, rolling_friction)", R2D2GraspExampleCreateFunc, eROBOTIC_LEARN_COMPLIANT_CONTACT),
-		ExampleEntry(1, "Rolling friction", "Experiment on multibody rolling friction", R2D2GraspExampleCreateFunc, eROBOTIC_LEARN_ROLLING_FRICTION),
-		ExampleEntry(1, "Gripper Grasp", "Grasp experiment with a gripper to improve contact model", GripperGraspExampleCreateFunc, eGRIPPER_GRASP),
-		ExampleEntry(1, "Two Point Grasp", "Grasp experiment with two point contact to test rolling friction", GripperGraspExampleCreateFunc, eTWO_POINT_GRASP),
-		ExampleEntry(1, "Grasp Deformable Cloth", "Grasp experiment with deformable cloth", GripperGraspExampleCreateFunc, eGRASP_DEFORMABLE_CLOTH),
-		ExampleEntry(1, "One Motor Gripper Grasp", "Grasp experiment with a gripper with one motor to test slider constraint for closed loop structure", GripperGraspExampleCreateFunc, eONE_MOTOR_GRASP),
-#ifndef SKIP_SOFT_BODY_MULTI_BODY_DYNAMICS_WORLD
-		ExampleEntry(1, "Grasp Soft Body", "Grasp soft body experiment", GripperGraspExampleCreateFunc, eGRASP_SOFT_BODY),
-		ExampleEntry(1, "Softbody Multibody Coupling", "Two way coupling between soft body and multibody experiment", GripperGraspExampleCreateFunc, eSOFTBODY_MULTIBODY_COUPLING),
-#endif  //SKIP_SOFT_BODY_MULTI_BODY_DYNAMICS_WORLD
+		ExampleEntry(1, "Robot Control", "Create a physics client and server to create and control robots.", PhysicsClientCreateFunc, eCLIENTEXAMPLE_SERVER),
 
 #ifdef ENABLE_LUA
 		ExampleEntry(1, "Lua Script", "Create the dynamics world, collision shapes and rigid bodies using Lua scripting",
@@ -386,14 +367,6 @@ static ExampleEntry gDefaultExamples[] =
 		ExampleEntry(1, "Newton's Cradle", "Create a Newton's Cradle using a pair of point2point/slider constraints. Press 1/2 to lengthen/shorten the pendula, press 3 to displace pendula. Use the sliders to select the number (reset simulation), length and restitution of pendula, the number of displaced pendula and apply the displacement force.", ET_NewtonsCradleCreateFunc),
 		ExampleEntry(1, "Newton's Rope Cradle", "Create a Newton's Cradle using ropes. Press 3 to displace pendula. Use the sliders to select the number (reset simulation), length and restitution of pendula and the number of displaced pendula and apply the displacement force.", ET_NewtonsRopeCradleCreateFunc),
 		ExampleEntry(1, "Multi-Pendulum", "Create a Multi-Pendulum using point2point/slider constraints. Press 1/2 to lengthen/shorten the pendula, press 3 to displace pendula. Use the sliders to select the number (reset simulation), length and restitution of pendula, the number of displaced pendula and apply the displacement force.", ET_MultiPendulumCreateFunc),
-
-		ExampleEntry(9, "Evolution"),
-		ExampleEntry(1, "Neural Network 3D Walkers", "A simple example of using evolution to make a creature walk.", ET_NN3DWalkersCreateFunc),
-
-		//todo: create a category/tutorial about advanced topics, such as optimizations, using different collision detection algorithm, different constraint solvers etc.
-		//ExampleEntry(0,"Advanced"),
-		//ExampleEntry(1,"Obj2RigidBody Add Features", "Load a triangle mesh from Wavefront .obj and create polyhedral features to perform the separating axis test (instead of GJK/MPR). It is best to combine optimization and polyhedral feature generation.", ET_RigidBodyFromObjCreateFunc,OptimizeConvexObj+ComputePolyhedralFeatures),
-
 };
 
 #ifdef B3_USE_CLEW

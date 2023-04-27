@@ -328,69 +328,8 @@ ENDIF()
 
 OPTION(BUILD_BULLET3 "Set when you want to build Bullet 3" ON)
 
-# Optional Python configuration
-# Will not probe environment for Python configuration (which can abort the
-# build process) unless you explicitly turn on BUILD_PYBULLET.
-OPTION(BUILD_PYBULLET "Set when you want to build pybullet (Python bindings for Bullet)" OFF)
-IF(BUILD_PYBULLET)
-	SET(PYTHON_VERSION_PYBULLET "" CACHE STRING "Python version pybullet will use.")
-	SET(Python_ADDITIONAL_VERSIONS 3 3.6 3.5 3.4 3.3 3.2 3.1 3.0 2.7 2.7.12 2.7.10 2.7.3 )
-	SET_PROPERTY(CACHE PYTHON_VERSION_PYBULLET PROPERTY STRINGS ${Python_ADDITIONAL_VERSIONS})
-	SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/build3/cmake ${CMAKE_MODULE_PATH})
-	OPTION(EXACT_PYTHON_VERSION "Require Python and match PYTHON_VERSION_PYBULLET exactly, e.g. 2.7.12" OFF)
-	IF(EXACT_PYTHON_VERSION)
-	    set(EXACT_PYTHON_VERSION_FLAG EXACT REQUIRED)
-	ENDIF(EXACT_PYTHON_VERSION)
-	# first find the python interpreter
-	FIND_PACKAGE(PythonInterp ${PYTHON_VERSION_PYBULLET} ${EXACT_PYTHON_VERSION_FLAG})
-	# python library should exactly match that of the interpreter
-	# the following can result in fatal error if you don't have the right python configuration
-	FIND_PACKAGE(PythonLibs ${PYTHON_VERSION_STRING} EXACT)
-ENDIF(BUILD_PYBULLET)
-
 OPTION(BUILD_ENET "Set when you want to build apps with enet UDP networking support" ON)
 OPTION(BUILD_CLSOCKET "Set when you want to build apps with enet TCP networking support" ON)
-
-
-IF(BUILD_PYBULLET)
-	FIND_PACKAGE(PythonLibs)
-
-	OPTION(BUILD_PYBULLET_NUMPY "Set when you want to build pybullet with NumPy support" OFF)
-	OPTION(BUILD_PYBULLET_ENET "Set when you want to build pybullet with enet UDP networking support" ON)
-	OPTION(BUILD_PYBULLET_CLSOCKET "Set when you want to build pybullet with enet TCP networking support" ON)
-
-	OPTION(BUILD_PYBULLET_MAC_USE_PYTHON_FRAMEWORK "Set when you want to use the Python Framework on Mac" OFF)
-
-	IF(BUILD_PYBULLET_NUMPY)
-		#include(FindNumPy)
-		FIND_PACKAGE(NumPy)
-		if (PYTHON_NUMPY_FOUND)
-			message("NumPy found")
-			add_definitions(-DPYBULLET_USE_NUMPY)
-		else()
-			message("NumPy not found")
-		endif()
-	ENDIF()
-
-	IF(WIN32)
-		SET(BUILD_SHARED_LIBS OFF CACHE BOOL "Shared Libs" FORCE)
-	ELSE(WIN32)
-		SET(BUILD_SHARED_LIBS ON CACHE BOOL "Shared Libs" FORCE)
-	ENDIF(WIN32)
-
-	IF(APPLE)
-		OPTION(BUILD_PYBULLET_MAC_USE_PYTHON_FRAMEWORK "Set when you want to use the Python Framework on Mac" ON)
-		IF(NOT BUILD_PYBULLET_MAC_USE_PYTHON_FRAMEWORK)
-			add_definitions(-DB3_NO_PYTHON_FRAMEWORK)
-		ENDIF(NOT BUILD_PYBULLET_MAC_USE_PYTHON_FRAMEWORK)
-		OPTION(BUILD_PYBULLET_SHOW_PY_VERSION "Set when you want to show the PY_MAJOR_VERSION and PY_MAJOR_VERSION using #pragme message." OFF)
-		IF(BUILD_PYBULLET_SHOW_PY_VERSION)
-			add_definitions(-DB3_DUMP_PYTHON_VERSION)
-		ENDIF()
-
-	ENDIF(APPLE)
-
-ENDIF(BUILD_PYBULLET)
 
 IF(NOT WIN32 AND NOT APPLE)
     OPTION(BUILD_EGL "Build OpenGL/EGL" ON)

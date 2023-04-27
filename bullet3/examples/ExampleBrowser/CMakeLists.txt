@@ -149,12 +149,6 @@ SET(ExtendedTutorialsSources
 )
 
 SET(BulletExampleBrowser_SRCS
-        ../BulletRobotics/FixJointBoxes.cpp
-
-        ../BulletRobotics/BoxStack.cpp
-        ../BulletRobotics/JointLimit.cpp
-        # ../BulletRobotics/GraspBox.cpp
-
 	../TinyRenderer/geometry.cpp
 	../TinyRenderer/model.cpp
 	../TinyRenderer/tgaimage.cpp
@@ -206,8 +200,6 @@ SET(BulletExampleBrowser_SRCS
 	../SharedMemory/b3RobotSimulatorClientAPI_NoGUI.h
 	../SharedMemory/b3RobotSimulatorClientAPI_NoDirect.cpp
 	../SharedMemory/b3RobotSimulatorClientAPI_NoDirect.h
-	../RobotSimulator/b3RobotSimulatorClientAPI.cpp
-	../RobotSimulator/b3RobotSimulatorClientAPI.h
 	../BasicDemo/BasicExample.cpp
 	../BasicDemo/BasicExample.h
 	../InverseDynamics/InverseDynamicsExample.cpp
@@ -226,9 +218,6 @@ SET(BulletExampleBrowser_SRCS
 	../Tutorial/Tutorial.h
 	../Tutorial/Dof6ConstraintTutorial.cpp
 	../Tutorial/Dof6ConstraintTutorial.h
-	../Evolution/NN3DWalkers.cpp
-	../Evolution/NN3DWalkers.h
-	../Evolution/NN3DWalkersTimeWarpBase.h
 	../ExtendedTutorials/NewtonsRopeCradle.cpp
 	../ExtendedTutorials/NewtonsRopeCradle.h
 	../Collision/CollisionSdkC_Api.cpp
@@ -267,13 +256,7 @@ SET(BulletExampleBrowser_SRCS
 	../RenderingExamples/DynamicTexturedCubeDemo.h
 	../RenderingExamples/TinyVRGui.cpp
 	../RenderingExamples/TinyVRGui.h
-	
-	../RoboticsLearning/GripperGraspExample.cpp
-	../RoboticsLearning/GripperGraspExample.h
-	../RoboticsLearning/R2D2GraspExample.cpp
-	../RoboticsLearning/R2D2GraspExample.h
-	../RoboticsLearning/KukaGraspExample.cpp
-	../RoboticsLearning/KukaGraspExample.h
+
 	../RenderingExamples/CoordinateSystemDemo.cpp
 	../RenderingExamples/CoordinateSystemDemo.h
 	../RenderingExamples/RaytracerSetup.cpp
