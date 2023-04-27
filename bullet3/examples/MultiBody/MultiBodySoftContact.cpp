@@ -63,9 +63,9 @@ void MultiBodySoftContact::initPhysics()
 	m_dynamicsWorld->setGravity(btVector3(0, 0, -10));
 
 	m_guiHelper->createPhysicsDebugDrawer(m_dynamicsWorld);
-	m_dynamicsWorld->getDebugDrawer()->setDebugMode(
+	//m_dynamicsWorld->getDebugDrawer()->setDebugMode(
 		//btIDebugDraw::DBG_DrawConstraints
-		+btIDebugDraw::DBG_DrawWireframe + btIDebugDraw::DBG_DrawContactPoints + btIDebugDraw::DBG_DrawAabb);  //+btIDebugDraw::DBG_DrawConstraintLimits);
+		//+btIDebugDraw::DBG_DrawWireframe + btIDebugDraw::DBG_DrawContactPoints + btIDebugDraw::DBG_DrawAabb);  //+btIDebugDraw::DBG_DrawConstraintLimits);
 
 	//create a static ground object
 	if (1)

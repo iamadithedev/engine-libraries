@@ -158,8 +158,8 @@ void ImportUrdfSetup::initPhysics()
 	this->createEmptyDynamicsWorld();
 	//m_dynamicsWorld->getSolverInfo().m_numIterations = 100;
 	m_guiHelper->createPhysicsDebugDrawer(m_dynamicsWorld);
-	m_dynamicsWorld->getDebugDrawer()->setDebugMode(
-		btIDebugDraw::DBG_DrawConstraints + btIDebugDraw::DBG_DrawContactPoints + btIDebugDraw::DBG_DrawAabb);  //+btIDebugDraw::DBG_DrawConstraintLimits);
+	//m_dynamicsWorld->getDebugDrawer()->setDebugMode(
+	//	btIDebugDraw::DBG_DrawConstraints + btIDebugDraw::DBG_DrawContactPoints + btIDebugDraw::DBG_DrawAabb);  //+btIDebugDraw::DBG_DrawConstraintLimits);
 
 	if (m_guiHelper->getParameterInterface())
 	{

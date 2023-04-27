@@ -147,7 +147,7 @@ struct CommonRigidBodyMTBase : public CommonExampleInterface
 		{
 			if (m_dynamicsWorld->getDebugDrawer())
 			{
-				m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugDrawFlags);
+				//m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugDrawFlags);
 			}
 			m_dynamicsWorld->debugDrawWorld();
 		}

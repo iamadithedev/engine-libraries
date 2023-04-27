@@ -86,8 +86,8 @@ void KinematicMultiBodyExample::initPhysics()
 	createEmptyDynamicsWorld();
 	m_guiHelper->createPhysicsDebugDrawer(m_dynamicsWorld);
 
-	if (m_dynamicsWorld->getDebugDrawer())
-		m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe + btIDebugDraw::DBG_DrawContactPoints);
+	//if (m_dynamicsWorld->getDebugDrawer())
+	//	m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe + btIDebugDraw::DBG_DrawContactPoints);
 
 	///create a kinematic multibody
 	btBoxShape* groundShape = createBoxShape(btVector3(btScalar(10.), btScalar(0.1), btScalar(10.)));

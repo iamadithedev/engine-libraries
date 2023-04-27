@@ -185,11 +185,8 @@ void btCollisionWorld::updateSingleAabb(btCollisionObject* colObj)
 		static bool reportMe = true;
 		if (reportMe && m_debugDrawer)
 		{
+            btAssert(reportMe == false);
 			reportMe = false;
-			m_debugDrawer->reportErrorWarning("Overflow in AABB, object removed from simulation");
-			m_debugDrawer->reportErrorWarning("If you can reproduce this, please email bugs@continuousphysics.com\n");
-			m_debugDrawer->reportErrorWarning("Please include above information, your Platform, version of OS.\n");
-			m_debugDrawer->reportErrorWarning("Thanks.\n");
 		}
 	}
 }
@@ -1471,28 +1468,6 @@ void btCollisionWorld::debugDrawWorld()
 		getDebugDrawer()->clearLines();
 
 		btIDebugDraw::DefaultColors defaultColors = getDebugDrawer()->getDefaultColors();
-
-		if (getDebugDrawer()->getDebugMode() & btIDebugDraw::DBG_DrawContactPoints)
-		{
-			if (getDispatcher())
-			{
-				int numManifolds = getDispatcher()->getNumManifolds();
-
-				for (int i = 0; i < numManifolds; i++)
-				{
-					btPersistentManifold* contactManifold = getDispatcher()->getManifoldByIndexInternal(i);
-					//btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
-					//btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
-
-					int numContacts = contactManifold->getNumContacts();
-					for (int j = 0; j < numContacts; j++)
-					{
-						btManifoldPoint& cp = contactManifold->getContactPoint(j);
-						getDebugDrawer()->drawContactPoint(cp.m_positionWorldOnB, cp.m_normalWorldOnB, cp.getDistance(), cp.getLifeTime(), defaultColors.m_contactPoint);
-					}
-				}
-			}
-		}
 
 		if ((getDebugDrawer()->getDebugMode() & (btIDebugDraw::DBG_DrawWireframe | btIDebugDraw::DBG_DrawAabb)))
 		{

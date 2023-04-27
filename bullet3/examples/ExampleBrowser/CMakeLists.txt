@@ -140,12 +140,8 @@ SET(ExtendedTutorialsSources
 	../ExtendedTutorials/SimpleCloth.h
 	../ExtendedTutorials/SimpleJoint.cpp
 	../ExtendedTutorials/SimpleJoint.h
-	../ExtendedTutorials/NewtonsCradle.cpp
-	../ExtendedTutorials/NewtonsCradle.h
 	../ExtendedTutorials/InclinedPlane.cpp
 	../ExtendedTutorials/InclinedPlane.h
-	../ExtendedTutorials/MultiPendulum.cpp
-	../ExtendedTutorials/MultiPendulum.h
 )
 
 SET(BulletExampleBrowser_SRCS
@@ -156,8 +152,6 @@ SET(BulletExampleBrowser_SRCS
 	../TinyRenderer/TinyRenderer.cpp
 	../SharedMemory/plugins/collisionFilterPlugin/collisionFilterPlugin.cpp
 	../SharedMemory/plugins/collisionFilterPlugin/collisionFilterPlugin.h
-	../SharedMemory/plugins/pdControlPlugin/pdControlPlugin.cpp
-	../SharedMemory/plugins/pdControlPlugin/pdControlPlugin.h
 	../SharedMemory/plugins/tinyRendererPlugin/tinyRendererPlugin.cpp
 	../SharedMemory/plugins/tinyRendererPlugin/TinyRendererVisualShapeConverter.cpp
 	../SharedMemory/IKTrajectoryHelper.cpp
@@ -196,10 +190,6 @@ SET(BulletExampleBrowser_SRCS
 	../SharedMemory/SharedMemoryCommands.h
 	../SharedMemory/SharedMemoryPublic.h
 	../SharedMemory/b3PluginManager.cpp
-	../SharedMemory/b3RobotSimulatorClientAPI_NoGUI.cpp
-	../SharedMemory/b3RobotSimulatorClientAPI_NoGUI.h
-	../SharedMemory/b3RobotSimulatorClientAPI_NoDirect.cpp
-	../SharedMemory/b3RobotSimulatorClientAPI_NoDirect.h
 	../BasicDemo/BasicExample.cpp
 	../BasicDemo/BasicExample.h
 	../InverseDynamics/InverseDynamicsExample.cpp
@@ -218,8 +208,6 @@ SET(BulletExampleBrowser_SRCS
 	../Tutorial/Tutorial.h
 	../Tutorial/Dof6ConstraintTutorial.cpp
 	../Tutorial/Dof6ConstraintTutorial.h
-	../ExtendedTutorials/NewtonsRopeCradle.cpp
-	../ExtendedTutorials/NewtonsRopeCradle.h
 	../Collision/CollisionSdkC_Api.cpp
 	../Collision/CollisionSdkC_Api.h
 	../Collision/CollisionTutorialBullet2.cpp
@@ -329,12 +317,9 @@ SET(BulletExampleBrowser_SRCS
   ../VoronoiFracture/btConvexConvexMprAlgorithm.h
   ../Vehicles/Hinge2Vehicle.cpp
   ../Vehicles/Hinge2Vehicle.h
-  ../MultiBody/Pendulum.cpp
   ../MultiBody/MultiBodySoftContact.cpp
   ../MultiBody/TestJointTorqueSetup.cpp
   ../MultiBody/TestJointTorqueSetup.h
-  ../MultiBody/InvertedPendulumPDControl.cpp
-  ../MultiBody/InvertedPendulumPDControl.h
   ../MultiBody/MultiBodyConstraintFeedback.cpp
   ../MultiBody/KinematicMultiBodyExample.cpp
   ../SoftDemo/SoftDemo.cpp

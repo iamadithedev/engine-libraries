@@ -943,7 +943,7 @@ void CommonRigidBodyMTBase::physicsDebugDraw(int debugFlags)
 {
 	if (m_dynamicsWorld && m_dynamicsWorld->getDebugDrawer())
 	{
-		m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugFlags);
+		//m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugFlags);
 		m_dynamicsWorld->debugDrawWorld();
 	}
 	drawScreenText();

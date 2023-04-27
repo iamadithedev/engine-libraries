@@ -11,10 +11,6 @@ INCLUDE_DIRECTORIES(
 SET(RobotSimulator_SRCS
 		TwoJointMain.cpp
 		../../examples/SharedMemory/plugins/collisionFilterPlugin/collisionFilterPlugin.cpp
-		../../examples/SharedMemory/plugins/pdControlPlugin/pdControlPlugin.cpp
-		../../examples/SharedMemory/plugins/pdControlPlugin/pdControlPlugin.h
-		../../examples/SharedMemory/b3RobotSimulatorClientAPI_NoDirect.cpp
-		../../examples/SharedMemory/b3RobotSimulatorClientAPI_NoDirect.h
 		../../examples/SharedMemory/IKTrajectoryHelper.cpp
 		../../examples/SharedMemory/IKTrajectoryHelper.h
 		../../examples/ExampleBrowser/InProcessExampleBrowser.cpp
@@ -86,61 +82,14 @@ SET(RobotSimulator_SRCS
 		
 )
 
-IF(BUILD_CLSOCKET)
- ADD_DEFINITIONS(-DBT_ENABLE_CLSOCKET)
-ENDIF(BUILD_CLSOCKET)
-
 IF(WIN32)
 	LINK_LIBRARIES(
 		${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY}
 	)
-	IF(BUILD_ENET)
-		ADD_DEFINITIONS(-DWIN32 -DBT_ENABLE_ENET)
-	ENDIF(BUILD_ENET)
-	IF(BUILD_CLSOCKET)
-		ADD_DEFINITIONS(-DWIN32)
-	ENDIF(BUILD_CLSOCKET)
 
 ELSE(WIN32)
-	IF(BUILD_ENET)
-		ADD_DEFINITIONS(-DHAS_SOCKLEN_T -DBT_ENABLE_ENET)
-	ENDIF(BUILD_ENET)
 
-	IF(BUILD_CLSOCKET)	
-		ADD_DEFINITIONS(${OSDEF})
-	ENDIF(BUILD_CLSOCKET)
 ENDIF(WIN32)
-
-
-IF(BUILD_ENET)
-	set(RobotSimulator_SRCS ${RobotSimulator_SRCS} 
-		../../examples/SharedMemory/PhysicsClientUDP.cpp
-		../../examples/SharedMemory/PhysicsClientUDP_C_API.cpp
-		../../examples/SharedMemory/PhysicsClientUDP.h		
-		../../examples/SharedMemory/PhysicsClientUDP_C_API.h
-		../../examples/ThirdPartyLibs/enet/win32.c
-		../../examples/ThirdPartyLibs/enet/unix.c
-		../../examples/ThirdPartyLibs/enet/callbacks.c
-		../../examples/ThirdPartyLibs/enet/compress.c
-		../../examples/ThirdPartyLibs/enet/host.c
-		../../examples/ThirdPartyLibs/enet/list.c
-		../../examples/ThirdPartyLibs/enet/packet.c
-		../../examples/ThirdPartyLibs/enet/peer.c
-		../../examples/ThirdPartyLibs/enet/protocol.c
-	)
-ENDIF(BUILD_ENET)
-
-IF(BUILD_CLSOCKET)
-	set(RobotSimulator_SRCS ${RobotSimulator_SRCS}
-		 ../../examples/SharedMemory/PhysicsClientTCP.cpp
-                 ../../examples/SharedMemory/PhysicsClientTCP.h
-                 ../../examples/SharedMemory/PhysicsClientTCP_C_API.cpp
-                 ../../examples/SharedMemory/PhysicsClientTCP_C_API.h
-		 ../../examples/ThirdPartyLibs/clsocket/src/SimpleSocket.cpp
-		 ../../examples/ThirdPartyLibs/clsocket/src/ActiveSocket.cpp
-		 ../../examples/ThirdPartyLibs/clsocket/src/PassiveSocket.cpp
-	)
-ENDIF()
 
 
 #some code to support OpenGL and Glew cross platform
@@ -173,14 +122,6 @@ ADD_EXECUTABLE(App_TwoJoint  ${RobotSimulator_SRCS})
 
 SET_TARGET_PROPERTIES(App_TwoJoint PROPERTIES VERSION ${BULLET_VERSION})
 SET_TARGET_PROPERTIES(App_TwoJoint PROPERTIES DEBUG_POSTFIX "_d")
-
-
-IF(WIN32)
-	IF(BUILD_ENET OR BUILD_CLSOCKET)
-		TARGET_LINK_LIBRARIES(App_TwoJoint ws2_32 )
-	ENDIF(BUILD_ENET OR BUILD_CLSOCKET)
-ENDIF(WIN32)
-
 
 
 TARGET_LINK_LIBRARIES(App_TwoJoint BulletExampleBrowserLib BulletFileLoader BulletWorldImporter BulletSoftBody BulletDynamics BulletCollision BulletInverseDynamicsUtils BulletInverseDynamics LinearMath OpenGLWindow gwen BussIK Bullet3Common)

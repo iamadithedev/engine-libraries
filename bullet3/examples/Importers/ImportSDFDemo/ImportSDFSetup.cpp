@@ -154,8 +154,8 @@ void ImportSDFSetup::initPhysics()
 	this->createEmptyDynamicsWorld();
 	//m_dynamicsWorld->getSolverInfo().m_numIterations = 100;
 	m_guiHelper->createPhysicsDebugDrawer(m_dynamicsWorld);
-	m_dynamicsWorld->getDebugDrawer()->setDebugMode(
-		btIDebugDraw::DBG_DrawConstraints + btIDebugDraw::DBG_DrawContactPoints + btIDebugDraw::DBG_DrawAabb);  //+btIDebugDraw::DBG_DrawConstraintLimits);
+	//m_dynamicsWorld->getDebugDrawer()->setDebugMode(
+	//	btIDebugDraw::DBG_DrawConstraints + btIDebugDraw::DBG_DrawContactPoints + btIDebugDraw::DBG_DrawAabb);  //+btIDebugDraw::DBG_DrawConstraintLimits);
 
 	btVector3 gravity(0, 0, 0);
 	gravity[upAxis] = -9.8;

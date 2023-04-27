@@ -14,16 +14,11 @@ subject to the following restrictions:
 */
 
 #include "RaytestDemo.h"
-///btBulletDynamicsCommon.h is the main Bullet include file, contains most common include files.
+
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
-#include "BulletCollision/Gimpact/btGImpactShape.h"
-
-#include <stdio.h>  //printf debugging
 
 #include "LinearMath/btAlignedObjectArray.h"
-
-///RaytestDemo shows how to use the btCollisionWorld::rayTest feature
 
 #include "../CommonInterfaces/CommonRigidBodyBase.h"
 

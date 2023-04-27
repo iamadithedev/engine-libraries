@@ -55,7 +55,6 @@ public:
 		DBG_DrawWireframe = 1,
 		DBG_DrawAabb = 2,
 		DBG_DrawFeaturesText = 4,
-		DBG_DrawContactPoints = 8,
 		DBG_NoDeactivation = 16,
 		DBG_NoHelpText = 32,
 		DBG_DrawText = 64,
@@ -121,14 +120,6 @@ public:
 		drawLine(v1, v2, color);
 		drawLine(v2, v0, color);
 	}
-
-	virtual void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color) = 0;
-
-	virtual void reportErrorWarning(const char* warningString) = 0;
-
-	virtual void draw3dText(const btVector3& location, const char* textString) = 0;
-
-	virtual void setDebugMode(int debugMode) = 0;
 
 	virtual int getDebugMode() const = 0;
 

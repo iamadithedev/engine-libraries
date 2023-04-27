@@ -66,7 +66,7 @@ void ImportColladaSetup::initPhysics()
 	m_guiHelper->setUpAxis(upAxis);
 	this->createEmptyDynamicsWorld();
 	m_guiHelper->createPhysicsDebugDrawer(m_dynamicsWorld);
-	m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	//m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 
 	static int fileIndex = 0;
 

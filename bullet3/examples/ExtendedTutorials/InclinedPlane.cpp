@@ -167,8 +167,8 @@ void InclinedPlaneExample::initPhysics()
 
 	// create debug drawer
 	m_guiHelper->createPhysicsDebugDrawer(m_dynamicsWorld);
-	if (m_dynamicsWorld->getDebugDrawer())
-		m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe + btIDebugDraw::DBG_DrawContactPoints);
+	//if (m_dynamicsWorld->getDebugDrawer())
+	//	m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe + btIDebugDraw::DBG_DrawContactPoints);
 
 	{  // create a static ground
 		btBoxShape* groundShape = createBoxShape(btVector3(btScalar(50.), btScalar(50.), btScalar(50.)));

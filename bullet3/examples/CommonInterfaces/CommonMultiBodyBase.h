@@ -220,7 +220,7 @@ struct CommonMultiBodyBase : public CommonExampleInterface
 		{
 			if (m_dynamicsWorld->getDebugDrawer())
 			{
-				m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugDrawFlags);
+				//m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugDrawFlags);
 			}
 			m_dynamicsWorld->debugDrawWorld();
 		}
@@ -236,7 +236,7 @@ struct CommonMultiBodyBase : public CommonExampleInterface
 			FILE* file = fopen("testFile.bullet", "wb");
 			fwrite(serializer->getBufferPointer(), serializer->getCurrentBufferSize(), 1, file);
 			fclose(file);
-			//b3Printf("btDefaultSerializer wrote testFile.bullet");
+
 			delete serializer;
 			return true;
 		}

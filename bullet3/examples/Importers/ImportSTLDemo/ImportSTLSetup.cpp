@@ -53,7 +53,7 @@ void ImportSTLSetup::initPhysics()
 	m_guiHelper->setUpAxis(2);
 	this->createEmptyDynamicsWorld();
 	m_guiHelper->createPhysicsDebugDrawer(m_dynamicsWorld);
-	m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	//m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 
 	char relativeFileName[1024];
 	if (!b3ResourcePath::findResourcePath(m_fileName, relativeFileName, 1024,0))

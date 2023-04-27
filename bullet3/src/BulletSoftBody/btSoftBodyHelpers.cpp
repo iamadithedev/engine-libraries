@@ -387,7 +387,6 @@ void btSoftBodyHelpers::Draw(btSoftBody* psb,
 			{
 				p += n.m_nodes[j]->m_x * n.m_coords[j];
 			}
-			idraw->draw3dText(p, n.m_text);
 		}
 	}
 	/* Node tree	*/
@@ -458,7 +457,6 @@ void btSoftBodyHelpers::DrawInfos(btSoftBody* psb,
 			sprintf(buff, " A(%.2f)", n.m_area);
 			strcat(text, buff);
 		}
-		if (text[0]) idraw->draw3dText(n.m_x, text);
 	}
 }
 

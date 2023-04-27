@@ -14,10 +14,8 @@ subject to the following restrictions:
 */
 #include "InverseDynamicsExample.h"
 
-#include "BulletDynamics/Featherstone/btMultiBodyLinkCollider.h"
 #include "Bullet3Common/b3FileUtils.h"
 #include "BulletDynamics/Featherstone/btMultiBodyJointMotor.h"
-#include "BulletDynamics/Featherstone/btMultiBodyDynamicsWorld.h"
 #include "../CommonInterfaces/CommonParameterInterface.h"
 #include "../Utils/b3ResourcePath.h"
 #include "../Importers/ImportURDFDemo/BulletUrdfImporter.h"
@@ -26,12 +24,8 @@ subject to the following restrictions:
 
 #include "../CommonInterfaces/CommonMultiBodyBase.h"
 
-#include "btBulletDynamicsCommon.h"
-
 #include "LinearMath/btVector3.h"
 #include "LinearMath/btAlignedObjectArray.h"
-
-#include "../CommonInterfaces/CommonRigidBodyBase.h"
 
 #include "BulletInverseDynamics/IDConfig.hpp"
 #include "../Extras/InverseDynamics/btMultiBodyTreeCreator.hpp"
@@ -110,9 +104,6 @@ InverseDynamicsExample::~InverseDynamicsExample()
 	delete m_timeSeriesCanvas;
 }
 
-//todo(erwincoumans) Quick hack, reference to InvertedPendulumPDControl implementation. Will create a separate header/source file for this.
-btMultiBody* createInvertedPendulumMultiBody(btMultiBodyDynamicsWorld* world, GUIHelperInterface* guiHelper, const btTransform& baseWorldTrans, bool fixedBase);
-
 void InverseDynamicsExample::initPhysics()
 {
 	//roboticists like Z up
@@ -176,13 +167,6 @@ void InverseDynamicsExample::initPhysics()
 					b3Printf("Root link name = %s", u2b.getLinkName(u2b.getRootLinkIndex()).c_str());
 				}
 			}
-			break;
-		}
-		case BT_ID_PROGRAMMATICALLY:
-		{
-			btTransform baseWorldTrans;
-			baseWorldTrans.setIdentity();
-			m_multiBody = createInvertedPendulumMultiBody(m_dynamicsWorld, m_guiHelper, baseWorldTrans, false);
 			break;
 		}
 		default:

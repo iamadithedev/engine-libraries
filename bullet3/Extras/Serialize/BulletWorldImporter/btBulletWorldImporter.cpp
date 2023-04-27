@@ -17,9 +17,6 @@ subject to the following restrictions:
 #include "../BulletFileLoader/btBulletFile.h"
 
 #include "btBulletDynamicsCommon.h"
-#ifndef USE_GIMPACT
-#include "BulletCollision/Gimpact/btGImpactShape.h"
-#endif
 
 //#define USE_INTERNAL_EDGE_UTILITY
 #ifdef USE_INTERNAL_EDGE_UTILITY

@@ -87,7 +87,7 @@ void ImportObjSetup::initPhysics()
 	m_guiHelper->setUpAxis(2);
 	this->createEmptyDynamicsWorld();
 	m_guiHelper->createPhysicsDebugDrawer(m_dynamicsWorld);
-	m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
+	//m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe);
 
 	btTransform trans;
 	trans.setIdentity();

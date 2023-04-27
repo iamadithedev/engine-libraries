@@ -5,7 +5,6 @@ OPTION(BUILD_OBJ2SDF_EXTRA "Build obj2sdf extra module, only applied when BUILD_
 OPTION(BUILD_SERIALIZE_EXTRA "Build Serialize extra module, only applied when BUILD_EXTRAS is ON" ON)
 OPTION(BUILD_CONVEX_DECOMPOSITION_EXTRA "Build ConvexDecomposition extra module, only applied when BUILD_EXTRAS is ON" ON)
 OPTION(BUILD_HACD_EXTRA "Build HACD extra module, only applied when BUILD_EXTRAS is ON" ON)
-OPTION(BUILD_GIMPACTUTILS_EXTRA "Build GIMPACTUtils extra module, only applied when BUILD_EXTRAS is ON" ON)
 
 IF(BUILD_INVERSE_DYNAMIC_EXTRA)
   SUBDIRS( InverseDynamics )
@@ -22,13 +21,3 @@ ENDIF()
 IF(BUILD_HACD_EXTRA)
   SUBDIRS( HACD )
 ENDIF()
-IF(BUILD_GIMPACTUTILS_EXTRA)
-  SUBDIRS( GIMPACTUtils )
-ENDIF()
-
-
-#Maya Dynamica plugin is moved to http://dynamica.googlecode.com
-
-#IF (USE_GLUT AND GLUT_FOUND)
-#	SUBDIRS (glui)
-#ENDIF ()

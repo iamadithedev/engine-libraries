@@ -16,9 +16,7 @@ subject to the following restrictions:
 #include "btWorldImporter.h"
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
-#ifdef USE_GIMPACT
-#include "BulletCollision/Gimpact/btGImpactShape.h"
-#endif
+
 btWorldImporter::btWorldImporter(btDynamicsWorld* world)
 	: m_dynamicsWorld(world),
 	  m_verboseMode(0),
@@ -171,26 +169,6 @@ btCollisionShape* btWorldImporter::convertCollisionShape(btCollisionShapeData* s
 		}
 		case GIMPACT_SHAPE_PROXYTYPE:
 		{
-#ifdef USE_GIMPACT
-			btGImpactMeshShapeData* gimpactData = (btGImpactMeshShapeData*)shapeData;
-			if (gimpactData->m_gimpactSubType == CONST_GIMPACT_TRIMESH_SHAPE)
-			{
-				btStridingMeshInterfaceData* interfaceData = createStridingMeshInterfaceData(&gimpactData->m_meshInterface);
-				btTriangleIndexVertexArray* meshInterface = createMeshInterface(*interfaceData);
-
-				btGImpactMeshShape* gimpactShape = createGimpactShape(meshInterface);
-				btVector3 localScaling;
-				localScaling.deSerializeFloat(gimpactData->m_localScaling);
-				gimpactShape->setLocalScaling(localScaling);
-				gimpactShape->setMargin(btScalar(gimpactData->m_collisionMargin));
-				gimpactShape->updateBound();
-				shape = gimpactShape;
-			}
-			else
-			{
-				printf("unsupported gimpact sub type\n");
-			}
-#endif  //USE_GIMPACT
 			break;
 		}
 			//The btCapsuleShape* API has issue passing the margin/scaling/halfextents unmodified through the API

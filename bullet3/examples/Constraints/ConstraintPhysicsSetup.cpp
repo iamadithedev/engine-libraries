@@ -88,7 +88,7 @@ void ConstraintPhysicsSetup::initPhysics()
 
 	m_guiHelper->createPhysicsDebugDrawer(m_dynamicsWorld);
 	int mode = btIDebugDraw::DBG_DrawWireframe + btIDebugDraw::DBG_DrawConstraints + btIDebugDraw::DBG_DrawConstraintLimits;
-	m_dynamicsWorld->getDebugDrawer()->setDebugMode(mode);
+	//m_dynamicsWorld->getDebugDrawer()->setDebugMode(mode);
 
 	{
 		SliderParams slider("target vel", &targetVel);

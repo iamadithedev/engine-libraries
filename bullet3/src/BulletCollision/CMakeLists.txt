@@ -76,17 +76,6 @@ SET(BulletCollision_SRCS
 	CollisionShapes/btTriangleMesh.cpp
 	CollisionShapes/btTriangleMeshShape.cpp
 	CollisionShapes/btUniformScalingShape.cpp
-	Gimpact/btContactProcessing.cpp
-	Gimpact/btGenericPoolAllocator.cpp
-	Gimpact/btGImpactBvh.cpp
-	Gimpact/btGImpactCollisionAlgorithm.cpp
-	Gimpact/btGImpactQuantizedBvh.cpp
-	Gimpact/btGImpactShape.cpp
-	Gimpact/btTriangleShapeEx.cpp
-	Gimpact/gim_box_set.cpp
-	Gimpact/gim_contact.cpp
-	Gimpact/gim_memory.cpp
-	Gimpact/gim_tri_collision.cpp
 	NarrowPhaseCollision/btContinuousConvexCollision.cpp
 	NarrowPhaseCollision/btConvexCast.cpp
 	NarrowPhaseCollision/btGjkConvexCast.cpp
@@ -191,38 +180,6 @@ SET(CollisionShapes_HDRS
 	CollisionShapes/btTriangleShape.h
 	CollisionShapes/btUniformScalingShape.h
 )
-SET(Gimpact_HDRS
-	Gimpact/btBoxCollision.h
-	Gimpact/btClipPolygon.h
-	Gimpact/btContactProcessingStructs.h
-	Gimpact/btContactProcessing.h
-	Gimpact/btGenericPoolAllocator.h
-	Gimpact/btGeometryOperations.h
-	Gimpact/btGImpactBvhStructs.h
-	Gimpact/btGImpactBvh.h
-	Gimpact/btGImpactCollisionAlgorithm.h
-	Gimpact/btGImpactMassUtil.h
-	Gimpact/btGImpactQuantizedBvhStructs.h
-	Gimpact/btGImpactQuantizedBvh.h
-	Gimpact/btGImpactShape.h
-	Gimpact/btQuantization.h
-	Gimpact/btTriangleShapeEx.h
-	Gimpact/gim_array.h
-	Gimpact/gim_basic_geometry_operations.h
-	Gimpact/gim_bitset.h
-	Gimpact/gim_box_collision.h
-	Gimpact/gim_box_set.h
-	Gimpact/gim_clip_polygon.h
-	Gimpact/gim_contact.h
-	Gimpact/gim_geom_types.h
-	Gimpact/gim_geometry.h
-	Gimpact/gim_hash_table.h
-	Gimpact/gim_linear_math.h
-	Gimpact/gim_math.h
-	Gimpact/gim_memory.h
-	Gimpact/gim_radixsort.h
-	Gimpact/gim_tri_collision.h
-)
 SET(NarrowPhaseCollision_HDRS
 	NarrowPhaseCollision/btContinuousConvexCollision.h
 	NarrowPhaseCollision/btConvexCast.h
@@ -248,7 +205,6 @@ SET(BulletCollision_HDRS
 	${BroadphaseCollision_HDRS}
 	${CollisionDispatch_HDRS}
 	${CollisionShapes_HDRS}
-	${Gimpact_HDRS}
 	${NarrowPhaseCollision_HDRS}
 )
 

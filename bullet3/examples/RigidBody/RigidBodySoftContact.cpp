@@ -75,8 +75,8 @@ void RigidBodySoftContact::initPhysics()
 
 	m_guiHelper->createPhysicsDebugDrawer(m_dynamicsWorld);
 
-	if (m_dynamicsWorld->getDebugDrawer())
-		m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe + btIDebugDraw::DBG_DrawContactPoints);
+	//if (m_dynamicsWorld->getDebugDrawer())
+	//	m_dynamicsWorld->getDebugDrawer()->setDebugMode(btIDebugDraw::DBG_DrawWireframe + btIDebugDraw::DBG_DrawContactPoints);
 	m_dynamicsWorld->getSolverInfo().m_erp2 = 0.f;
 	m_dynamicsWorld->getSolverInfo().m_globalCfm = 0.f;
 	m_dynamicsWorld->getSolverInfo().m_numIterations = 3;

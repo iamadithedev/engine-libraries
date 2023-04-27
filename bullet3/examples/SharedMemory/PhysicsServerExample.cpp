@@ -639,12 +639,6 @@ public:
 		drawLine(PointOnB, PointOnB + normalOnB * 0.01, ncolor);
 	}
 
-	virtual void reportErrorWarning(const char* warningString)
-	{
-	}
-	virtual void draw3dText(const btVector3& location, const char* textString)
-	{
-	}
 	virtual void setDebugMode(int debugMode)
 	{
 		m_debugMode = debugMode;

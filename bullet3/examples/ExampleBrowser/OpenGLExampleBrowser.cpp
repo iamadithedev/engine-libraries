@@ -201,10 +201,6 @@ void MyKeyboardCallback(int key, int state)
 		{
 			gDebugDrawFlags ^= btIDebugDraw::DBG_DrawAabb;
 		}
-		if (key == 'c' && state)
-		{
-			gDebugDrawFlags ^= btIDebugDraw::DBG_DrawContactPoints;
-		}
 		if (key == 'd' && state)
 		{
 			gDebugDrawFlags ^= btIDebugDraw::DBG_NoDeactivation;

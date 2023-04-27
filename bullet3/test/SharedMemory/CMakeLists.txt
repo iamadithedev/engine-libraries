@@ -16,7 +16,7 @@ IF (USE_SOFT_BODY_MULTI_BODY_DYNAMICS_WORLD)
 ENDIF()
 
 LINK_LIBRARIES(
- BulletInverseDynamicsUtils BulletInverseDynamics BulletFileLoader BulletWorldImporter Bullet3Common BulletDynamics BulletCollision LinearMath gtest BussIK
+ BulletInverseDynamicsUtils BulletInverseDynamics BulletFileLoader BulletWorldImporter Bullet3Common BulletDynamics BulletCollision LinearMath BussIK
 )
 
 IF (NOT WIN32)
@@ -31,10 +31,6 @@ ENDIF()
 		gtestwrap.cpp
 		../../examples/SharedMemory/PhysicsClient.cpp
 		../../examples/SharedMemory/plugins/collisionFilterPlugin/collisionFilterPlugin.cpp
-		../../examples/SharedMemory/plugins/pdControlPlugin/pdControlPlugin.cpp
-		../../examples/SharedMemory/plugins/pdControlPlugin/pdControlPlugin.h
-		../../examples/SharedMemory/b3RobotSimulatorClientAPI_NoDirect.cpp
-		../../examples/SharedMemory/b3RobotSimulatorClientAPI_NoDirect.h
 		../../examples/SharedMemory/IKTrajectoryHelper.cpp
 		../../examples/SharedMemory/IKTrajectoryHelper.h
 		../../examples/SharedMemory/PhysicsClient.h

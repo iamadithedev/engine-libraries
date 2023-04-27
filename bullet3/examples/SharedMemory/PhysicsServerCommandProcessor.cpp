@@ -71,10 +71,6 @@
 #include "plugins/grpcPlugin/grpcPlugin.h"
 #endif  //ENABLE_STATIC_GRPC_PLUGIN
 
-#ifndef SKIP_STATIC_PD_CONTROL_PLUGIN
-#include "plugins/pdControlPlugin/pdControlPlugin.h"
-#endif  //SKIP_STATIC_PD_CONTROL_PLUGIN
-
 #ifdef STATIC_LINK_SPD_PLUGIN
 #include "plugins/stablePDPlugin/BulletConversion.h"
 #include "plugins/stablePDPlugin/RBDModel.h"
@@ -201,14 +197,6 @@ struct SharedMemoryDebugDrawer : public btIDebugDraw
 	{
 	}
 	virtual void drawContactPoint(const btVector3& PointOnB, const btVector3& normalOnB, btScalar distance, int lifeTime, const btVector3& color)
-	{
-	}
-
-	virtual void reportErrorWarning(const char* warningString)
-	{
-	}
-
-	virtual void draw3dText(const btVector3& location, const char* textString)
 	{
 	}
 
@@ -1791,14 +1779,6 @@ struct PhysicsServerCommandProcessorInternalData
 			m_pluginManager.registerStaticLinkedPlugin("vrSyncPlugin", funcs);
 #endif  //STATIC_LINK_VR_PLUGIN
 		}
-#ifndef SKIP_STATIC_PD_CONTROL_PLUGIN
-		{
-			//int b3PluginManager::registerStaticLinkedPlugin(const char* pluginPath, PFN_INIT initFunc, PFN_EXIT exitFunc, PFN_EXECUTE executeCommandFunc, PFN_TICK preTickFunc, PFN_TICK postTickFunc, PFN_GET_RENDER_INTERFACE getRendererFunc, PFN_TICK processClientCommandsFunc, PFN_GET_COLLISION_INTERFACE getCollisionFunc, bool initPlugin)
-			b3PluginFunctions funcs(initPlugin_pdControlPlugin, exitPlugin_pdControlPlugin, executePluginCommand_pdControlPlugin);
-			funcs.m_preTickFunc = preTickPluginCallback_pdControlPlugin;
-			m_pdControlPlugin = m_pluginManager.registerStaticLinkedPlugin("pdControlPlugin", funcs);
-		}
-#endif  //SKIP_STATIC_PD_CONTROL_PLUGIN
 
 #ifndef SKIP_COLLISION_FILTER_PLUGIN
 		{
@@ -7115,86 +7095,6 @@ bool PhysicsServerCommandProcessor::processSendDesiredStateCommand(const struct 
 
 		switch (clientCmd.m_sendDesiredStateCommandArgument.m_controlMode)
 		{
-			case CONTROL_MODE_PD:
-			{
-				if (m_data->m_verboseOutput)
-				{
-					b3Printf("Using CONTROL_MODE_PD");
-				}
-
-				b3PluginArguments args;
-				args.m_ints[1] = bodyUniqueId;
-				//find the joint motors and apply the desired velocity and maximum force/torque
-				{
-					args.m_numInts = 0;
-					args.m_numFloats = 0;
-					//syncBodies is expensive/slow, use it only once
-					m_data->m_pluginManager.executePluginCommand(m_data->m_pdControlPlugin, &args);
-
-					int velIndex = 6;  //skip the 3 linear + 3 angular degree of freedom velocity entries of the base
-					int posIndex = 7;  //skip 3 positional and 4 orientation (quaternion) positional degrees of freedom of the base
-					for (int link = 0; link < mb->getNumLinks(); link++)
-					{
-						if (supportsJointMotor(mb, link))
-						{
-							bool hasDesiredPosOrVel = false;
-							btScalar desiredVelocity = 0.f;
-							if ((clientCmd.m_sendDesiredStateCommandArgument.m_hasDesiredStateFlags[velIndex] & SIM_DESIRED_STATE_HAS_QDOT) != 0)
-							{
-								hasDesiredPosOrVel = true;
-								desiredVelocity = clientCmd.m_sendDesiredStateCommandArgument.m_desiredStateQdot[velIndex];
-								args.m_floats[2] = 0.1;  // kd
-							}
-							btScalar desiredPosition = 0.f;
-							if ((clientCmd.m_sendDesiredStateCommandArgument.m_hasDesiredStateFlags[posIndex] & SIM_DESIRED_STATE_HAS_Q) != 0)
-							{
-								hasDesiredPosOrVel = true;
-								desiredPosition = clientCmd.m_sendDesiredStateCommandArgument.m_desiredStateQ[posIndex];
-								args.m_floats[3] = 0.1;  // kp
-							}
-
-							if (hasDesiredPosOrVel)
-							{
-								if ((clientCmd.m_sendDesiredStateCommandArgument.m_hasDesiredStateFlags[velIndex] & SIM_DESIRED_STATE_HAS_KP) != 0)
-								{
-									args.m_floats[3] = clientCmd.m_sendDesiredStateCommandArgument.m_Kp[velIndex];
-								}
-								if ((clientCmd.m_sendDesiredStateCommandArgument.m_hasDesiredStateFlags[velIndex] & SIM_DESIRED_STATE_HAS_KD) != 0)
-								{
-									args.m_floats[2] = clientCmd.m_sendDesiredStateCommandArgument.m_Kd[velIndex];
-								}
-
-								args.m_floats[1] = desiredVelocity;
-								//clamp position
-								if (mb->getLink(link).m_jointLowerLimit <= mb->getLink(link).m_jointUpperLimit)
-								{
-									btClamp(desiredPosition, mb->getLink(link).m_jointLowerLimit, mb->getLink(link).m_jointUpperLimit);
-								}
-								args.m_floats[0] = desiredPosition;
-
-								btScalar maxImp = 1000000.f;
-								if ((clientCmd.m_updateFlags & SIM_DESIRED_STATE_HAS_MAX_FORCE) != 0)
-									maxImp = clientCmd.m_sendDesiredStateCommandArgument.m_desiredStateForceTorque[velIndex];
-								args.m_floats[4] = maxImp;
-
-								args.m_ints[2] = link;
-								args.m_numInts = 3;
-								args.m_numFloats = 5;
-
-								args.m_ints[0] = eSetPDControl;
-								if (args.m_floats[4] < B3_EPSILON)
-								{
-									args.m_ints[0] = eRemovePDControl;
-								}
-								m_data->m_pluginManager.executePluginCommand(m_data->m_pdControlPlugin, &args);
-							}
-						}
-						velIndex += mb->getLink(link).m_dofCount;
-						posIndex += mb->getLink(link).m_posVarCount;
-					}
-				}
-				break;
-			}
 			case CONTROL_MODE_TORQUE:
 			{
 				if (m_data->m_verboseOutput)
@@ -15495,7 +15395,7 @@ void PhysicsServerCommandProcessor::physicsDebugDraw(int debugDrawFlags)
 	{
 		if (m_data->m_dynamicsWorld->getDebugDrawer())
 		{
-			m_data->m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugDrawFlags);
+			//m_data->m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugDrawFlags);
 			m_data->m_dynamicsWorld->debugDrawWorld();
 
 #ifndef SKIP_SOFT_BODY_MULTI_BODY_DYNAMICS_WORLD

@@ -28,11 +28,9 @@
 #include "../Constraints/Dof6Spring2Setup.h"
 #include "../Constraints/ConstraintPhysicsSetup.h"
 #include "../MultiBody/TestJointTorqueSetup.h"
-#include "../MultiBody/Pendulum.h"
 #include "../MultiBody/MultiBodySoftContact.h"
 #include "../MultiBody/MultiBodyConstraintFeedback.h"
 #include "../MultiBody/MultiDofDemo.h"
-#include "../MultiBody/InvertedPendulumPDControl.h"
 #include "../MultiBody/KinematicMultiBodyExample.h"
 
 #include "../RigidBody/RigidBodySoftContact.h"
@@ -105,9 +103,6 @@
 #include "../ExtendedTutorials/Bridge.h"
 #include "../ExtendedTutorials/RigidBodyFromObj.h"
 #include "../ExtendedTutorials/InclinedPlane.h"
-#include "../ExtendedTutorials/NewtonsCradle.h"
-#include "../ExtendedTutorials/NewtonsRopeCradle.h"
-#include "../ExtendedTutorials/MultiPendulum.h"
 
 struct ExampleEntry
 {
@@ -157,10 +152,8 @@ static ExampleEntry gDefaultExamples[] =
 		ExampleEntry(0, "MultiBody"),
 		ExampleEntry(1, "MultiDof", "Create a basic btMultiBody with 3-DOF spherical joints (mobilizers). The demo uses a fixed base or a floating base at restart.", MultiDofCreateFunc),
 		ExampleEntry(1, "TestJointTorque", "Apply a torque to a btMultiBody with 1-DOF joints (mobilizers). This setup is similar to API/TestHingeTorque.", TestJointTorqueCreateFunc),
-		ExampleEntry(1, "TestPendulum", "Simulate a pendulum using btMultiBody with a constant joint torque applied. The same code is also used as a unit test comparing Bullet with the numerical solution of second-order non-linear differential equation stored in pendulum_gold.h", TestPendulumCreateFunc),
 
 		ExampleEntry(1, "Constraint Feedback", "The example shows how to receive joint reaction forces in a btMultiBody. Also the applied impulse is available for a btMultiBodyJointMotor", MultiBodyConstraintFeedbackCreateFunc),
-		ExampleEntry(1, "Inverted Pendulum PD", "Keep an inverted pendulum up using open loop PD control", InvertedPendulumPDControlCreateFunc),
 		ExampleEntry(1, "MultiBody Soft Contact", "Using the error correction parameter (ERP) and constraint force mixing (CFM) values for contacts to simulate compliant contact.", MultiBodySoftContactCreateFunc, 0),
     ExampleEntry(1, "Kinematic MultiBody", "Let the user set the transform, the physics engine computes the velocity for one-way contact and friction interaction.", KinematicMultiBodyExampleCreateFunc),
 
@@ -363,10 +356,7 @@ static ExampleEntry gDefaultExamples[] =
 		ExampleEntry(1, "Simple Cloth", "Create a simple piece of cloth", ET_SimpleClothCreateFunc),
 		ExampleEntry(1, "Simple Chain", "Create a simple chain using a pair of point2point/distance constraints. You may click and drag any box to see the chain respond.", ET_ChainCreateFunc),
 		ExampleEntry(1, "Simple Bridge", "Create a simple bridge using a pair of point2point/distance constraints. You may click and drag any plank to see the bridge respond.", ET_BridgeCreateFunc),
-		ExampleEntry(1, "Inclined Plane", "Create an inclined plane to show restitution and different types of friction. Use the sliders to vary restitution and friction and press space to reset the scene.", ET_InclinedPlaneCreateFunc),
-		ExampleEntry(1, "Newton's Cradle", "Create a Newton's Cradle using a pair of point2point/slider constraints. Press 1/2 to lengthen/shorten the pendula, press 3 to displace pendula. Use the sliders to select the number (reset simulation), length and restitution of pendula, the number of displaced pendula and apply the displacement force.", ET_NewtonsCradleCreateFunc),
-		ExampleEntry(1, "Newton's Rope Cradle", "Create a Newton's Cradle using ropes. Press 3 to displace pendula. Use the sliders to select the number (reset simulation), length and restitution of pendula and the number of displaced pendula and apply the displacement force.", ET_NewtonsRopeCradleCreateFunc),
-		ExampleEntry(1, "Multi-Pendulum", "Create a Multi-Pendulum using point2point/slider constraints. Press 1/2 to lengthen/shorten the pendula, press 3 to displace pendula. Use the sliders to select the number (reset simulation), length and restitution of pendula, the number of displaced pendula and apply the displacement force.", ET_MultiPendulumCreateFunc),
+		ExampleEntry(1, "Inclined Plane", "Create an inclined plane to show restitution and different types of friction. Use the sliders to vary restitution and friction and press space to reset the scene.", ET_InclinedPlaneCreateFunc)
 };
 
 #ifdef B3_USE_CLEW

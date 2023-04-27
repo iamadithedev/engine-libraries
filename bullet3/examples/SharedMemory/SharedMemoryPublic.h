@@ -855,7 +855,6 @@ enum
 	CONTROL_MODE_VELOCITY = 0,
 	CONTROL_MODE_TORQUE,
 	CONTROL_MODE_POSITION_VELOCITY_PD,
-	CONTROL_MODE_PD,  // The standard PD control implemented as soft constraint.
 	CONTROL_MODE_STABLE_PD,
 };
 

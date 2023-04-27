@@ -82,7 +82,7 @@ struct CommonRigidBodyBase : public CommonExampleInterface
 	{
 		if (m_dynamicsWorld && m_dynamicsWorld->getDebugDrawer())
 		{
-			m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugFlags);
+			//m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugFlags);
 			m_dynamicsWorld->debugDrawWorld();
 		}
 	}
@@ -143,7 +143,7 @@ struct CommonRigidBodyBase : public CommonExampleInterface
 		{
 			if (m_dynamicsWorld->getDebugDrawer())
 			{
-				m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugDrawFlags);
+				//m_dynamicsWorld->getDebugDrawer()->setDebugMode(debugDrawFlags);
 			}
 			m_dynamicsWorld->debugDrawWorld();
 		}
