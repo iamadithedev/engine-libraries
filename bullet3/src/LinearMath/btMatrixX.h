@@ -140,13 +140,6 @@ struct btVectorX
 		return m_storage.size() ? &m_storage[0] : 0;
 	}
 };
-/*
- template <typename T>
- void setElem(btMatrixX<T>& mat, int row, int col, T val)
- {
- mat.setElem(row,col,val);
- }
- */
 
 template <typename T>
 struct btMatrixX
