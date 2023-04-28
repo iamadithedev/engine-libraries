@@ -84,7 +84,6 @@ void GyroscopicSetup::initPhysics()
 	}
 
 	{
-		//btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.),btScalar(50.),btScalar(0.5)));
 		btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
 
 		m_collisionShapes.push_back(groundShape);

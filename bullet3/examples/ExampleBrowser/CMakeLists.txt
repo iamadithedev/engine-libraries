@@ -384,10 +384,6 @@ SET(BulletExampleBrowser_SRCS
   ../Constraints/Dof6Spring2Setup.h
   ../Constraints/ConstraintPhysicsSetup.cpp
   ../Constraints/ConstraintPhysicsSetup.h
-
-
-	../ThirdPartyLibs/stb_image/stb_image.cpp
-	../ThirdPartyLibs/stb_image/stb_image.h
 	../ThirdPartyLibs/stb_image/stb_image_write.cpp
 	../ThirdPartyLibs/Wavefront/tiny_obj_loader.cpp
 	
@@ -396,7 +392,7 @@ SET(BulletExampleBrowser_SRCS
 	${BULLET_PHYSICS_SOURCE_DIR}/build3/bullet.rc
 )
 
-
+LINK_LIBRARIES(stb)
 
 ADD_EXECUTABLE(App_ExampleBrowser
 		main.cpp

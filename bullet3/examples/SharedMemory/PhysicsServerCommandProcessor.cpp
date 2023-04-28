@@ -18,10 +18,6 @@
 #include "BulletDynamics/Featherstone/btMultiBodySphericalJointMotor.h"
 #include "BulletDynamics/Featherstone/btMultiBodyJointLimitConstraint.h"
 
-//#define USE_DISCRETE_DYNAMICS_WORLD
-//#define SKIP_DEFORMABLE_BODY
-//#define SKIP_SOFT_BODY_MULTI_BODY_DYNAMICS_WORLD
-
 #include "../Utils/b3BulletDefaultFileIO.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 #include "BulletDynamics/Featherstone/btMultiBodyConstraintSolver.h"
@@ -30,17 +26,14 @@
 #include "BulletDynamics/Featherstone/btMultiBodyJointFeedback.h"
 #include "BulletDynamics/Featherstone/btMultiBodyFixedConstraint.h"
 #include "BulletDynamics/Featherstone/btMultiBodyGearConstraint.h"
-#include "../Importers/ImportURDFDemo/UrdfParser.h"
-#include "../Utils/b3ResourcePath.h"
 #include "Bullet3Common/b3FileUtils.h"
 #include "../OpenGLWindow/GLInstanceGraphicsShape.h"
 #include "BulletDynamics/Featherstone/btMultiBodySliderConstraint.h"
-#include "BulletDynamics/Featherstone/btMultiBodyPoint2Point.h"
 #include "BulletCollision/NarrowPhaseCollision/btPersistentManifold.h"
 #include "Bullet3Common/b3HashMap.h"
 #include "../Utils/ChromeTraceUtil.h"
 #include "SharedMemoryPublic.h"
-#include "stb_image/stb_image.h"
+#include "stb_image.h"
 #include "BulletInverseDynamics/MultiBodyTree.hpp"
 #include "IKTrajectoryHelper.h"
 #include "btBulletDynamicsCommon.h"
@@ -57,7 +50,6 @@
 #include "SharedMemoryCommands.h"
 #include "LinearMath/btRandom.h"
 #include "Bullet3Common/b3ResizablePool.h"
-#include "../Utils/b3Clock.h"
 #include "b3PluginManager.h"
 #include "../Extras/Serialize/BulletFileLoader/btBulletFile.h"
 #include "BulletCollision/NarrowPhaseCollision/btRaycastCallback.h"
@@ -109,7 +101,6 @@
 #include "BulletSoftBody/btDeformableMultiBodyDynamicsWorld.h"
 #include "BulletSoftBody/btDeformableBodySolver.h"
 #include "BulletSoftBody/btDeformableMultiBodyConstraintSolver.h"
-#include "../SoftDemo/BunnyMesh.h"
 #endif  //SKIP_SOFT_BODY_MULTI_BODY_DYNAMICS_WORLD
 
 #ifndef SKIP_DEFORMABLE_BODY
@@ -136,8 +127,6 @@ btQuaternion gVRTeleportOrn(0, 0, 0, 1);
 
 btScalar simTimeScalingFactor = 1;
 btScalar gRhsClamp = 1.f;
-
-#include "../CommonInterfaces/CommonFileIOInterface.h"
 
 class b3ThreadPool
 {

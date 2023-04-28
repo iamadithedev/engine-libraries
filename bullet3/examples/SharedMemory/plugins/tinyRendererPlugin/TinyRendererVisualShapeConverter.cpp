@@ -15,23 +15,17 @@ subject to the following restrictions:
 
 #include "../Importers/ImportURDFDemo/URDFImporterInterface.h"
 #include "btBulletCollisionCommon.h"
-#include "../Importers/ImportObjDemo/LoadMeshFromObj.h"
 #include "../Importers/ImportSTLDemo/LoadMeshFromSTL.h"
 #include "../Importers/ImportColladaDemo/LoadMeshFromCollada.h"
 #include "BulletCollision/CollisionShapes/btShapeHull.h"  //to create a tesselation of a generic btConvexShape
-#include "../CommonInterfaces/CommonGUIHelperInterface.h"
 #include "Bullet3Common/b3FileUtils.h"
-#include <string>
-#include "../Utils/b3ResourcePath.h"
 #include "../TinyRenderer/TinyRenderer.h"
 #include "../OpenGLWindow/SimpleCamera.h"
 #include "../Importers/ImportMeshUtility/b3ImportMeshUtility.h"
-#include <iostream>
-#include <fstream>
+
 #include "../Importers/ImportURDFDemo/UrdfParser.h"
-#include "../SharedMemory/SharedMemoryPublic.h"  //for b3VisualShapeData
-#include "../TinyRenderer/model.h"
-#include "stb_image/stb_image.h"
+#include "../SharedMemory/SharedMemoryPublic.h"
+#include "stb_image.h"
 #include "../OpenGLWindow/ShapeData.h"
 struct MyTexture2
 {

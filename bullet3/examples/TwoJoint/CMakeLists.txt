@@ -65,7 +65,6 @@ SET(RobotSimulator_SRCS
 		../../examples/ThirdPartyLibs/tinyxml2/tinyxml2.cpp
 		../../examples/ThirdPartyLibs/Wavefront/tiny_obj_loader.cpp
 		../../examples/ThirdPartyLibs/Wavefront/tiny_obj_loader.h
-		../../examples/ThirdPartyLibs/stb_image/stb_image.cpp
 		../../examples/Importers/ImportColladaDemo/LoadMeshFromCollada.cpp
 		../../examples/Importers/ImportObjDemo/LoadMeshFromObj.cpp
 		../../examples/Importers/ImportObjDemo/Wavefront2GLInstanceGraphicsShape.cpp
@@ -81,6 +80,8 @@ SET(RobotSimulator_SRCS
 		../../examples/MultiThreading/b3ThreadSupportInterface.cpp
 		
 )
+
+LINK_LIBRARIES(stb)
 
 IF(WIN32)
 	LINK_LIBRARIES(

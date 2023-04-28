@@ -88,7 +88,6 @@ SharedMemoryCommands.h
 	../ThirdPartyLibs/Wavefront/tiny_obj_loader.cpp
 	../ThirdPartyLibs/tinyxml2/tinyxml2.cpp
 	../Importers/ImportMeshUtility/b3ImportMeshUtility.cpp
-	../ThirdPartyLibs/stb_image/stb_image.cpp
 	../MultiThreading/b3ThreadSupportInterface.cpp
 	../MultiThreading/b3ThreadSupportInterface.h
 )
@@ -101,6 +100,8 @@ INCLUDE_DIRECTORIES(
 IF (USE_SOFT_BODY_MULTI_BODY_DYNAMICS_WORLD)
 	LINK_LIBRARIES(BulletSoftBody)
 ENDIF()
+
+LINK_LIBRARIES(stb)
 
 LINK_LIBRARIES(
  Bullet3Common BulletWorldImporter BulletFileLoader BulletInverseDynamicsUtils BulletInverseDynamics BulletDynamics BulletCollision LinearMath BussIK

@@ -8,10 +8,7 @@
 #include "PhysicsServerCommandProcessor.h"
 #include "PhysicsClientC_API.h"
 #include "PhysicsClient.h"
-//#include "SharedMemoryCommands.h"
-#include "PhysicsLoopBackC_API.h"
 #include "PhysicsDirectC_API.h"
-#include "PhysicsClientC_API.h"
 #include "PhysicsServerSharedMemory.h"
 #include <stdio.h>
 #ifdef _WIN32

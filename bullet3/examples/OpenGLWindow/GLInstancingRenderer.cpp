@@ -43,8 +43,6 @@ struct caster2
 #define MAX_TRIANGLES_IN_BATCH 8192
 
 #include "OpenGLInclude.h"
-#include "../CommonInterfaces/CommonWindowInterface.h"
-//#include "Bullet3Common/b3MinMax.h"
 #ifdef B3_USE_GLFW
 
 #else
@@ -68,14 +66,9 @@ struct caster2
 #endif  //B3_USE_GLFW
 #include "GLInstancingRenderer.h"
 
-#include <string.h>
-//#include "DemoSettings.h"
-#include <stdio.h>
-
 #include "Bullet3Common/b3Vector3.h"
 #include "Bullet3Common/b3Quaternion.h"
 #include "Bullet3Common/b3Transform.h"
-#include "Bullet3Common/b3Matrix3x3.h"
 #include "Bullet3Common/b3ResizablePool.h"
 
 #include "LoadShader.h"

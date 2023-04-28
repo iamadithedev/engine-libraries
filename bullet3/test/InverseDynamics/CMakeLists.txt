@@ -135,7 +135,6 @@ ENDIF()
         ../../examples/Importers/ImportURDFDemo/URDF2Bullet.cpp
         ../../examples/Importers/ImportURDFDemo/URDF2Bullet.h
         ../../examples/Importers/ImportMeshUtility/b3ImportMeshUtility.cpp
-        ../../examples/ThirdPartyLibs/stb_image/stb_image.cpp
         ../../examples/Utils/b3Clock.cpp
         ../../Extras/Serialize/BulletWorldImporter/btBulletWorldImporter.cpp
 	../../Extras/Serialize/BulletWorldImporter/btWorldImporter.cpp
@@ -155,6 +154,8 @@ ENDIF()
 		../../examples/ThirdPartyLibs/tinyxml2/tinyxml2.cpp
 		
         )
+
+LINK_LIBRARIES(stb)
 
 ADD_TEST(Test_BulletInverseForwardDynamics_PASS Test_BulletInverseForwardDynamics)
 

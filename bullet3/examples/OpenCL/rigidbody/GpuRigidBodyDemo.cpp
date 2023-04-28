@@ -18,7 +18,7 @@
 #include "Bullet3Collision/BroadPhaseCollision/b3DynamicBvhBroadphase.h"
 #include "Bullet3Collision/NarrowPhaseCollision/shared/b3RigidBodyData.h"
 #include "Bullet3OpenCL/RigidBody/b3GpuNarrowPhaseInternalData.h"
-#include "stb_image/stb_image.h"
+#include "stb_image.h"
 #include "../OpenGLWindow/GLPrimitiveRenderer.h"
 
 extern int gPreferredOpenCLDeviceIndex;
