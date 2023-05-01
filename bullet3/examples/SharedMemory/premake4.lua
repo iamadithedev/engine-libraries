@@ -105,7 +105,6 @@ myfiles =
 	"../ThirdPartyLibs/Wavefront/tiny_obj_loader.cpp",	
 	"../ThirdPartyLibs/tinyxml2/tinyxml2.cpp",
 	"../Importers/ImportMeshUtility/b3ImportMeshUtility.cpp",
-	"../ThirdPartyLibs/stb_image/stb_image.cpp",
 	"../ThirdPartyLibs/stb_image/stb_image_write.cpp",
 
 }

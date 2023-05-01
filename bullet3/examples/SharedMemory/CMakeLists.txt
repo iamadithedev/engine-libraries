@@ -101,8 +101,6 @@ IF (USE_SOFT_BODY_MULTI_BODY_DYNAMICS_WORLD)
 	LINK_LIBRARIES(BulletSoftBody)
 ENDIF()
 
-LINK_LIBRARIES(stb)
-
 LINK_LIBRARIES(
  Bullet3Common BulletWorldImporter BulletFileLoader BulletInverseDynamicsUtils BulletInverseDynamics BulletDynamics BulletCollision LinearMath BussIK
 )

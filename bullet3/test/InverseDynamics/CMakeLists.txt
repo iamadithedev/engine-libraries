@@ -152,10 +152,7 @@ ENDIF()
         	../../examples/Importers/ImportColladaDemo/ColladaGraphicsInstance.h
         	../../examples/ThirdPartyLibs/Wavefront/tiny_obj_loader.cpp
 		../../examples/ThirdPartyLibs/tinyxml2/tinyxml2.cpp
-		
         )
-
-LINK_LIBRARIES(stb)
 
 ADD_TEST(Test_BulletInverseForwardDynamics_PASS Test_BulletInverseForwardDynamics)
 

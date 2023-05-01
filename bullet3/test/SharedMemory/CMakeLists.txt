@@ -88,10 +88,7 @@ ENDIF()
 		../../examples/Importers/ImportURDFDemo/URDF2Bullet.cpp
 		../../examples/Importers/ImportURDFDemo/UrdfParser.cpp
 		../../examples/Importers/ImportURDFDemo/urdfStringSplit.cpp
-		../../examples/Importers/ImportMeshUtility/b3ImportMeshUtility.cpp
-	)
-
-LINK_LIBRARIES(stb)
+		../../examples/Importers/ImportMeshUtility/b3ImportMeshUtility.cpp)
 
 ADD_TEST(Test_PhysicsClientServer_PASS Test_PhysicsClientServer)
 

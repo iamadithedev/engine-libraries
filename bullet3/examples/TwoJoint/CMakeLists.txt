@@ -81,8 +81,6 @@ SET(RobotSimulator_SRCS
 		
 )
 
-LINK_LIBRARIES(stb)
-
 IF(WIN32)
 	LINK_LIBRARIES(
 		${OPENGL_gl_LIBRARY} ${OPENGL_glu_LIBRARY}

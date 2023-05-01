@@ -92,8 +92,7 @@ INCLUDE_DIRECTORIES(
 
 
 LINK_LIBRARIES(
-        BulletExampleBrowserLib Bullet3Common BulletSoftBody BulletDynamics BulletCollision BulletInverseDynamicsUtils BulletInverseDynamics LinearMath OpenGLWindow gwen BussIK
-)
+        BulletExampleBrowserLib Bullet3Common BulletSoftBody BulletDynamics BulletCollision BulletInverseDynamicsUtils BulletInverseDynamics LinearMath OpenGLWindow gwen BussIK)
 
 
 add_definitions(-DINCLUDE_CLOTH_DEMOS)
@@ -399,8 +398,7 @@ ADD_EXECUTABLE(App_ExampleBrowser
 		ExampleEntries.cpp
 		ExampleEntries.h
 		${ExtendedTutorialsSources}
-		${BulletExampleBrowser_SRCS} 
-)
+		${BulletExampleBrowser_SRCS})
 
 FILE( MAKE_DIRECTORY "${PROJECT_BINARY_DIR}/data" )
 
