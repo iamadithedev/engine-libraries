@@ -31,7 +31,6 @@
 
 #if defined(_GLFW_WIN32)
 
-#include <stdlib.h>
 #include <assert.h>
 
 // Return the value corresponding to the specified attribute
