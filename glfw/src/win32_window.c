@@ -587,12 +587,6 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
             return 0;
         }
 
-        case WM_INPUTLANGCHANGE:
-        {
-            _glfwUpdateKeyNamesWin32();
-            break;
-        }
-
         case WM_CHAR:
         case WM_SYSCHAR:
         {
@@ -2036,17 +2030,6 @@ void _glfwSetCursorModeWin32(_GLFWwindow* window, int mode)
 
     if (cursorInContentArea(window))
         updateCursorImage(window);
-}
-
-const char* _glfwGetScancodeNameWin32(int scancode)
-{
-    if (scancode < 0 || scancode > (KF_EXTENDED | 0xff) ||
-        _glfw.win32.keycodes[scancode] == GLFW_KEY_UNKNOWN)
-    {
-        return NULL;
-    }
-
-    return _glfw.win32.keynames[_glfw.win32.keycodes[scancode]];
 }
 
 int _glfwGetKeyScancodeWin32(int key)

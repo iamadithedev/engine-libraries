@@ -181,14 +181,12 @@ static void createKeyTables(void)
     _glfw.win32.keycodes[0x153] = GLFW_KEY_DELETE;
     _glfw.win32.keycodes[0x14F] = GLFW_KEY_END;
     _glfw.win32.keycodes[0x01C] = GLFW_KEY_ENTER;
-    _glfw.win32.keycodes[0x001] = GLFW_KEY_ESCAPE;
     _glfw.win32.keycodes[0x147] = GLFW_KEY_HOME;
     _glfw.win32.keycodes[0x152] = GLFW_KEY_INSERT;
     _glfw.win32.keycodes[0x15D] = GLFW_KEY_MENU;
     _glfw.win32.keycodes[0x151] = GLFW_KEY_PAGE_DOWN;
     _glfw.win32.keycodes[0x149] = GLFW_KEY_PAGE_UP;
     _glfw.win32.keycodes[0x045] = GLFW_KEY_PAUSE;
-    _glfw.win32.keycodes[0x039] = GLFW_KEY_SPACE;
     _glfw.win32.keycodes[0x00F] = GLFW_KEY_TAB;
     _glfw.win32.keycodes[0x03A] = GLFW_KEY_CAPS_LOCK;
     _glfw.win32.keycodes[0x145] = GLFW_KEY_NUM_LOCK;
@@ -359,62 +357,6 @@ char* _glfwCreateUTF8FromWideStringWin32(const WCHAR* source)
     return target;
 }
 
-// Updates key names according to the current keyboard layout
-//
-void _glfwUpdateKeyNamesWin32(void)
-{
-    int key;
-    BYTE state[256] = {0};
-
-    memset(_glfw.win32.keynames, 0, sizeof(_glfw.win32.keynames));
-
-    for (key = GLFW_KEY_SPACE;  key <= GLFW_KEY_LAST;  key++)
-    {
-        UINT vk;
-        int scancode, length;
-        WCHAR chars[16];
-
-        scancode = _glfw.win32.scancodes[key];
-        if (scancode == -1)
-            continue;
-
-        if (key >= GLFW_KEY_KP_0 && key <= GLFW_KEY_KP_ADD)
-        {
-            const UINT vks[] = {
-                VK_NUMPAD0,  VK_NUMPAD1,  VK_NUMPAD2, VK_NUMPAD3,
-                VK_NUMPAD4,  VK_NUMPAD5,  VK_NUMPAD6, VK_NUMPAD7,
-                VK_NUMPAD8,  VK_NUMPAD9,  VK_DECIMAL, VK_DIVIDE,
-                VK_MULTIPLY, VK_SUBTRACT, VK_ADD
-            };
-
-            vk = vks[key - GLFW_KEY_KP_0];
-        }
-        else
-            vk = MapVirtualKeyW(scancode, MAPVK_VSC_TO_VK);
-
-        length = ToUnicode(vk, scancode, state,
-                           chars, sizeof(chars) / sizeof(WCHAR),
-                           0);
-
-        if (length == -1)
-        {
-            // This is a dead key, so we need a second simulated key press
-            // to make it output its own character (usually a diacritic)
-            length = ToUnicode(vk, scancode, state,
-                               chars, sizeof(chars) / sizeof(WCHAR),
-                               0);
-        }
-
-        if (length < 1)
-            continue;
-
-        WideCharToMultiByte(CP_UTF8, 0, chars, 1,
-                            _glfw.win32.keynames[key],
-                            sizeof(_glfw.win32.keynames[key]),
-                            NULL, NULL);
-    }
-}
-
 // Replacement for IsWindowsVersionOrGreater, as we cannot rely on the
 // application having a correct embedded manifest
 //
@@ -462,7 +404,6 @@ GLFWbool _glfwConnectWin32(int platformID, _GLFWplatform* platform)
         _glfwCreateStandardCursorWin32,
         _glfwDestroyCursorWin32,
         _glfwSetCursorWin32,
-        _glfwGetScancodeNameWin32,
         _glfwGetKeyScancodeWin32,
         _glfwSetClipboardStringWin32,
         _glfwGetClipboardStringWin32,
@@ -521,7 +462,6 @@ int _glfwInitWin32(void)
         return GLFW_FALSE;
 
     createKeyTables();
-    _glfwUpdateKeyNamesWin32();
 
     if (_glfwIsWindows10Version1703OrGreaterWin32())
         SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);

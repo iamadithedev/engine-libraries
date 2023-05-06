@@ -334,26 +334,9 @@ GLFWAPI int glfwRawMouseMotionSupported(void)
     return _glfw.platform.rawMouseMotionSupported();
 }
 
-GLFWAPI const char* glfwGetKeyName(int key, int scancode)
-{
-    if (key != GLFW_KEY_UNKNOWN)
-    {
-        if (key != GLFW_KEY_KP_EQUAL &&
-            (key < GLFW_KEY_KP_0 || key > GLFW_KEY_KP_ADD) &&
-            (key < GLFW_KEY_APOSTROPHE || key > GLFW_KEY_WORLD_2))
-        {
-            return NULL;
-        }
-
-        scancode = _glfw.platform.getKeyScancode(key);
-    }
-
-    return _glfw.platform.getScancodeName(scancode);
-}
-
 GLFWAPI int glfwGetKeyScancode(int key)
 {
-    if (key < GLFW_KEY_SPACE || key > GLFW_KEY_LAST)
+    if (key < 32 || key > GLFW_KEY_LAST)
     {
         return GLFW_RELEASE;
     }
@@ -366,7 +349,7 @@ GLFWAPI int glfwGetKey(GLFWwindow* handle, int key)
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
 
-    if (key < GLFW_KEY_SPACE || key > GLFW_KEY_LAST)
+    if (key < 32 || key > GLFW_KEY_LAST)
     {
         return GLFW_RELEASE;
     }
