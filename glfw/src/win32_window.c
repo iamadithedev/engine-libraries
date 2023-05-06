@@ -740,15 +740,11 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
             int i, button, action;
 
             if (uMsg == WM_LBUTTONDOWN || uMsg == WM_LBUTTONUP)
-                button = GLFW_MOUSE_BUTTON_LEFT;
+                button = 0;
             else if (uMsg == WM_RBUTTONDOWN || uMsg == WM_RBUTTONUP)
-                button = GLFW_MOUSE_BUTTON_RIGHT;
+                button = 1;
             else if (uMsg == WM_MBUTTONDOWN || uMsg == WM_MBUTTONUP)
-                button = GLFW_MOUSE_BUTTON_MIDDLE;
-            else if (GET_XBUTTON_WPARAM(wParam) == XBUTTON1)
-                button = GLFW_MOUSE_BUTTON_4;
-            else
-                button = GLFW_MOUSE_BUTTON_5;
+                button = 2;
 
             if (uMsg == WM_LBUTTONDOWN || uMsg == WM_RBUTTONDOWN ||
                 uMsg == WM_MBUTTONDOWN || uMsg == WM_XBUTTONDOWN)
@@ -758,24 +754,24 @@ static LRESULT CALLBACK windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
             else
                 action = GLFW_RELEASE;
 
-            for (i = 0;  i <= GLFW_MOUSE_BUTTON_LAST;  i++)
+            for (i = 0;  i < 3;  i++)
             {
                 if (window->mouseButtons[i] == GLFW_PRESS)
                     break;
             }
 
-            if (i > GLFW_MOUSE_BUTTON_LAST)
+            if (i > 2)
                 SetCapture(hWnd);
 
             _glfwInputMouseClick(window, button, action, getKeyMods());
 
-            for (i = 0;  i <= GLFW_MOUSE_BUTTON_LAST;  i++)
+            for (i = 0;  i < 3;  i++)
             {
                 if (window->mouseButtons[i] == GLFW_PRESS)
                     break;
             }
 
-            if (i > GLFW_MOUSE_BUTTON_LAST)
+            if (i > 2)
                 ReleaseCapture();
 
             if (uMsg == WM_XBUTTONDOWN || uMsg == WM_XBUTTONUP)
