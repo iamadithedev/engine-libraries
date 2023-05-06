@@ -293,7 +293,7 @@ struct _GLFWwindow
     GLFWbool            stickyMouseButtons;
     GLFWbool            lockKeyMods;
     int                 cursorMode;
-    char                mouseButtons[GLFW_MOUSE_BUTTON_LAST + 1];
+    char                mouseButtons[3];
     char                keys[GLFW_KEY_LAST + 1];
     // Virtual cursor position when cursor is disabled
     double              virtualCursorPosX, virtualCursorPosY;

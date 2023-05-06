@@ -126,13 +126,8 @@ void _glfwInputScroll(_GLFWwindow* window, double xoffset, double yoffset)
 void _glfwInputMouseClick(_GLFWwindow* window, int button, int action, int mods)
 {
     assert(window != NULL);
-    assert(button >= 0);
-    assert(button <= GLFW_MOUSE_BUTTON_LAST);
     assert(action == GLFW_PRESS || action == GLFW_RELEASE);
     assert(mods == (mods & GLFW_MOD_MASK));
-
-    if (button < 0 || button > GLFW_MOUSE_BUTTON_LAST)
-        return;
 
     if (!window->lockKeyMods)
         mods &= ~(GLFW_MOD_CAPS_LOCK | GLFW_MOD_NUM_LOCK);
@@ -291,10 +286,8 @@ GLFWAPI void glfwSetInputMode(GLFWwindow* handle, int mode, int value)
 
             if (!value)
             {
-                int i;
-
                 // Release all sticky mouse buttons
-                for (i = 0;  i <= GLFW_MOUSE_BUTTON_LAST;  i++)
+                for (int i = 0;  i < 3;  i++)
                 {
                     if (window->mouseButtons[i] == _GLFW_STICK)
                         window->mouseButtons[i] = GLFW_RELEASE;
@@ -336,11 +329,6 @@ GLFWAPI int glfwRawMouseMotionSupported(void)
 
 GLFWAPI int glfwGetKeyScancode(int key)
 {
-    if (key < 32 || key > GLFW_KEY_LAST)
-    {
-        return GLFW_RELEASE;
-    }
-
     return _glfw.platform.getKeyScancode(key);
 }
 
@@ -348,11 +336,6 @@ GLFWAPI int glfwGetKey(GLFWwindow* handle, int key)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
-
-    if (key < 32 || key > GLFW_KEY_LAST)
-    {
-        return GLFW_RELEASE;
-    }
 
     if (window->keys[key] == _GLFW_STICK)
     {
@@ -368,11 +351,6 @@ GLFWAPI int glfwGetMouseButton(GLFWwindow* handle, int button)
 {
     _GLFWwindow* window = (_GLFWwindow*) handle;
     assert(window != NULL);
-
-    if (button < GLFW_MOUSE_BUTTON_1 || button > GLFW_MOUSE_BUTTON_LAST)
-    {
-        return GLFW_RELEASE;
-    }
 
     if (window->mouseButtons[button] == _GLFW_STICK)
     {
