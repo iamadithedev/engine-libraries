@@ -179,12 +179,14 @@ static void createKeyTables(void)
     _glfw.win32.keycodes[0x153] = GLFW_KEY_DELETE;
     _glfw.win32.keycodes[0x14F] = GLFW_KEY_END;
     _glfw.win32.keycodes[0x01C] = GLFW_KEY_ENTER;
+    _glfw.win32.keycodes[0x001] = 256;
     _glfw.win32.keycodes[0x147] = GLFW_KEY_HOME;
     _glfw.win32.keycodes[0x152] = GLFW_KEY_INSERT;
     _glfw.win32.keycodes[0x15D] = GLFW_KEY_MENU;
     _glfw.win32.keycodes[0x151] = GLFW_KEY_PAGE_DOWN;
     _glfw.win32.keycodes[0x149] = GLFW_KEY_PAGE_UP;
     _glfw.win32.keycodes[0x045] = GLFW_KEY_PAUSE;
+    _glfw.win32.keycodes[0x039] = 32;
     _glfw.win32.keycodes[0x00F] = GLFW_KEY_TAB;
     _glfw.win32.keycodes[0x03A] = GLFW_KEY_CAPS_LOCK;
     _glfw.win32.keycodes[0x145] = GLFW_KEY_NUM_LOCK;
