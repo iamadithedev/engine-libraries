@@ -253,9 +253,7 @@ typedef HRESULT (WINAPI * PFN_DwmGetColorizationColor)(DWORD*,BOOL*);
 #define DwmGetColorizationColor _glfw.win32.dwmapi.GetColorizationColor
 
 // shcore.dll function pointer typedefs
-typedef HRESULT (WINAPI * PFN_SetProcessDpiAwareness)(PROCESS_DPI_AWARENESS);
 typedef HRESULT (WINAPI * PFN_GetDpiForMonitor)(HMONITOR,MONITOR_DPI_TYPE,UINT*,UINT*);
-#define SetProcessDpiAwareness _glfw.win32.shcore.SetProcessDpiAwareness_
 #define GetDpiForMonitor _glfw.win32.shcore.GetDpiForMonitor_
 
 // ntdll.dll function pointer typedefs
@@ -418,7 +416,6 @@ typedef struct _GLFWlibraryWin32
 
     struct {
         HINSTANCE                       instance;
-        PFN_SetProcessDpiAwareness      SetProcessDpiAwareness_;
         PFN_GetDpiForMonitor            GetDpiForMonitor_;
     } shcore;
 

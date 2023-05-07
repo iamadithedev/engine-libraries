@@ -85,8 +85,6 @@ static GLFWbool loadLibraries(void)
     _glfw.win32.shcore.instance = _glfwPlatformLoadModule("shcore.dll");
     if (_glfw.win32.shcore.instance)
     {
-        _glfw.win32.shcore.SetProcessDpiAwareness_ = (PFN_SetProcessDpiAwareness)
-            _glfwPlatformGetModuleSymbol(_glfw.win32.shcore.instance, "SetProcessDpiAwareness");
         _glfw.win32.shcore.GetDpiForMonitor_ = (PFN_GetDpiForMonitor)
             _glfwPlatformGetModuleSymbol(_glfw.win32.shcore.instance, "GetDpiForMonitor");
     }
@@ -465,8 +463,6 @@ int _glfwInitWin32(void)
 
     if (_glfwIsWindows10Version1703OrGreaterWin32())
         SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
-    else if (IsWindows8Point1OrGreater())
-        SetProcessDpiAwareness(PROCESS_PER_MONITOR_DPI_AWARE);
 
     if (!createHelperWindow())
         return GLFW_FALSE;
