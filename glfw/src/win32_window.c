@@ -1962,7 +1962,7 @@ void _glfwPostEmptyEventWin32(void)
     PostMessageW(_glfw.win32.helperWindowHandle, WM_NULL, 0, 0);
 }
 
-void _glfwGetCursorPosWin32(_GLFWwindow* window, double* xpos, double* ypos)
+void _glfwGetCursorPosWin32(_GLFWwindow* window, float* xpos, float* ypos)
 {
     POINT pos;
 
@@ -1971,9 +1971,9 @@ void _glfwGetCursorPosWin32(_GLFWwindow* window, double* xpos, double* ypos)
         ScreenToClient(window->win32.handle, &pos);
 
         if (xpos)
-            *xpos = pos.x;
+            *xpos = (float)pos.x;
         if (ypos)
-            *ypos = pos.y;
+            *ypos = (float)pos.y;
     }
 }
 

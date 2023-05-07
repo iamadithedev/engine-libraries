@@ -296,7 +296,7 @@ struct _GLFWwindow
     char                mouseButtons[3];
     char                keys[GLFW_KEY_LAST + 1];
     // Virtual cursor position when cursor is disabled
-    double              virtualCursorPosX, virtualCursorPosY;
+    float               virtualCursorPosX, virtualCursorPosY;
     GLFWbool            rawMouseMotion;
 
     _GLFWcontext        context;
@@ -383,7 +383,7 @@ struct _GLFWplatform
     GLFWbool (*init)(void);
     void (*terminate)(void);
     // input
-    void (*getCursorPos)(_GLFWwindow*,double*,double*);
+    void (*getCursorPos)(_GLFWwindow*,float*,float*);
     void (*setCursorPos)(_GLFWwindow*,double,double);
     void (*setCursorMode)(_GLFWwindow*,int);
     void (*setRawMouseMotion)(_GLFWwindow*,GLFWbool);
