@@ -1977,7 +1977,7 @@ void _glfwGetCursorPosWin32(_GLFWwindow* window, float* xpos, float* ypos)
     }
 }
 
-void _glfwSetCursorPosWin32(_GLFWwindow* window, double xpos, double ypos)
+void _glfwSetCursorPosWin32(_GLFWwindow* window, float xpos, float ypos)
 {
     POINT pos = { (int) xpos, (int) ypos };
 

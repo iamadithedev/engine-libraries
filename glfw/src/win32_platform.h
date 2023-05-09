@@ -387,7 +387,7 @@ typedef struct _GLFWlibraryWin32
     short int           keycodes[512];
     short int           scancodes[GLFW_KEY_LAST + 1];
     // Where to place the cursor when re-enabled
-    double              restoreCursorPosX, restoreCursorPosY;
+    float               restoreCursorPosX, restoreCursorPosY;
     // The window whose disabled cursor mode is active
     _GLFWwindow*        disabledCursorWindow;
     // The window the cursor is captured in

@@ -384,7 +384,7 @@ struct _GLFWplatform
     void (*terminate)(void);
     // input
     void (*getCursorPos)(_GLFWwindow*,float*,float*);
-    void (*setCursorPos)(_GLFWwindow*,double,double);
+    void (*setCursorPos)(_GLFWwindow*,float,float);
     void (*setCursorMode)(_GLFWwindow*,int);
     void (*setRawMouseMotion)(_GLFWwindow*,GLFWbool);
     GLFWbool (*rawMouseMotionSupported)(void);
@@ -537,7 +537,7 @@ void _glfwInputChar(_GLFWwindow* window,
                     uint32_t codepoint, int mods, GLFWbool plain);
 void _glfwInputScroll(_GLFWwindow* window, double xoffset, double yoffset);
 void _glfwInputMouseClick(_GLFWwindow* window, int button, int action, int mods);
-void _glfwInputCursorPos(_GLFWwindow* window, double xpos, double ypos);
+void _glfwInputCursorPos(_GLFWwindow* window, float xpos, float ypos);
 void _glfwInputCursorEnter(_GLFWwindow* window, GLFWbool entered);
 void _glfwInputDrop(_GLFWwindow* window, int count, const char** names);
 
