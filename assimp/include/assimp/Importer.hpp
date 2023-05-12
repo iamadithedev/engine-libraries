@@ -470,17 +470,6 @@ public:
     void FreeScene();
 
     // -------------------------------------------------------------------
-    /** Returns an error description of an error that occurred in ReadFile().
-     *
-     * Returns an empty string if no error occurred.
-     * @return A description of the last error, an empty string if no
-     *   error occurred. The string is never nullptr.
-     *
-     * @note The returned function remains valid until one of the
-     * following methods is called: #ReadFile(), #FreeScene(). */
-    const char *GetErrorString() const;
-
-    // -------------------------------------------------------------------
     /** Returns an exception if one occurred during import.
      *
      * @return The last exception which occurred.
