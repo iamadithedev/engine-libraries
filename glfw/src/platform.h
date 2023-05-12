@@ -54,7 +54,9 @@
         GLFW_WGL_LIBRARY_CONTEXT_STATE \
 
 #if defined(_WIN32)
- #define GLFW_BUILD_WIN32_THREAD
+    #define GLFW_BUILD_WIN32_TIMER
+    #define GLFW_BUILD_WIN32_MODULE
+    #define GLFW_BUILD_WIN32_THREAD
 #endif
 
 #if defined(GLFW_BUILD_WIN32_THREAD)
@@ -62,14 +64,3 @@
  #define GLFW_PLATFORM_TLS_STATE    GLFW_WIN32_TLS_STATE
  #define GLFW_PLATFORM_MUTEX_STATE  GLFW_WIN32_MUTEX_STATE
 #endif
-
-#if defined(_WIN32)
- #define GLFW_BUILD_WIN32_TIMER
-#endif
-
-#if defined(_WIN32)
- #define GLFW_BUILD_WIN32_MODULE
-#else
- #define GLFW_BUILD_POSIX_MODULE
-#endif
-
