@@ -208,47 +208,9 @@ MACRO(ADD_ASSIMP_IMPORTER name)
   ENDIF()
 ENDMACRO()
 
-if (NOT ASSIMP_NO_EXPORT)
-
-  # if this variable is set to TRUE, the user can manually disable exporters by setting
-  # ASSIMP_BUILD_XXX_EXPORTER to FALSE for each exporter
-  # if this variable is set to FALSE, the user can manually enable exporters by setting
-  # ASSIMP_BUILD_XXX_EXPORTER to TRUE for each exporter
-  OPTION(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT "default value of all ASSIMP_BUILD_XXX_EXPORTER values" TRUE)
-
-  # macro to add the CMake Option ADD_ASSIMP_EXPORTER_<name> which enables compilation of an exporter
-  # this way selective exporters can be compiled (reduces filesize + compile time)
-  MACRO(ADD_ASSIMP_EXPORTER name)
-    IF (ASSIMP_NO_EXPORT)
-      set(ASSIMP_EXPORTER_ENABLED FALSE)
-    ELSEIF (ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT)
-      set(ASSIMP_EXPORTER_ENABLED TRUE)
-      IF (DEFINED ASSIMP_BUILD_${name}_EXPORTER AND NOT ASSIMP_BUILD_${name}_EXPORTER)
-        set(ASSIMP_EXPORTER_ENABLED FALSE)
-      ENDIF ()
-    ELSE ()
-      set(ASSIMP_EXPORTER_ENABLED ${ASSIMP_BUILD_${name}_EXPORTER})
-    ENDIF ()
-
-    IF (ASSIMP_EXPORTER_ENABLED)
-      SET(ASSIMP_EXPORTERS_ENABLED "${ASSIMP_EXPORTERS_ENABLED} ${name}")
-      LIST(APPEND ASSIMP_EXPORTER_SRCS ${ARGN})
-      SOURCE_GROUP(AssetLib\\${name} FILES ${ARGN})
-    ELSE()
-      SET(ASSIMP_EXPORTERS_DISABLED "${ASSIMP_EXPORTERS_DISABLED} ${name}")
-      add_definitions(-DASSIMP_BUILD_NO_${name}_EXPORTER)
-    ENDIF()
-  ENDMACRO()
-
-endif()
-
 SET(ASSIMP_LOADER_SRCS "")
 SET(ASSIMP_IMPORTERS_ENABLED "") # list of enabled importers
 SET(ASSIMP_IMPORTERS_DISABLED "") # disabled importers list (used to print)
-
-SET(ASSIMP_EXPORTER_SRCS "")
-SET(ASSIMP_EXPORTERS_ENABLED "") # list of enabled exporters
-SET(ASSIMP_EXPORTERS_DISABLED "") # disabled exporters list (used to print)
 
 ADD_ASSIMP_IMPORTER( COLLADA
   AssetLib/Collada/ColladaHelper.cpp
