@@ -328,10 +328,6 @@ SET( PostProcessing_SRCS
   PostProcessing/FindInstancesProcess.h
   PostProcessing/FindInvalidDataProcess.cpp
   PostProcessing/FindInvalidDataProcess.h
-  PostProcessing/FixNormalsStep.cpp
-  PostProcessing/FixNormalsStep.h
-  PostProcessing/DropFaceNormalsProcess.cpp
-  PostProcessing/DropFaceNormalsProcess.h
   PostProcessing/GenFaceNormalsProcess.cpp
   PostProcessing/GenFaceNormalsProcess.h
   PostProcessing/GenVertexNormalsProcess.cpp

@@ -269,22 +269,6 @@ enum aiPostProcessSteps
     aiProcess_RemoveRedundantMaterials = 0x1000,
 
     // -------------------------------------------------------------------------
-    /** <hr>This step tries to determine which meshes have normal vectors
-     * that are facing inwards and inverts them.
-     *
-     * The algorithm is simple but effective:
-     * the bounding box of all vertices + their normals is compared against
-     * the volume of the bounding box of all vertices without their normals.
-     * This works well for most objects, problems might occur with planar
-     * surfaces. However, the step tries to filter such cases.
-     * The step inverts all in-facing normals. Generally it is recommended
-     * to enable this step, although the result is not always correct.
-    */
-    aiProcess_FixInfacingNormals = 0x2000,
-
-
-
-    // -------------------------------------------------------------------------
     /**
      * This step generically populates aiBone->mArmature and aiBone->mNode generically
      * The point of these is it saves you later having to calculate these elements
@@ -543,18 +527,6 @@ enum aiPostProcessSteps
 
 
     aiProcess_ForceGenNormals = 0x20000000,
-
-    // -------------------------------------------------------------------------
-    /** <hr>Drops normals for all faces of all meshes.
-     *
-     * This is ignored if no normals are present.
-     * Face normals are shared between all points of a single face,
-     * so a single point can have multiple normals, which
-     * forces the library to duplicate vertices in some cases.
-     * #aiProcess_JoinIdenticalVertices is *senseless* then.
-     * This process gives sense back to aiProcess_JoinIdenticalVertices
-     */
-    aiProcess_DropNormals = 0x40000000,
 
     // -------------------------------------------------------------------------
     /**

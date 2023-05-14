@@ -59,9 +59,6 @@ corresponding preprocessor flag to selectively disable steps.
 #ifndef ASSIMP_BUILD_NO_TRIANGULATE_PROCESS
 #   include "PostProcessing/TriangulateProcess.h"
 #endif
-#ifndef ASSIMP_BUILD_NO_DROPFACENORMALS_PROCESS
-#   include "PostProcessing/DropFaceNormalsProcess.h"
-#endif
 #ifndef ASSIMP_BUILD_NO_GENFACENORMALS_PROCESS
 #   include "PostProcessing/GenFaceNormalsProcess.h"
 #endif
@@ -76,9 +73,6 @@ corresponding preprocessor flag to selectively disable steps.
 #endif
 #ifndef ASSIMP_BUILD_NO_LIMITBONEWEIGHTS_PROCESS
 #   include "PostProcessing/LimitBoneWeightsProcess.h"
-#endif
-#ifndef ASSIMP_BUILD_NO_FIXINFACINGNORMALS_PROCESS
-#   include "PostProcessing/FixNormalsStep.h"
 #endif
 #ifndef ASSIMP_BUILD_NO_REMOVE_REDUNDANTMATERIALS_PROCESS
 #   include "PostProcessing/RemoveRedundantMaterials.h"
@@ -119,8 +113,6 @@ corresponding preprocessor flag to selectively disable steps.
 #if (!defined ASSIMP_BUILD_NO_GENBOUNDINGBOXES_PROCESS)
 #   include "PostProcessing/GenBoundingBoxesProcess.h"
 #endif
-
-
 
 namespace Assimp {
 
@@ -184,14 +176,8 @@ void GetPostProcessingStepInstanceList(std::vector< BaseProcess* >& out)
 #if (!defined ASSIMP_BUILD_NO_OPTIMIZEMESHES_PROCESS)
     out.push_back( new OptimizeMeshesProcess());
 #endif
-#if (!defined ASSIMP_BUILD_NO_FIXINFACINGNORMALS_PROCESS)
-    out.push_back( new FixInfacingNormalsProcess());
-#endif
 #if (!defined ASSIMP_BUILD_NO_SPLITBYBONECOUNT_PROCESS)
     out.push_back( new SplitByBoneCountProcess());
-#endif
-#if (!defined ASSIMP_BUILD_NO_GENFACENORMALS_PROCESS)
-    out.push_back( new DropFaceNormalsProcess());
 #endif
 #if (!defined ASSIMP_BUILD_NO_GENFACENORMALS_PROCESS)
     out.push_back( new GenFaceNormalsProcess());
