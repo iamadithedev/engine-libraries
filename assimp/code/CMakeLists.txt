@@ -342,8 +342,6 @@ SET( PostProcessing_SRCS
   PostProcessing/RemoveVCProcess.h
   PostProcessing/TextureTransform.cpp
   PostProcessing/TextureTransform.h
-  PostProcessing/TriangulateProcess.cpp
-  PostProcessing/TriangulateProcess.h
   PostProcessing/OptimizeGraph.cpp
   PostProcessing/OptimizeGraph.h
   PostProcessing/OptimizeMeshes.cpp

@@ -56,9 +56,6 @@ corresponding preprocessor flag to selectively disable steps.
 #if !(defined ASSIMP_BUILD_NO_MAKELEFTHANDED_PROCESS && defined ASSIMP_BUILD_NO_FLIPUVS_PROCESS && defined ASSIMP_BUILD_NO_FLIPWINDINGORDER_PROCESS)
 #   include "PostProcessing/ConvertToLHProcess.h"
 #endif
-#ifndef ASSIMP_BUILD_NO_TRIANGULATE_PROCESS
-#   include "PostProcessing/TriangulateProcess.h"
-#endif
 #ifndef ASSIMP_BUILD_NO_GENFACENORMALS_PROCESS
 #   include "PostProcessing/GenFaceNormalsProcess.h"
 #endif
@@ -160,9 +157,6 @@ void GetPostProcessingStepInstanceList(std::vector< BaseProcess* >& out)
 #endif
 #if (!defined ASSIMP_BUILD_NO_PRETRANSFORMVERTICES_PROCESS)
     out.push_back( new PretransformVertices());
-#endif
-#if (!defined ASSIMP_BUILD_NO_TRIANGULATE_PROCESS)
-    out.push_back( new TriangulateProcess());
 #endif
 #if (!defined ASSIMP_BUILD_NO_FINDDEGENERATES_PROCESS)
     //find degenerates should run after triangulation (to sort out small
