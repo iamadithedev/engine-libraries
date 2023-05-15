@@ -4096,7 +4096,7 @@ GLFWAPI void glfwGetCursorPos(GLFWwindow* window, float* xpos, float* ypos);
  *
  *  @ingroup input
  */
-GLFWAPI void glfwSetCursorPos(GLFWwindow* window, double xpos, double ypos);
+GLFWAPI void glfwSetCursorPos(GLFWwindow* window, float xpos, float ypos);
 
 /*! @brief Creates a custom cursor.
  *
