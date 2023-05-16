@@ -1533,18 +1533,6 @@ GLAPI PFNGLPOLYGONMODEPROC glad_glPolygonMode;
 typedef void (APIENTRYP PFNGLSCISSORPROC)(GLint x, GLint y, GLsizei width, GLsizei height);
 GLAPI PFNGLSCISSORPROC glad_glScissor;
 #define glScissor glad_glScissor
-typedef void (APIENTRYP PFNGLTEXPARAMETERFPROC)(GLenum target, GLenum pname, GLfloat param);
-GLAPI PFNGLTEXPARAMETERFPROC glad_glTexParameterf;
-#define glTexParameterf glad_glTexParameterf
-typedef void (APIENTRYP PFNGLTEXPARAMETERFVPROC)(GLenum target, GLenum pname, const GLfloat *params);
-GLAPI PFNGLTEXPARAMETERFVPROC glad_glTexParameterfv;
-#define glTexParameterfv glad_glTexParameterfv
-typedef void (APIENTRYP PFNGLTEXPARAMETERIPROC)(GLenum target, GLenum pname, GLint param);
-GLAPI PFNGLTEXPARAMETERIPROC glad_glTexParameteri;
-#define glTexParameteri glad_glTexParameteri
-typedef void (APIENTRYP PFNGLTEXPARAMETERIVPROC)(GLenum target, GLenum pname, const GLint *params);
-GLAPI PFNGLTEXPARAMETERIVPROC glad_glTexParameteriv;
-#define glTexParameteriv glad_glTexParameteriv
 typedef void (APIENTRYP PFNGLTEXIMAGE1DPROC)(GLenum target, GLint level, GLint internalformat, GLsizei width, GLint border, GLenum format, GLenum type, const void *pixels);
 GLAPI PFNGLTEXIMAGE1DPROC glad_glTexImage1D;
 #define glTexImage1D glad_glTexImage1D
@@ -2218,12 +2206,6 @@ GLAPI PFNGLUNIFORM3UIVPROC glad_glUniform3uiv;
 typedef void (APIENTRYP PFNGLUNIFORM4UIVPROC)(GLint location, GLsizei count, const GLuint *value);
 GLAPI PFNGLUNIFORM4UIVPROC glad_glUniform4uiv;
 #define glUniform4uiv glad_glUniform4uiv
-typedef void (APIENTRYP PFNGLTEXPARAMETERIIVPROC)(GLenum target, GLenum pname, const GLint *params);
-GLAPI PFNGLTEXPARAMETERIIVPROC glad_glTexParameterIiv;
-#define glTexParameterIiv glad_glTexParameterIiv
-typedef void (APIENTRYP PFNGLTEXPARAMETERIUIVPROC)(GLenum target, GLenum pname, const GLuint *params);
-GLAPI PFNGLTEXPARAMETERIUIVPROC glad_glTexParameterIuiv;
-#define glTexParameterIuiv glad_glTexParameterIuiv
 typedef void (APIENTRYP PFNGLGETTEXPARAMETERIIVPROC)(GLenum target, GLenum pname, GLint *params);
 GLAPI PFNGLGETTEXPARAMETERIIVPROC glad_glGetTexParameterIiv;
 #define glGetTexParameterIiv glad_glGetTexParameterIiv
