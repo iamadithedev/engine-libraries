@@ -4,4 +4,6 @@ add_subdirectory(glm)
 
 add_subdirectory(assimp)
 add_subdirectory(bullet3)
+add_subdirectory(yaml-cpp)
+
 add_subdirectory(stb)
