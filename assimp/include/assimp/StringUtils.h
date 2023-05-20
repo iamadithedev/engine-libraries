@@ -131,7 +131,7 @@ float ai_strtof(const char *begin, const char *end) {
     if (nullptr == begin) {
         return 0.0f;
     }
-    float val(0.0f);
+    float val;
     if (nullptr == end) {
         val = static_cast<float>(::atof(begin));
     } else {

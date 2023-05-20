@@ -53,32 +53,8 @@ http://www.jalix.org/ressources/graphics/3DS/_unofficials/3ds-unofficial.txt */
 
 #include <assimp/vector3.h>
 
-#include <stdint.h>
+#include <cstdint>
 #include <vector>
-
-// ---------------------------------------------------------------------------
-/** Helper structure representing a face with smoothing groups assigned */
-struct FaceWithSmoothingGroup {
-    FaceWithSmoothingGroup() AI_NO_EXCEPT
-    : mIndices()
-    , iSmoothGroup(0) {
-        // in debug builds set all indices to a common magic value
-#ifdef ASSIMP_BUILD_DEBUG
-        this->mIndices[0] = 0xffffffff;
-        this->mIndices[1] = 0xffffffff;
-        this->mIndices[2] = 0xffffffff;
-#endif
-    }
-
-
-    //! Indices. .3ds is using uint16. However, after
-    //! an unique vertex set has been generated,
-    //! individual index values might exceed 2^16
-    uint32_t mIndices[3];
-
-    //! specifies to which smoothing group the face belongs to
-    uint32_t iSmoothGroup;
-};
 
 // ---------------------------------------------------------------------------
 /** Helper structure representing a mesh whose faces have smoothing

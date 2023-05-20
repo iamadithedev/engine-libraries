@@ -107,7 +107,6 @@ SET( PUBLIC_HEADERS
   ${HEADER_PATH}/SmoothingGroups.h
   ${HEADER_PATH}/SmoothingGroups.inl
   ${HEADER_PATH}/StandardShapes.h
-  ${HEADER_PATH}/RemoveComments.h
   ${HEADER_PATH}/Subdivision.h
   ${HEADER_PATH}/Vertex.h
   ${HEADER_PATH}/LineSplitter.h
@@ -153,7 +152,6 @@ SET( Common_SRCS
   Common/StandardShapes.cpp
   Common/TargetAnimation.cpp
   Common/TargetAnimation.h
-  Common/RemoveComments.cpp
   Common/Subdivision.cpp
   Common/scene.cpp
   Common/Version.cpp
