@@ -3,7 +3,6 @@
 #include "btBulletDynamicsCommon.h"
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 #include "../CommonInterfaces/CommonGraphicsAppInterface.h"
-#include "../CommonInterfaces/CommonRenderInterface.h"
 #include "Bullet3Common/b3Scalar.h"
 #include "CollisionShape2TriangleMesh.h"
 #include "BulletSoftBody/btSoftBodyHelpers.h"
@@ -63,10 +62,6 @@ public:
 
 	virtual void drawLine(const btVector3& from1, const btVector3& to1, const btVector3& color1)
 	{
-		//float from[4] = {from1[0],from1[1],from1[2],from1[3]};
-		//float to[4] = {to1[0],to1[1],to1[2],to1[3]};
-		//float color[4] = {color1[0],color1[1],color1[2],color1[3]};
-		//m_glApp->m_instancingRenderer->drawLine(from,to,color);
 		if (m_currentLineColor != color1 || m_linePoints.size() >= BT_LINE_BATCH_SIZE)
 		{
 			flushLines();
