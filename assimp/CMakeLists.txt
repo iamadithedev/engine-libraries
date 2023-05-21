@@ -73,10 +73,6 @@ OPTION( ASSIMP_OPT_BUILD_PACKAGES
   "Set to ON to generate CPack configuration files and packaging targets"
   OFF
 )
-OPTION( ASSIMP_BUILD_ASSIMP_TOOLS
-  "If the supplementary tools for Assimp are built in addition to the library."
-  OFF
-)
 OPTION ( ASSIMP_BUILD_SAMPLES
   "If the official samples are built as well (needs Glut)."
   OFF
@@ -120,9 +116,6 @@ IF (WIN32)
   ADD_DEFINITIONS( -DWIN32_LEAN_AND_MEAN )
 
   IF(MSVC)
-    OPTION( ASSIMP_INSTALL_PDB
-      "Install MSVC debug files."
-      ON )
     IF(NOT (MSVC_VERSION LESS 1900))
       # Multibyte character set is deprecated since at least MSVC2015 (possibly earlier)
       ADD_DEFINITIONS( -DUNICODE -D_UNICODE )
@@ -562,21 +555,6 @@ ENDIF ()
 
 # Main assimp code
 ADD_SUBDIRECTORY( code/ )
-
-IF ( ASSIMP_BUILD_ASSIMP_TOOLS )
-  # The viewer for windows only
-  IF (WIN32)
-    FIND_PACKAGE(DirectX)
-    OPTION ( ASSIMP_BUILD_ASSIMP_VIEW "If the Assimp view tool is built. (requires DirectX)" ${DirectX_FOUND} )
-    IF ( ASSIMP_BUILD_ASSIMP_VIEW )
-      ADD_SUBDIRECTORY( tools/assimp_view/ )
-    ENDIF ()
-  ELSE()
-    MESSAGE("Building Assimp Viewer only supported on Windows.")
-  ENDIF ()
-  # The command line tool
-  ADD_SUBDIRECTORY( tools/assimp_cmd/ )
-ENDIF ()
 
 IF ( ASSIMP_BUILD_SAMPLES )
   SET( SAMPLES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/samples )

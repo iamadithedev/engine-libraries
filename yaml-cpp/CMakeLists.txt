@@ -20,7 +20,6 @@ include(CheckCXXCompilerFlag)
 include(GNUInstallDirs)
 
 option(YAML_CPP_BUILD_CONTRIB "Enable yaml-cpp contrib in library" ON)
-option(YAML_CPP_BUILD_TOOLS "Enable parse tools" ON)
 option(YAML_BUILD_SHARED_LIBS "Build yaml-cpp shared library" ${BUILD_SHARED_LIBS})
 cmake_dependent_option(YAML_MSVC_SHARED_RT
   "MSVC: Build yaml-cpp with shared runtime libs (/MD)" ON
@@ -149,7 +148,3 @@ write_basic_package_version_file(
 configure_file(yaml-cpp.pc.in yaml-cpp.pc @ONLY)
 
 unset(CONFIG_EXPORT_DIR)
-
-if(YAML_CPP_BUILD_TOOLS)
-  add_subdirectory(util)
-endif()
