@@ -30,18 +30,15 @@ protected:
 	int m_shapeType;
 	void* m_userPointer;
 	int m_userIndex;
-	int m_userIndex2;
 
 public:
 	BT_DECLARE_ALIGNED_ALLOCATOR();
 
-	btCollisionShape() : m_shapeType(INVALID_SHAPE_PROXYTYPE), m_userPointer(0), m_userIndex(-1), m_userIndex2(-1)
+	btCollisionShape() : m_shapeType(INVALID_SHAPE_PROXYTYPE), m_userPointer(0), m_userIndex(-1)
 	{
 	}
 
-	virtual ~btCollisionShape()
-	{
-	}
+	virtual ~btCollisionShape() = default;
 
 	///getAabb returns the axis aligned bounding box in the coordinate frame of the given transform t.
 	virtual void getAabb(const btTransform& t, btVector3& aabbMin, btVector3& aabbMax) const = 0;
@@ -136,16 +133,6 @@ public:
 	int getUserIndex() const
 	{
 		return m_userIndex;
-	}
-
-	void setUserIndex2(int index)
-	{
-		m_userIndex2 = index;
-	}
-
-	int getUserIndex2() const
-	{
-		return m_userIndex2;
 	}
 
 	virtual int calculateSerializeBufferSize() const;

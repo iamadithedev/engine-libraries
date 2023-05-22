@@ -201,9 +201,8 @@ public:
 		//@BP Mod - Custom flags, currently used to enable backface culling on tri-meshes, see btRaycastCallback.h. Apply any of the EFlags defined there on m_flags here to invoke.
 		unsigned int m_flags;
 
-		virtual ~RayResultCallback()
-		{
-		}
+		virtual ~RayResultCallback() = default;
+
 		bool hasHit() const
 		{
 			return (m_collisionObject != 0);
