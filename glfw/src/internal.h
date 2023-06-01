@@ -236,7 +236,6 @@ struct _GLFWfbconfig
     GLFWbool    stereo;
     int         samples;
     GLFWbool    sRGB;
-    GLFWbool    doublebuffer;
     uintptr_t   handle;
 };
 
@@ -280,7 +279,6 @@ struct _GLFWwindow
     GLFWbool            focusOnShow;
     GLFWbool            mousePassthrough;
     void*               userPointer;
-    GLFWbool            doublebuffer;
     GLFWvidmode         videoMode;
     _GLFWmonitor*       monitor;
     _GLFWcursor*        cursor;

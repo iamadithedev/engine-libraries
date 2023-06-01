@@ -791,13 +791,6 @@ extern "C" {
  *  Monitor refresh rate [hint](@ref GLFW_REFRESH_RATE).
  */
 #define GLFW_REFRESH_RATE           0x0002100F
-/*! @brief Framebuffer double buffering hint and attribute.
- *
- *  Framebuffer double buffering [hint](@ref GLFW_DOUBLEBUFFER_hint) and
- *  [attribute](@ref GLFW_DOUBLEBUFFER_attrib).
- */
-#define GLFW_DOUBLEBUFFER           0x00021010
-
 /*! @brief Context client API hint and attribute.
  *
  *  Context client API [hint](@ref GLFW_CLIENT_API_hint) and

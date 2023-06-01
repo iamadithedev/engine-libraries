@@ -148,9 +148,6 @@ static int choosePixelFormatWGL(_GLFWwindow* window,
             if (FIND_ATTRIB_VALUE(WGL_ACCELERATION_ARB) == WGL_NO_ACCELERATION_ARB)
                 continue;
 
-            if (FIND_ATTRIB_VALUE(WGL_DOUBLE_BUFFER_ARB) != fbconfig->doublebuffer)
-                continue;
-
             u->redBits = FIND_ATTRIB_VALUE(WGL_RED_BITS_ARB);
             u->greenBits = FIND_ATTRIB_VALUE(WGL_GREEN_BITS_ARB);
             u->blueBits = FIND_ATTRIB_VALUE(WGL_BLUE_BITS_ARB);
@@ -218,9 +215,6 @@ static int choosePixelFormatWGL(_GLFWwindow* window,
             }
 
             if (pfd.iPixelType != PFD_TYPE_RGBA)
-                continue;
-
-            if (!!(pfd.dwFlags & PFD_DOUBLEBUFFER) != fbconfig->doublebuffer)
                 continue;
 
             u->redBits = pfd.cRedBits;
